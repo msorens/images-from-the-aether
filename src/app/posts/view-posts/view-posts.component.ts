@@ -21,7 +21,7 @@ export class ViewPostsComponent implements OnInit {
   @Select(PostState.posts) posts$: Observable<Post[]>;
 
   ngOnInit(): void {
-    this.store.dispatch(new FetchPosts());
+    this.store.dispatch(new FetchPosts(2, 'cat'));
   }
 
 }
