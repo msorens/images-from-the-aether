@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Post } from '../models/Post';
+import { PageResponse } from '../models/Post';
 
 @Injectable({
   providedIn: 'root',
@@ -9,14 +9,19 @@ import { Post } from '../models/Post';
 export class ApiService {
   constructor(private readonly http: HttpClient) {}
 
-  loadPage(pageId: number): Observable<Post[]> {
+  loadPage(pageId: number, searchString: string): Observable<PageResponse> {
 
-    const url = `https://5cafa607f7850e0014629525.mockapi.io/products`;
-    const limit = 8;
-    return this.http.get<Post[]>(url, {
+    const url = 'https://api.pexels.com/v1/search';
+    const apiKey = 'TODO: GET FROM CONFIG';
+    const itemsPerPage = 8;
+    return this.http.get<PageResponse>(url, {
+      headers: {
+        Authorization: apiKey
+      },
       params: {
-        page: String(pageId),
-        limit: String(limit),
+        query: searchString,
+        per_page: String(itemsPerPage),
+        page: String(pageId)
       }
     });
   }

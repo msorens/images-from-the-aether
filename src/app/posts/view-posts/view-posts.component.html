@@ -1,8 +1,8 @@
 <div *ngIf="(loading$ | async) === false">
   <ul>
     <li *ngFor="let p of posts$ | async">
-      {{p.name}}
-      <img [src]="p.image">
+      {{p.id}}
+      <img [src]="p.src.small">
     </li>
   </ul>
 </div>

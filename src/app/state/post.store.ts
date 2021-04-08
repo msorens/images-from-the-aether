@@ -1,13 +1,13 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { Photo } from '../models/Post';
 
-import { Post } from '../models/Post';
 import { ApiService } from '../services/api.service';
 import { FetchPosts } from './post.actions';
 
 export interface PostStateModel {
-  posts: Post[];
+  posts: Photo[];
   loading: boolean;
 }
 
@@ -39,11 +39,12 @@ export class PostState {
     { pageId, searchString }: FetchPosts
   ) {
     const state = getState();
-    let posts: Post[] = [];
-    this.api.loadPage(pageId).subscribe((post) => {
-      posts = post;
+    let posts: Photo[] = [];
+    this.api.loadPage(pageId, searchString).subscribe(response => {
+      posts = response.photos;
 
-      console.log(`${posts[0].id}: ${posts[0].name}`);
+      console.log(
+        `Received ${response.photos.length} photos on page ${response.page} (${response.total_results} total)`);
 
       patchState({
         posts,
