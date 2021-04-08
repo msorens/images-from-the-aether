@@ -13,15 +13,15 @@ import { PostState } from '../../state/post.store';
   templateUrl: './view-posts.component.html',
   styleUrls: ['./view-posts.component.scss']
 })
-export class ViewPostsComponent implements OnInit {
+export class ViewPostsComponent {
 
   constructor(private store: Store, private route: ActivatedRoute) { }
 
   @Select(PostState.loading) loading$: Observable<boolean>;
   @Select(PostState.posts) posts$: Observable<Post[]>;
 
-  ngOnInit(): void {
-    this.store.dispatch(new FetchPosts(2, 'cat'));
-  }
+  // ngOnInit(): void {
+  //   this.store.dispatch(new FetchPosts(2, 'cat'));
+  // }
 
 }

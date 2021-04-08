@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Store, Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { Add, CountState } from './app.state';
+import { FetchPosts } from './state/post.actions';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -16,5 +17,9 @@ export class AppComponent {
 
   onClick(): void {
     this.store.dispatch(new Add());
+  }
+
+  onClickPage(): void {
+    this.store.dispatch(new FetchPosts(2, 'cat'));
   }
 }
