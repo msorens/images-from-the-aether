@@ -38,10 +38,13 @@ export class PostState {
   getPosts({ getState, patchState }: StateContext<PostStateModel>) {
     const state = getState();
     let posts: Post[] = [];
-    this.http.get<Post[]>('https://jsonplaceholder.typicode.com/posts').subscribe(post => {
+    const page = 1;
+    const limit = 8;
+    const url = `https://5cafa607f7850e0014629525.mockapi.io/products?page=${page}&limit=${limit}`;
+    this.http.get<Post[]>(url).subscribe(post => {
       posts = post;
 
-      console.log(posts[0].id);
+      console.log(`${posts[0].id}: ${posts[0].name}`);
 
       patchState({
         posts,
