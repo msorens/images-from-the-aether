@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { State, Action, Selector } from '@ngxs/store';
 
 export interface Counter {
@@ -14,6 +15,7 @@ export class Add {
     incrementer: 0,
   },
 })
+@Injectable()
 export class CountState {
   @Selector()
   static myCount(state: Counter): number {
