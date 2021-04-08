@@ -35,7 +35,7 @@ export class PostState {
   }
 
   @Action(FetchPosts)
-  getPosts({ getState, setState }: StateContext<PostStateModel>) {
+  getPosts({ getState, patchState }: StateContext<PostStateModel>) {
     const state = getState();
     let posts: Post[] = [];
     this.http.get<Post[]>('https://jsonplaceholder.typicode.com/posts').subscribe(post => {
@@ -43,9 +43,8 @@ export class PostState {
 
       console.log(posts[0].id);
 
-      setState({
-        ...state,
-        posts: posts,
+      patchState({
+        posts,
         loading: false
       });
     });
