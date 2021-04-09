@@ -20,7 +20,6 @@ export interface PostStateModel {
 })
 @Injectable()
 export class PostState {
-
   constructor(private http: HttpClient, private readonly api: ApiService) {}
 
   @Selector()
@@ -39,15 +38,12 @@ export class PostState {
     { pageId, searchString }: FetchPosts
   ) {
     const state = getState();
-    let posts: Photo[] = [];
-    this.api.loadPage(pageId, searchString).subscribe(response => {
-      posts = response.photos;
-
+    this.api.loadPage(pageId, searchString).subscribe((response) => {
       console.log(
-        `Received ${response.photos.length} photos on page ${response.page} (${response.total_results} total)`);
-
+        `Received ${response.photos.length} photos on page ${response.page} (${response.total_results} total)`
+      );
       patchState({
-        posts,
+        posts: [...state.posts, ...response.photos],
         loading: false,
       });
     });

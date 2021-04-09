@@ -1,11 +1,15 @@
-<div *ngIf="(loading$ | async) === false">
-  <ul>
-    <li *ngFor="let p of posts$ | async">
-      {{p.id}}
-      <img [src]="p.src.small">
-    </li>
-  </ul>
-</div>
-<div *ngIf="(loading$ | async) === true">
-  Loading.....
+<div class="container">
+  <cdk-virtual-scroll-viewport #scrollerElement itemSize="25" class="content">
+    <div class="responsive-grid">
+      <ng-container *cdkVirtualFor="let item of posts$ | async; let idx=index">
+        <div class="myimage">
+          <div class="id">{{idx}}</div>
+          <img [src]="item.src.small">
+        </div>
+      </ng-container>
+      <div class="spinner-item">
+        <mat-progress-spinner [mode]="'indeterminate'" [diameter]="50"></mat-progress-spinner>
+      </div>
+    </div>
+  </cdk-virtual-scroll-viewport>
 </div>
