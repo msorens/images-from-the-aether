@@ -15,6 +15,9 @@ import { FetchPosts } from 'src/app/state/post.actions';
   styleUrls: ['./view-posts.component.scss'],
 })
 export class ViewPostsComponent implements OnInit, AfterViewInit {
+
+  photos: Photo[] = [];
+
   constructor(private store: Store, private ngZone: NgZone) {}
 
   @ViewChild('scrollerElement') scroller: CdkVirtualScrollViewport;
@@ -26,6 +29,9 @@ export class ViewPostsComponent implements OnInit, AfterViewInit {
   @Select(PostState.posts) posts$: Observable<Photo[]>;
 
   ngOnInit(): void {
+    this.posts$.subscribe(
+      newPhotos => this.photos = [...this.photos, ...newPhotos]
+    );
     this.store.dispatch(new FetchPosts(this.page++, 'cat'));
   }
 
