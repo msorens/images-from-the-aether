@@ -39,11 +39,12 @@ export class PostState {
   ) {
     const state = getState();
     this.api.loadPage(pageId, searchString).subscribe((response) => {
+      const posts = [...state.posts, ...response.photos];
       console.log(
         `Received ${response.photos.length} photos on page ${response.page} (${response.total_results} total)`
       );
       patchState({
-        posts: [...state.posts, ...response.photos],
+        posts,
         loading: false,
       });
     });
