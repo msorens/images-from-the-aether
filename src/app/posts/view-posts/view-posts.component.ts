@@ -41,9 +41,7 @@ export class ViewPostsComponent implements OnInit, AfterViewInit {
         throttleTime(200)
       )
       .subscribe(() => {
-        this.ngZone.run(() => {
           this.store.dispatch(new FetchPosts(this.page++, 'cat'));
-        });
       });
   }
 
