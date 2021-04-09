@@ -43,7 +43,7 @@ export class PostState {
         `Received ${response.photos.length} photos on page ${response.page} (${response.total_results} total)`
       );
       patchState({
-        posts: [...state.posts, ...response.photos],
+        posts: response.photos,
         loading: false,
       });
     });
