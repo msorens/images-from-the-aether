@@ -34,7 +34,7 @@ export class PostState {
 
   @Action(FetchPosts)
   getPosts(
-    { getState, patchState }: StateContext<PostStateModel>,
+    { getState, setState }: StateContext<PostStateModel>,
     { pageId, searchString }: FetchPosts
   ) {
     const state = getState();
@@ -42,7 +42,8 @@ export class PostState {
       console.log(
         `Received ${response.photos.length} photos on page ${response.page} (${response.total_results} total)`
       );
-      patchState({
+      setState({
+        ...state,
         posts: [...state.posts, ...response.photos],
         loading: false,
       });
