@@ -8,7 +8,8 @@ p {
   margin-left: $gap;
   margin-right: $gap;
 
-  .content {
+  virtual-scroller {
+    width: 95%;
     height: calc(100vh - 64px);
     overflow: auto;
 
@@ -27,11 +28,11 @@ p {
 }
 
 .myimage {
-  position: relative;
+  // position: relative;
 
   img {
-    width: 100%;
-    height: 100%;
+    width: 75%;
+    height: 75%;
   }
 
   .id {

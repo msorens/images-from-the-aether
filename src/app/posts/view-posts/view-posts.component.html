@@ -1,15 +1,15 @@
 <div class="container">
-  <cdk-virtual-scroll-viewport #scrollerElement itemSize="25" class="content">
+  <virtual-scroller #scroll [items]="photos" (vsEnd)="fetchMore($event)">
     <div class="responsive-grid">
-      <ng-container *cdkVirtualFor="let item of photos; let idx=index">
+      <div *ngFor="let item of scroll.viewPortItems; let idx=index">
         <div class="myimage">
           <div class="id">{{idx}}</div>
           <img [src]="item.images.fixed_height_still.url">
         </div>
-      </ng-container>
-      <div class="spinner-item">
-        <mat-progress-spinner [mode]="'indeterminate'" [diameter]="50"></mat-progress-spinner>
       </div>
     </div>
-  </cdk-virtual-scroll-viewport>
+  </virtual-scroller>
+  <!-- <div class="spinner-item">
+    <mat-progress-spinner [mode]="'indeterminate'" [diameter]="50"></mat-progress-spinner>
+  </div> -->
 </div>

@@ -1,12 +1,12 @@
 
-import { AfterViewInit, Component, NgZone, OnInit, ViewChild } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
-import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { Observable } from 'rxjs';
-import { map, pairwise, filter, throttleTime, tap } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
+import { IPageInfo } from 'ngx-virtual-scroller';
 
 import { PostState } from '../../state/post.store';
-import { Photo } from 'src/app/models/Post';
+import { Photo } from 'src/app/models/Giphy';
 import { FetchPosts } from 'src/app/state/post.actions';
 
 @Component({
@@ -14,43 +14,32 @@ import { FetchPosts } from 'src/app/state/post.actions';
   templateUrl: './view-posts.component.html',
   styleUrls: ['./view-posts.component.scss'],
 })
-export class ViewPostsComponent implements OnInit, AfterViewInit {
-
+export class ViewPostsComponent implements OnInit {
   photos: Photo[] = [];
-
-  constructor(private store: Store, private ngZone: NgZone) {}
-
-  @ViewChild('scrollerElement') scroller: CdkVirtualScrollViewport;
-
   title = 'Angular Infinite Scrolling List';
   page = 1;
+
+  constructor(private store: Store, private ngZone: NgZone) {}
 
   @Select(PostState.loading) loading$: Observable<boolean>;
   @Select(PostState.posts) posts$: Observable<Photo[]>;
 
   ngOnInit(): void {
-    this.posts$.subscribe(
-      newPhotos => this.photos = [...this.photos, ...newPhotos]
+    this.posts$
+      .pipe(filter(newPhotos => !!newPhotos))
+      .subscribe(
+      (newPhotos) => this.photos = this.photos.concat(newPhotos)
     );
+    console.log('Dispatching from ngOnInit');
     this.store.dispatch(new FetchPosts(this.page++, 'cat'));
   }
 
-  ngAfterViewInit(): void {
-    this.scroller
-      .elementScrolled()
-      .pipe(
-        map(() => this.scroller.measureScrollOffset('bottom')),
-        pairwise(),
-        tap(([y1, y2]) => console.log(`y1=${y1},y2=${y2}`)),
-        filter(([y1, y2]) => y2 < y1 && y2 < 240),
-        tap(([y1, y2]) => console.log('passed filter')),
-        throttleTime(200)
-      )
-      .subscribe(() => {
-        this.ngZone.run(() => {
-          this.store.dispatch(new FetchPosts(this.page++, 'cat'));
-        });
-      });
+  fetchMore(event: IPageInfo): void {
+    if (event.endIndex !== this.photos.length - 1) {
+      return;
+    }
+    console.log(`Dispatching from event: ${event.endIndex}`);
+    this.store.dispatch(new FetchPosts(this.page++, 'cat'));
   }
 
   // fetchMore(): void {
