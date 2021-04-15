@@ -1,7 +1,7 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { Photo } from '../models/Post';
+import { Photo } from '../models/Giphy';
 
 import { ApiService } from '../services/api.service';
 import { FetchPosts } from './post.actions';
@@ -40,12 +40,16 @@ export class PostState {
     const state = getState();
     this.api.loadPage(pageId, searchString).subscribe((response) => {
       console.log(
-        `Received ${response.photos.length} photos on page ${response.page} (${response.total_results} total)`
+        `Received ${response.pagination.count} photos on page ${response.pagination.offset} (${response.pagination.total_count} total)`
       );
       patchState({
-        posts: response.photos,
+        posts: response.data,
         loading: false,
       });
-    });
+      },
+      (errResponse: HttpErrorResponse) => {
+        console.log(errResponse.message);
+      }
+    );
   }
 }

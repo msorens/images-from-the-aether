@@ -4,7 +4,7 @@
       <ng-container *cdkVirtualFor="let item of photos; let idx=index">
         <div class="myimage">
           <div class="id">{{idx}}</div>
-          <img [src]="item.src.small">
+          <img [src]="item.images.fixed_height_still.url">
         </div>
       </ng-container>
       <div class="spinner-item">
