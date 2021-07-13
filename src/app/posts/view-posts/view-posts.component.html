@@ -1,9 +1,9 @@
 <div class="container">
   <virtual-scroller #scroll [items]="photos" (vsEnd)="fetchMore($event)">
-    <div class="responsive-grid">
-      <div *ngFor="let item of scroll.viewPortItems; let idx=index">
+    <div #container class="responsive-grid">
+      <div class="item" *ngFor="let item of scroll.viewPortItems">
         <div class="myimage">
-          <div class="id">{{idx}}</div>
+          <div class="id">{{item.id}}</div>
           <img [src]="item.images.fixed_height_still.url">
         </div>
       </div>
