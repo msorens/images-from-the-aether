@@ -11,6 +11,7 @@ export interface PageResponse {
 }
 
 export interface Photo {
+  refIndex: number;
   type: Type;
   id: string;
   url: string;

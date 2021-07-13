@@ -3,7 +3,7 @@
     <div #container class="responsive-grid">
       <div class="item" *ngFor="let item of scroll.viewPortItems">
         <div class="myimage">
-          <div class="id">{{item.id}}</div>
+          <div class="id">{{item.refIndex}}/{{item.id}}</div>
           <img [src]="item.images.fixed_height_still.url">
         </div>
       </div>
