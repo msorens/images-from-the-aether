@@ -7,7 +7,6 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CountState } from './app.state';
 import { PostsModule } from './posts/posts.module';
 import { PostState } from './state/post.store';
 
@@ -18,7 +17,7 @@ import { PostState } from './state/post.store';
     BrowserModule,
     HttpClientModule,
     MatProgressSpinnerModule,
-    NgxsModule.forRoot([CountState, PostState]),
+    NgxsModule.forRoot([PostState]),
     PostsModule,
     NoopAnimationsModule,
   ],

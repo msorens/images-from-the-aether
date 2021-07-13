@@ -51,31 +51,4 @@ export class ViewPostsComponent implements OnInit {
     this.store.dispatch(new FetchPosts(this.page++, 'cat'));
   }
 
-  // fetchMore(): void {
-  //   const images = [
-  //     'IuLgi9PWETU',
-  //     'fIq0tET6llw',
-  //     'xcBWeU4ybqs',
-  //     'YW3F-C5e8SE',
-  //     'H90Af2TFqng',
-  //   ];
-
-  //   const newItems = [];
-  //   for (let i = 0; i < 20; i++) {
-  //     const randomListNumber = Math.round(Math.random() * 100);
-  //     const randomPhotoId = Math.round(Math.random() * 4);
-  //     newItems.push({
-  //       title: 'List Item ' + randomListNumber,
-  //       content:
-  //         'This is some description of the list - item # ' + randomListNumber,
-  //       image: `https://source.unsplash.com/${images[randomPhotoId]}/50x50`,
-  //     });
-  //   }
-
-  //   this.loading = true;
-  //   timer(1000).subscribe(() => {
-  //     this.loading = false;
-  //     this.photos = [...this.photos, ...newItems];
-  //   });
-  // }
 }
