@@ -1,10 +1,11 @@
 <div class="container">
-  <virtual-scroller #scroll [items]="photos" (vsEnd)="fetchMore($event)">
+  <virtual-scroller #scroll [items]="photos" (vsEnd)="fetchMore($event)"
+    [enableUnequalChildrenSizes]="true">
     <div #container class="responsive-grid">
       <div class="item" *ngFor="let item of scroll.viewPortItems">
         <div class="myimage">
           <div class="id">{{item.refIndex}}/{{item.id}}</div>
-          <img [src]="item.images.fixed_height_still.url">
+          <img [src]="item.src.small">
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { Photo } from '../models/Giphy';
+import { Photo } from '../models/Post';
 
 import { ApiService } from '../services/api.service';
 import { FetchPosts } from './post.actions';
@@ -40,14 +40,14 @@ export class PostState {
     const state = getState();
     this.api.loadPage(pageId, searchString).subscribe((response) => {
       console.log(
-        `Received ${response.pagination.count} photos on page ${response.pagination.offset} (${response.pagination.total_count} total)`
+        `Received ${response.photos.length} photos on page ${response.page} (${response.total_results} total)`
       );
       // Add local indices before storing data
-      for (let i = 0; i < response.data.length; i++) {
-        response.data[i].refIndex = (pageId - 1) * 30 + i;
+      for (let i = 0; i < response.photos.length; i++) {
+        response.photos[i].refIndex = (pageId - 1) * 30 + i;
       }
       patchState({
-        posts: response.data,
+        posts: response.photos,
         loading: false,
       });
       },
