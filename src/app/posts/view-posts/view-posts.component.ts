@@ -18,6 +18,7 @@ export class ViewPostsComponent implements OnInit {
   photos: Photo[] = [];
   title = 'Angular Infinite Scrolling List';
   page = 1;
+  loading = false;
 
   constructor(private store: Store, private ngZone: NgZone) {}
 
@@ -27,18 +28,26 @@ export class ViewPostsComponent implements OnInit {
   ngOnInit(): void {
     this.posts$
       .pipe(filter(newPhotos => !!newPhotos))
-      .subscribe(
-      (newPhotos) => this.photos = this.photos.concat(newPhotos)
+      .subscribe(newPhotos => {
+        this.loading = false;
+        this.photos = this.photos.concat(newPhotos);
+        console.log(`received ${newPhotos.length} new photos; total now ${this.photos.length}`);
+      }
     );
     console.log('Dispatching from ngOnInit');
-    this.store.dispatch(new FetchPosts(this.page++, 'cat'));
+    this.fetchNext();
   }
 
   fetchMore(event: IPageInfo): void {
-    if (event.endIndex !== this.photos.length - 1) {
+    if (this.loading || event.endIndex !== this.photos.length - 1) {
       return;
     }
     console.log(`Dispatching from event: ${event.endIndex}`);
+    this.fetchNext();
+  }
+
+  private fetchNext(): void {
+    this.loading = true;
     this.store.dispatch(new FetchPosts(this.page++, 'cat'));
   }
 
