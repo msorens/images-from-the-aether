@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Store } from '@ngxs/store';
 import { PageResponse } from '../models/Post';
 
 @Injectable({
@@ -9,11 +10,10 @@ import { PageResponse } from '../models/Post';
 export class ApiService {
   constructor(private readonly http: HttpClient) {}
 
-  loadPage(pageId: number, searchString: string): Observable<PageResponse> {
+  loadPage(pageId: number, itemsPerPage: number, searchString: string): Observable<PageResponse> {
 
     const url = 'https://api.pexels.com/v1/search';
     const apiKey = 'FILL THIS IN';
-    const itemsPerPage = 16;
     return this.http.get<PageResponse>(url, {
       headers: {
         Authorization: apiKey
