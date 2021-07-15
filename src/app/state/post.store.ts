@@ -4,9 +4,10 @@ import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { Photo } from '../models/Post';
 
 import { ApiService } from '../services/api.service';
-import { FetchPosts } from './post.actions';
+import { FetchPosts, SetSearchString } from './post.actions';
 
 export interface PostStateModel {
+  searchString: string;
   posts: Photo[];
   loading: boolean;
   itemsPerPage: number;
@@ -15,6 +16,7 @@ export interface PostStateModel {
 @State<PostStateModel>({
   name: 'posts',
   defaults: {
+    searchString: '',
     posts: [],
     loading: true,
     itemsPerPage: 20
@@ -25,6 +27,11 @@ export class PostState {
   constructor(private http: HttpClient, private readonly api: ApiService) {}
 
   @Selector()
+  public static searchString(state: PostStateModel): string {
+    return state.searchString;
+  }
+
+  @Selector()
   public static loading(state: PostStateModel): boolean {
     return state.loading;
   }
@@ -32,6 +39,16 @@ export class PostState {
   @Selector()
   public static posts(state: PostStateModel): Photo[] {
     return state.posts;
+  }
+
+  @Action(SetSearchString)
+  setSearchString(
+    { patchState }: StateContext<PostStateModel>,
+    { searchString }: SetSearchString
+  ): void {
+      patchState({
+        searchString
+      });
   }
 
   @Action(FetchPosts)

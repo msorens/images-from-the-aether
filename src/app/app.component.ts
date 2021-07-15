@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngxs/store';
+import { SetSearchString } from './state/post.actions';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -7,7 +10,19 @@ import { Store } from '@ngxs/store';
 })
 export class AppComponent {
   title = 'photo-gallery';
+  NON_BLANK = '.*[\\S].*';
+  public searchForm: FormGroup;
 
-  constructor(private store: Store) {}
+  constructor(private store: Store, fb: FormBuilder) {
+    this.searchForm = fb.group({
+      searchString: [
+        '',
+        [Validators.required, Validators.pattern(this.NON_BLANK)],
+      ],
+    });
+  }
 
+  onSubmit(): void {
+    this.store.dispatch(new SetSearchString(this.searchForm.controls.searchString.value.trim()));
+  }
 }

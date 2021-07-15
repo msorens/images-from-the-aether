@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgxsModule } from '@ngxs/store';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxsModule } from '@ngxs/store';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -19,6 +20,7 @@ import { PostState } from './state/post.store';
     MatProgressSpinnerModule,
     NgxsModule.forRoot([PostState]),
     PostsModule,
+    ReactiveFormsModule,
     NoopAnimationsModule,
   ],
   providers: [],

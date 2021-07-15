@@ -19,11 +19,13 @@ export class ViewPostsComponent implements OnInit {
   title = 'Angular Infinite Scrolling List';
   page = 1;
   loading = false;
+  searchString = '';
 
   constructor(private store: Store, private ngZone: NgZone) {}
 
   @Select(PostState.loading) loading$: Observable<boolean>;
   @Select(PostState.posts) posts$: Observable<Photo[]>;
+  @Select(PostState.searchString) searchString$: Observable<string>;
 
   ngOnInit(): void {
     this.posts$
@@ -32,10 +34,15 @@ export class ViewPostsComponent implements OnInit {
         this.loading = false;
         this.photos = this.photos.concat(newPhotos);
         console.log(`received ${newPhotos.length} new photos; total now ${this.photos.length}`);
-      }
-    );
-    console.log('Dispatching from ngOnInit');
-    this.fetchNext();
+      });
+    this.searchString$
+      .pipe( filter(searchString => !!searchString))
+      .subscribe(searchString => {
+        console.log('Dispatching from user search change...');
+        // TODO: Reset everything!
+        this.searchString = searchString;
+        this.fetchNext(this.searchString);
+      });
   }
 
   fetchMore(event: IPageInfo): void {
@@ -43,12 +50,12 @@ export class ViewPostsComponent implements OnInit {
       return;
     }
     console.log(`Dispatching from event: ${event.endIndex}`);
-    this.fetchNext();
+    this.fetchNext(this.searchString);
   }
 
-  private fetchNext(): void {
+  private fetchNext(searchString: string): void {
     this.loading = true;
-    this.store.dispatch(new FetchPosts(this.page++, 'cat'));
+    this.store.dispatch(new FetchPosts(this.page++, searchString));
   }
 
 }
