@@ -57,14 +57,14 @@ export class PostState {
 
   @Action(FetchPosts)
   getPosts(
-    { getState, patchState }: StateContext<PostStateModel>,
-    { searchString }: FetchPosts
+    { getState, patchState }: StateContext<PostStateModel>
   ): void {
-    const [itemsPerPage, currentPage] = [getState().itemsPerPage, ++getState().currentPage];
+    const state = getState();
+    const [itemsPerPage, currentPage] = [state.itemsPerPage, ++state.currentPage];
     patchState({ currentPage });
 
     // page index is 1-based not 0-based here
-    this.api.loadPage(currentPage, itemsPerPage, searchString)
+    this.api.loadPage(currentPage, itemsPerPage, state.searchString)
       .subscribe((response) => {
       console.log(
         `Received ${response.photos.length} photos on page ${response.page} (${response.total_results} total)`

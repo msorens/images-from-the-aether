@@ -18,7 +18,6 @@ export class ViewPostsComponent implements OnInit {
   photos: Photo[] = [];
   title = 'Angular Infinite Scrolling List';
   loading = false;
-  searchString = '';
 
   constructor(private store: Store, private ngZone: NgZone) {}
 
@@ -36,10 +35,9 @@ export class ViewPostsComponent implements OnInit {
       });
     this.searchString$
       .pipe( filter(searchString => !!searchString))
-      .subscribe(searchString => {
+      .subscribe(() => {
         console.log('Dispatching from user search change...');
-        this.searchString = searchString;
-        this.fetchNext(this.searchString);
+        this.fetchNext();
       });
   }
 
@@ -50,12 +48,12 @@ export class ViewPostsComponent implements OnInit {
       return;
     }
     console.log(`Dispatching from event: ${event.endIndex}`);
-    this.fetchNext(this.searchString);
+    this.fetchNext();
   }
 
-  private fetchNext(searchString: string): void {
+  private fetchNext(): void {
     this.loading = true;
-    this.store.dispatch(new FetchPosts(searchString));
+    this.store.dispatch(new FetchPosts());
   }
 
 }
