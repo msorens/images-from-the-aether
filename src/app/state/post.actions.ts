@@ -1,6 +1,6 @@
 export class FetchPosts {
   static readonly type = 'Fetch Photos';
-  constructor(public pageId: number, public searchString: string) {}
+  constructor(public searchString: string) {}
 }
 
 export class SetSearchString {

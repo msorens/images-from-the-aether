@@ -10,6 +10,7 @@ export interface PostStateModel {
   searchString: string;
   posts: Photo[];
   loading: boolean;
+  currentPage: number;
   itemsPerPage: number;
 }
 
@@ -19,6 +20,7 @@ export interface PostStateModel {
     searchString: '',
     posts: [],
     loading: true,
+    currentPage: 0,
     itemsPerPage: 20
   },
 })
@@ -47,24 +49,29 @@ export class PostState {
     { searchString }: SetSearchString
   ): void {
       patchState({
-        searchString
+        searchString,
+        currentPage: 0,
+        posts: []
       });
   }
 
   @Action(FetchPosts)
   getPosts(
     { getState, patchState }: StateContext<PostStateModel>,
-    { pageId, searchString }: FetchPosts
+    { searchString }: FetchPosts
   ): void {
-    const itemsPerPage = getState().itemsPerPage;
-    this.api.loadPage(pageId, itemsPerPage, searchString)
+    const [itemsPerPage, currentPage] = [getState().itemsPerPage, ++getState().currentPage];
+    patchState({ currentPage });
+
+    // page index is 1-based not 0-based here
+    this.api.loadPage(currentPage, itemsPerPage, searchString)
       .subscribe((response) => {
       console.log(
         `Received ${response.photos.length} photos on page ${response.page} (${response.total_results} total)`
       );
       // Add local display indices before storing data
       for (let i = 0; i < response.photos.length; i++) {
-        response.photos[i].refIndex = (pageId - 1) * itemsPerPage + i + 1;
+        response.photos[i].refIndex = (currentPage - 1) * itemsPerPage + i + 1;
       }
       patchState({
         posts: response.photos,

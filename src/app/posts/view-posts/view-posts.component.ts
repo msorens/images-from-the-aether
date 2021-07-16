@@ -17,7 +17,6 @@ import { FetchPosts } from 'src/app/state/post.actions';
 export class ViewPostsComponent implements OnInit {
   photos: Photo[] = [];
   title = 'Angular Infinite Scrolling List';
-  page = 1;
   loading = false;
   searchString = '';
 
@@ -39,14 +38,15 @@ export class ViewPostsComponent implements OnInit {
       .pipe( filter(searchString => !!searchString))
       .subscribe(searchString => {
         console.log('Dispatching from user search change...');
-        // TODO: Reset everything!
         this.searchString = searchString;
         this.fetchNext(this.searchString);
       });
   }
 
   fetchMore(event: IPageInfo): void {
-    if (this.loading || event.endIndex !== this.photos.length - 1) {
+    if (this.loading ||
+      event.endIndex === -1 || // essentially suppress page load event with empty search
+      event.endIndex !== this.photos.length - 1) { // wait until reaching the bottom
       return;
     }
     console.log(`Dispatching from event: ${event.endIndex}`);
@@ -55,7 +55,7 @@ export class ViewPostsComponent implements OnInit {
 
   private fetchNext(searchString: string): void {
     this.loading = true;
-    this.store.dispatch(new FetchPosts(this.page++, searchString));
+    this.store.dispatch(new FetchPosts(searchString));
   }
 
 }
