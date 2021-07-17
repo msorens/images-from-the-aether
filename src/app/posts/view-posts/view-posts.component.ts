@@ -16,7 +16,6 @@ import { FetchPosts } from 'src/app/state/post.actions';
 })
 export class ViewPostsComponent implements OnInit {
   photos: Photo[] = [];
-  title = 'Angular Infinite Scrolling List';
   loading = false;
 
   constructor(private store: Store, private ngZone: NgZone) {}
@@ -35,7 +34,7 @@ export class ViewPostsComponent implements OnInit {
     this.searchString$
       .pipe( filter(searchString => !!searchString))
       .subscribe(() => {
-        console.log('Dispatching from user search change...');
+        this.photos = []; // new search; clear display
         this.fetchNext();
       });
     this.loading$
@@ -50,7 +49,6 @@ export class ViewPostsComponent implements OnInit {
       event.endIndex !== this.photos.length - 1) { // wait until reaching the bottom
       return;
     }
-    console.log(`Dispatching from event: ${event.endIndex}`);
     this.fetchNext();
   }
 
