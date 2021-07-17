@@ -6,6 +6,8 @@ import { Photo } from '../models/Post';
 import { ApiService } from '../services/api.service';
 import { FetchPosts, SetSearchString } from './post.actions';
 
+
+export const STATE_NAME = 'imageCollection';
 export interface PostStateModel {
   searchString: string;
   posts: Photo[];
@@ -15,7 +17,7 @@ export interface PostStateModel {
 }
 
 @State<PostStateModel>({
-  name: 'posts',
+  name: STATE_NAME,
   defaults: {
     searchString: '',
     posts: [],

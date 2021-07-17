@@ -1,15 +1,20 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxsModule, Store } from '@ngxs/store';
 import { MockComponent } from 'ng2-mock-component';
 
-import { ViewPostsComponent } from './view-posts.component';
 import { PostState } from 'src/app/state/post.store';
+import { IPageInfo } from 'ngx-virtual-scroller';
+import { Photo } from 'src/app/models/Post';
+import { ApiService } from 'src/app/services/api.service';
+import { genPhotos, MockApiService, RESPONSE_PHOTO_COUNT } from 'src/app/state/post.store.spec';
+import { FetchPosts } from 'src/app/state/post.actions';
+import { ViewPostsComponent } from './view-posts.component';
 
 describe('ViewPostsComponent', () => {
-  let fixture;
-  let component;
+  let fixture: ComponentFixture<ViewPostsComponent>;
+  let component: ViewPostsComponent;
   let store: Store;
 
   beforeEach(() => {
@@ -23,7 +28,10 @@ describe('ViewPostsComponent', () => {
         HttpClientModule,
         [NgxsModule.forRoot([PostState])],
       ],
-      providers: [Store],
+      providers: [
+        Store,
+        { provide: ApiService, useClass: MockApiService }
+      ],
     }).compileComponents();
     store = TestBed.inject(Store);
     fixture = TestBed.createComponent(ViewPostsComponent);
@@ -34,9 +42,58 @@ describe('ViewPostsComponent', () => {
     expect(component).toBeTruthy();
   }));
 
-  it('should run #ngOnInit()', waitForAsync(() => {
-    const result = component.ngOnInit();
-    expect(result !== null).toBeTruthy();
-  }));
+  it('more photos are added when event is triggered by final photo', () => {
+    const originalPhotoQty = 10;
+    component.photos = genPhotos(1000, originalPhotoQty);
+    expect(component.photos.length).toBe(originalPhotoQty);
+
+    component.fetchMore({ endIndex: originalPhotoQty - 1 } as IPageInfo);
+    fixture.detectChanges();
+
+    expect(component.photos.length).toBe(originalPhotoQty + RESPONSE_PHOTO_COUNT);
+  });
+
+  it('more photos are NOT added while still loading previous batch', () => {
+    const originalPhotoQty = 10;
+    component.photos = genPhotos(1000, originalPhotoQty);
+    expect(component.photos.length).toBe(originalPhotoQty);
+    component.loading = true;
+
+    component.fetchMore({ endIndex: originalPhotoQty - 1 } as IPageInfo);
+    fixture.detectChanges();
+
+    expect(component.photos.length).toBe(originalPhotoQty);
+  });
+
+  it('more photos are NOT added when event is triggered by any other photo', () => {
+    const originalPhotoQty = 10;
+    component.photos = genPhotos(1000, originalPhotoQty);
+    expect(component.photos.length).toBe(originalPhotoQty);
+
+    component.fetchMore({ endIndex: 7 } as IPageInfo);
+    fixture.detectChanges();
+
+    expect(component.photos.length).toBe(originalPhotoQty);
+  });
+
+  it('more photos are NOT added when initializing event triggers', () => {
+    component.photos = [];
+
+    component.fetchMore({ endIndex: -1 } as IPageInfo);
+    fixture.detectChanges();
+
+    expect(component.photos.length).toBe(0);
+  });
+
+  it('dispatch is invoked when more photos available', () => {
+    spyOn(store, 'dispatch');
+    const originalPhotoQty = 10;
+    component.photos = genPhotos(1000, originalPhotoQty);
+
+    component.fetchMore({ endIndex: originalPhotoQty - 1 } as IPageInfo);
+    fixture.detectChanges();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchPosts());
+  });
 
 });
