@@ -29,7 +29,6 @@ export class ViewPostsComponent implements OnInit {
     this.posts$
       .pipe(filter(newPhotos => !!newPhotos))
       .subscribe(newPhotos => {
-        this.loading = false;
         this.photos = this.photos.concat(newPhotos);
         console.log(`received ${newPhotos.length} new photos; total now ${this.photos.length}`);
       });
@@ -38,6 +37,10 @@ export class ViewPostsComponent implements OnInit {
       .subscribe(() => {
         console.log('Dispatching from user search change...');
         this.fetchNext();
+      });
+    this.loading$
+      .subscribe(loading => {
+        this.loading = loading;
       });
   }
 
@@ -52,7 +55,6 @@ export class ViewPostsComponent implements OnInit {
   }
 
   private fetchNext(): void {
-    this.loading = true;
     this.store.dispatch(new FetchPosts());
   }
 

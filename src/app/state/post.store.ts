@@ -19,7 +19,7 @@ export interface PostStateModel {
   defaults: {
     searchString: '',
     posts: [],
-    loading: true,
+    loading: false,
     currentPage: 0,
     itemsPerPage: 20
   },
@@ -61,7 +61,10 @@ export class PostState {
   ): void {
     const state = getState();
     const [itemsPerPage, currentPage] = [state.itemsPerPage, ++state.currentPage];
-    patchState({ currentPage });
+    patchState({
+      currentPage,
+      loading: true
+    });
 
     // page index is 1-based not 0-based here
     this.api.loadPage(currentPage, itemsPerPage, state.searchString)

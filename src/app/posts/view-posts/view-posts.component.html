@@ -10,7 +10,7 @@
       </div>
     </div>
   </virtual-scroller>
-  <!-- <div class="spinner-item">
-    <mat-progress-spinner [mode]="'indeterminate'" [diameter]="50"></mat-progress-spinner>
-  </div> -->
+  <div class="spinner-item" *ngIf="loading">
+    <mat-spinner [diameter]="50"></mat-spinner>
+  </div>
 </div>
