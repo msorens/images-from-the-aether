@@ -9,53 +9,42 @@ p {
   margin-right: $gap;
 
   virtual-scroller {
-    width: 95%;
-    height: calc(100vh - 64px);
+    width: 100%;
+    height: calc(100vh - 200px);
     overflow: auto;
 
     .responsive-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: $gap;
+
+      .item {
+        display: block;
+        width: 100%;
+        // height: 100px;
+      }
+
+      .myimage {
+        position: relative;
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
+
+        .id {
+          position: absolute;
+          color: white;
+          margin: $gap;
+          font-size: 1.5rem;
+        }
+      }
     }
   }
-}
 
-.spinner-item {
-  display: grid;
-  place-items: center;
-  margin-top: 10px;
-}
-
-.myimage {
-  position: relative;
-
-  img {
-    width: 100%;
-    height: 100%;
+  .spinner-item {
+    display: grid;
+    place-items: center;
+    margin-top: 10px;
   }
-
-  .id {
-    position: absolute;
-    color: white;
-    margin: $gap;
-    font-size: 1.5rem;
-  }
-}
-
-.responsive-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill,minmax(200px, 1fr));
-  gap: 16px;
-}
-
-virtual-scroller {
-  width: 100%;
-  height: 600px;
-}
-
-.item {
-  display: block;
-  width: 100%;
-  // height: 100px;
 }
