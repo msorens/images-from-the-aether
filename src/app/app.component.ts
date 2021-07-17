@@ -9,7 +9,6 @@ import { SetSearchString } from './state/post.actions';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'photo-gallery';
   NON_BLANK = '.*[\\S].*';
   public searchForm: FormGroup;
 
