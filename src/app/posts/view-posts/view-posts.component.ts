@@ -17,10 +17,12 @@ import { FetchPosts } from 'src/app/state/post.actions';
 export class ViewPostsComponent implements OnInit {
   photos: Photo[] = [];
   loading = false;
+  endOfInputReached = false;
 
   constructor(private store: Store, private ngZone: NgZone) {}
 
   @Select(PostState.loading) loading$: Observable<boolean>;
+  @Select(PostState.endOfInputReached) endOfInputReached$: Observable<boolean>;
   @Select(PostState.posts) posts$: Observable<Photo[]>;
   @Select(PostState.searchString) searchString$: Observable<string>;
 
@@ -29,22 +31,23 @@ export class ViewPostsComponent implements OnInit {
       .pipe(filter(newPhotos => !!newPhotos))
       .subscribe(newPhotos => {
         this.photos = this.photos.concat(newPhotos);
-        console.log(`received ${newPhotos.length} new photos; total now ${this.photos.length}`);
       });
+
     this.searchString$
       .pipe( filter(searchString => !!searchString))
       .subscribe(() => {
         this.photos = []; // new search; clear display
         this.fetchNext();
       });
-    this.loading$
-      .subscribe(loading => {
-        this.loading = loading;
-      });
+
+    this.loading$.subscribe(flag => { this.loading = flag; });
+
+    this.endOfInputReached$.subscribe(flag => { this.endOfInputReached = flag; });
   }
 
   fetchMore(event: IPageInfo): void {
     if (this.loading ||
+      this.endOfInputReached ||
       event.endIndex === -1 || // essentially suppress page load event with empty search
       event.endIndex !== this.photos.length - 1) { // wait until reaching the bottom
       return;

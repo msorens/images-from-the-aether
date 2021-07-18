@@ -107,6 +107,17 @@ describe('FetchPosts', () => {
     }
   });
 
+  [true, false].forEach(endOfInput => {
+    it(`${endOfInput} end of input reflects in state`, () => {
+      MockApiService.endOfInput = endOfInput;
+      expect(store.selectSnapshot(s => stateModel(s).endOfInputReached)).toBeFalse();
+
+      store.dispatch(new FetchPosts());
+
+      expect(store.selectSnapshot(s => stateModel(s).endOfInputReached)).toBe(endOfInput);
+    });
+  });
+
   it('indicates processing by setting loading to true then back to false', () => {
     const obsClass = new ObsClass();
     expect(obsClass.events.length).toBe(0);

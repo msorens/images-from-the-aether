@@ -12,6 +12,7 @@ export interface PostStateModel {
   searchString: string;
   posts: Photo[];
   loading: boolean;
+  endOfInputReached: boolean;
   currentPage: number;
   itemsPerPage: number;
 }
@@ -22,6 +23,7 @@ export interface PostStateModel {
     searchString: '',
     posts: [],
     loading: false,
+    endOfInputReached: false,
     currentPage: 0,
     itemsPerPage: 20
   },
@@ -45,6 +47,11 @@ export class PostState {
     return state.posts;
   }
 
+  @Selector()
+  public static endOfInputReached(state: PostStateModel): boolean {
+    return state.endOfInputReached;
+  }
+
   @Action(SetSearchString)
   setSearchString(
     { patchState }: StateContext<PostStateModel>,
@@ -53,7 +60,9 @@ export class PostState {
       patchState({
         searchString,
         currentPage: 0,
-        posts: []
+        posts: [],
+        loading: false,
+        endOfInputReached: false
       });
   }
 
@@ -81,6 +90,7 @@ export class PostState {
       patchState({
         posts: response.photos,
         loading: false,
+        endOfInputReached: !response.next_page
       });
       },
       (errResponse: HttpErrorResponse) => {

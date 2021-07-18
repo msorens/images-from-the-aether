@@ -6,7 +6,6 @@ import { MockComponent } from 'ng2-mock-component';
 
 import { PostState } from 'src/app/state/post.store';
 import { IPageInfo } from 'ngx-virtual-scroller';
-import { Photo } from 'src/app/models/Post';
 import { ApiService } from 'src/app/services/api.service';
 import { genPhotos, MockApiService, RESPONSE_PHOTO_COUNT } from 'src/app/state/post.store.spec';
 import { FetchPosts } from 'src/app/state/post.actions';
@@ -42,7 +41,7 @@ describe('ViewPostsComponent', () => {
     expect(component).toBeTruthy();
   }));
 
-  it('more photos are added when event is triggered by final photo', () => {
+  it('more photos are fetched when event is triggered by final photo', () => {
     const originalPhotoQty = 10;
     component.photos = genPhotos(1000, originalPhotoQty);
     expect(component.photos.length).toBe(originalPhotoQty);
@@ -53,7 +52,7 @@ describe('ViewPostsComponent', () => {
     expect(component.photos.length).toBe(originalPhotoQty + RESPONSE_PHOTO_COUNT);
   });
 
-  it('more photos are NOT added while still loading previous batch', () => {
+  it('more photos are NOT fetched while still loading previous batch', () => {
     const originalPhotoQty = 10;
     component.photos = genPhotos(1000, originalPhotoQty);
     expect(component.photos.length).toBe(originalPhotoQty);
@@ -65,7 +64,7 @@ describe('ViewPostsComponent', () => {
     expect(component.photos.length).toBe(originalPhotoQty);
   });
 
-  it('more photos are NOT added when event is triggered by any other photo', () => {
+  it('more photos are NOT fetched when event is triggered by any other photo', () => {
     const originalPhotoQty = 10;
     component.photos = genPhotos(1000, originalPhotoQty);
     expect(component.photos.length).toBe(originalPhotoQty);
@@ -76,7 +75,19 @@ describe('ViewPostsComponent', () => {
     expect(component.photos.length).toBe(originalPhotoQty);
   });
 
-  it('more photos are NOT added when initializing event triggers', () => {
+  it('more photos are NOT fetched when end of input reached', () => {
+    const originalPhotoQty = 10;
+    component.photos = genPhotos(1000, originalPhotoQty);
+    expect(component.photos.length).toBe(originalPhotoQty);
+    component.endOfInputReached = true;
+
+    component.fetchMore({ endIndex: originalPhotoQty - 1 } as IPageInfo);
+    fixture.detectChanges();
+
+    expect(component.photos.length).toBe(originalPhotoQty);
+  });
+
+  it('more photos are NOT fetched when initializing event triggers', () => {
     component.photos = [];
 
     component.fetchMore({ endIndex: -1 } as IPageInfo);
