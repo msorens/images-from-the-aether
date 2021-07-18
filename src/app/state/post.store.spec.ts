@@ -2,7 +2,7 @@ import { state } from '@angular/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { NgxsModule, Store } from '@ngxs/store';
+import { NgxsModule, Select, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 
 import { PostState, PostStateModel, STATE_NAME } from 'src/app/state/post.store';
@@ -60,6 +60,7 @@ describe('SetSearchString', () => {
 
 describe('FetchPosts', () => {
   let store: Store;
+  let initialState: PostStateModel;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -70,44 +71,25 @@ describe('FetchPosts', () => {
       ],
     }).compileComponents();
     store = TestBed.inject(Store);
+
+    initialState = genState();
+    const snapshot = store.snapshot();
+    snapshot[STATE_NAME] = { ...initialState };
+    store.reset(snapshot);
   });
 
   it('increments page number', () => {
-    const initialState = genState();
-    const snapshot = store.snapshot();
-    snapshot[STATE_NAME] = { ...initialState };
-    store.reset(snapshot);
-
+    expect(store.selectSnapshot(s => stateModel(s).currentPage)).toBe(initialState.currentPage);
     store.dispatch(new FetchPosts());
-
     expect(store.selectSnapshot(s => stateModel(s).currentPage)).toBe(initialState.currentPage + 1);
   });
 
-  it('annotates photos with sequence number', () => {
-    const initialState = genState();
-    const snapshot = store.snapshot();
-    snapshot[STATE_NAME] = { ...initialState };
-    store.reset(snapshot);
-
-    store.dispatch(new FetchPosts());
-
-    const photos = store.selectSnapshot(s => stateModel(s).posts);
-    for (let i = 0; i < photos.length; i++) {
-      expect(photos[i].refIndex).toBe(initialState.currentPage * initialState.itemsPerPage + i + 1);
-    }
-  });
-
   it('stores new photos in state', () => {
-    const initialState = genState();
-    const snapshot = store.snapshot();
-    snapshot[STATE_NAME] = { ...initialState };
-    store.reset(snapshot);
+    expect(store.selectSnapshot(s => stateModel(s).posts.length)).toBe(STATE_PHOTO_COUNT);
 
     store.dispatch(new FetchPosts());
 
     const photos = store.selectSnapshot(s => stateModel(s).posts);
-    // number of photos changes
-    expect(initialState.posts.length).toBe(STATE_PHOTO_COUNT);
     expect(photos.length).toBe(RESPONSE_PHOTO_COUNT);
     // IDs in the response are offset by a constant amount from IDs in the initial state,
     // so a simple addition allows checking each item
@@ -116,12 +98,50 @@ describe('FetchPosts', () => {
     }
   });
 
+  it('annotates photos with sequence number', () => {
+    store.dispatch(new FetchPosts());
+
+    const photos = store.selectSnapshot(s => stateModel(s).posts);
+    for (let i = 0; i < photos.length; i++) {
+      expect(photos[i].refIndex).toBe(initialState.currentPage * initialState.itemsPerPage + i + 1);
+    }
+  });
+
+  it('indicates processing by setting loading to true then back to false', () => {
+    const obsClass = new ObsClass();
+    expect(obsClass.events.length).toBe(0);
+
+    store.dispatch(new FetchPosts());
+
+    expect(obsClass.events.length).toBe(2);
+    expect(obsClass.events[0]).toBeTrue();
+    expect(obsClass.events[1]).toBeFalse();
+  });
+
 });
+
+class ObsClass {
+  @Select(PostState.loading) loading$: Observable<boolean>;
+  public events: boolean[] = [];
+  private initializeEvent = true;
+
+  constructor() {
+    this.loading$.subscribe(flag => {
+      if (!this.initializeEvent) {
+        this.events.push(flag);
+      }
+      this.initializeEvent = false;
+    });
+  }
+}
 
 @Injectable()
 export class MockApiService extends ApiService {
+
+  public static endOfInput: boolean;
+
   loadPage(pageId: number, itemsPerPage: number, searchString: string): Observable<PageResponse> {
-    return of(genResponse());
+    return of(genResponse(MockApiService.endOfInput));
   }
 }
 
@@ -146,23 +166,24 @@ const BASE_OFFSET = RESPONSE_BASE - STATE_BASE;
 export const STATE_PHOTO_COUNT = 12;
 export const RESPONSE_PHOTO_COUNT = 9;
 
-function genState(): PostStateModel {
+export function genState(): PostStateModel {
   return {
     searchString: 'dog',
     posts: genPhotos(STATE_BASE, STATE_PHOTO_COUNT),
     loading: false,
+    endOfInputReached: false,
     currentPage: 10,
     itemsPerPage: 20
   };
 }
 
-function genResponse(): PageResponse {
+function genResponse(endOfInput?: boolean): PageResponse {
   return {
     page: 5,
     per_page: 20,
     photos: genPhotos(RESPONSE_BASE, RESPONSE_PHOTO_COUNT),
     total_results: 100,
-    next_page: '',
+    next_page: endOfInput ? null : 'any next page',
     prev_page: ''
   };
 }
