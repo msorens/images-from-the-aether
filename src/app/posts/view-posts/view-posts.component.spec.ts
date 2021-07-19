@@ -20,17 +20,17 @@ describe('ViewPostsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         ViewPostsComponent,
-        MockComponent({ selector: 'virtual-scroller' }),
+        MockComponent({
+          selector: 'virtual-scroller',
+          inputs: ['items', 'enableUnequalChildrenSizes'],
+        }),
       ],
       imports: [
         RouterTestingModule,
         HttpClientModule,
         [NgxsModule.forRoot([PostState])],
       ],
-      providers: [
-        Store,
-        { provide: ApiService, useClass: MockApiService }
-      ],
+      providers: [Store, { provide: ApiService, useClass: MockApiService }],
     }).compileComponents();
     store = TestBed.inject(Store);
     fixture = TestBed.createComponent(ViewPostsComponent);
