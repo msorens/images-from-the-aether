@@ -1,8 +1,7 @@
 <h1>Images from the Aether</h1>
 <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
-  <label>Search string
-    <input type="text" required formControlName="searchString" >
-  </label>
+  <label for="searchString">Search string</label>
+  <input type="text" required formControlName="searchString" id="searchString">
   <button type="submit" [disabled]="!searchForm.valid">Submit</button>
 </form>
 <app-view-posts></app-view-posts>
