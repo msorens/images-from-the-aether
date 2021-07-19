@@ -95,7 +95,12 @@ export class PostState {
       },
       (errResponse: HttpErrorResponse) => {
         console.log(errResponse.message);
-      }
+        patchState({
+          posts: [],
+          loading: false,
+          endOfInputReached: false
+        });
+       }
     );
   }
 }
