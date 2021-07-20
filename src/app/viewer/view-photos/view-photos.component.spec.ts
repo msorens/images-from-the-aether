@@ -1,11 +1,12 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
-import { NgxsModule, Store } from '@ngxs/store';
+import { NgxsModule, Select, Store } from '@ngxs/store';
 import { MockComponent } from 'ng2-mock-component';
+import { IPageInfo } from 'ngx-virtual-scroller';
+import { Observable } from 'rxjs';
 
 import { PhotoState } from 'src/app/state/photo.store';
-import { IPageInfo } from 'ngx-virtual-scroller';
 import { ApiService } from 'src/app/services/api.service';
 import { genPhotos, MockApiService, RESPONSE_PHOTO_COUNT } from 'src/app/state/photo.store.spec';
 import { FetchPhotos } from 'src/app/state/photo.actions';
@@ -37,7 +38,7 @@ describe('ViewPhotosComponent', () => {
     component = fixture.debugElement.componentInstance;
   });
 
-  it('should create a component', waitForAsync(() => {
+  it('creates a component', waitForAsync(() => {
     expect(component).toBeTruthy();
   }));
 
@@ -107,4 +108,59 @@ describe('ViewPhotosComponent', () => {
     expect(store.dispatch).toHaveBeenCalledWith(new FetchPhotos());
   });
 
+  it('displays spinner while fetching photos', () => {
+    const monitor = new LoadingMonitor();
+    expect(monitor.events).toEqual([false]); // initialization
+
+    store.dispatch(new FetchPhotos());
+
+    // State of loading$ displays/hides the spinner.
+    // Thus, toggling to true then back to false confirms the spinner shows appropriately.
+    expect(monitor.events).toEqual([false, true, false]);
+  });
+
+  it('displays end marker when collection exhausted (logic)', () => {
+    MockApiService.endOfInput = true;
+    const monitor = new EndOfInputMonitor();
+    expect(monitor.events).toEqual([false]); // initialization
+
+    store.dispatch(new FetchPhotos());
+    expect(monitor.events).toEqual([false, true]);
+  });
+
+  it('displays end marker when collection exhausted (rendering)', () => {
+    MockApiService.endOfInput = true;
+    const originalPhotoQty = 10;
+    component.photos = genPhotos(1000, originalPhotoQty);
+    expect(component.photos.length).toBe(originalPhotoQty);
+
+    let endFlag = fixture.nativeElement.querySelector('#endFlag');
+    expect(endFlag).toBeNull();
+
+    component.fetchMore({ endIndex: originalPhotoQty - 1 } as IPageInfo);
+    fixture.detectChanges();
+
+    endFlag = fixture.nativeElement.querySelector('#endFlag');
+    expect(endFlag).not.toBeNull();
+  });
+
+
 });
+
+class LoadingMonitor {
+  @Select(PhotoState.loading) loading$: Observable<boolean>;
+  public events: boolean[] = [];
+
+  constructor() {
+    this.loading$.subscribe(flag => { this.events.push(flag); });
+  }
+}
+
+class EndOfInputMonitor {
+  @Select(PhotoState.endOfInputReached) endOfInputReached$: Observable<boolean>;
+  public events: boolean[] = [];
+
+  constructor() {
+    this.endOfInputReached$.subscribe(flag => { this.events.push(flag); });
+  }
+}

@@ -13,7 +13,7 @@
   <div class="spinner-item" *ngIf="loading">
     <mat-spinner [diameter]="50"></mat-spinner>
   </div>
-  <div class="spinner-item" *ngIf="endOfInputReached">
+  <div class="spinner-item" id="endFlag" *ngIf="endOfInputReached">
     <img src="https://cdn.pixabay.com/photo/2013/06/17/10/28/end-139848__480.jpg" height="50px" width="100px">
   </div>
 </div>

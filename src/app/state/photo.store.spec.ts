@@ -107,7 +107,7 @@ describe('FetchPhotos', () => {
   });
 
   [true, false].forEach(endOfInput => {
-    it(`${endOfInput} end of input reflects in state`, () => {
+    it(`end of input reflects in state with value '${endOfInput}'`, () => {
       MockApiService.endOfInput = endOfInput;
       expect(store.selectSnapshot(s => stateModel(s).endOfInputReached)).toBeFalse();
 
@@ -117,33 +117,7 @@ describe('FetchPhotos', () => {
     });
   });
 
-  it('indicates processing by setting loading to true then back to false', () => {
-    const obsClass = new ObsClass();
-    expect(obsClass.events.length).toBe(0);
-
-    store.dispatch(new FetchPhotos());
-
-    expect(obsClass.events.length).toBe(2);
-    expect(obsClass.events[0]).toBeTrue();
-    expect(obsClass.events[1]).toBeFalse();
-  });
-
 });
-
-class ObsClass {
-  @Select(PhotoState.loading) loading$: Observable<boolean>;
-  public events: boolean[] = [];
-  private initializeEvent = true;
-
-  constructor() {
-    this.loading$.subscribe(flag => {
-      if (!this.initializeEvent) {
-        this.events.push(flag);
-      }
-      this.initializeEvent = false;
-    });
-  }
-}
 
 @Injectable()
 export class MockApiService extends ApiService {
