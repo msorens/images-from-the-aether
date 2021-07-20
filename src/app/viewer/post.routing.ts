@@ -1,11 +1,11 @@
 import { RouterModule, Routes } from '@angular/router';
-import { ViewPostsComponent } from './view-posts/view-posts.component';
+import { ViewPhotosComponent } from './view-photos/view-photos.component';
 
 const postsRoutes: Routes = [
   {
     path: 'posts',
     children: [
-      { path: '', component: ViewPostsComponent }
+      { path: '', component: ViewPhotosComponent }
     ]
   }
 ];

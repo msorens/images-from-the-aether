@@ -9,17 +9,17 @@ import { IPageInfo } from 'ngx-virtual-scroller';
 import { ApiService } from 'src/app/services/api.service';
 import { genPhotos, MockApiService, RESPONSE_PHOTO_COUNT } from 'src/app/state/post.store.spec';
 import { FetchPosts } from 'src/app/state/post.actions';
-import { ViewPostsComponent } from './view-posts.component';
+import { ViewPhotosComponent } from './view-photos.component';
 
 describe('ViewPostsComponent', () => {
-  let fixture: ComponentFixture<ViewPostsComponent>;
-  let component: ViewPostsComponent;
+  let fixture: ComponentFixture<ViewPhotosComponent>;
+  let component: ViewPhotosComponent;
   let store: Store;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
-        ViewPostsComponent,
+        ViewPhotosComponent,
         MockComponent({
           selector: 'virtual-scroller',
           inputs: ['items', 'enableUnequalChildrenSizes'],
@@ -33,7 +33,7 @@ describe('ViewPostsComponent', () => {
       providers: [Store, { provide: ApiService, useClass: MockApiService }],
     }).compileComponents();
     store = TestBed.inject(Store);
-    fixture = TestBed.createComponent(ViewPostsComponent);
+    fixture = TestBed.createComponent(ViewPhotosComponent);
     component = fixture.debugElement.componentInstance;
   });
 

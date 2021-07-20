@@ -15,7 +15,7 @@ describe('AppComponent', () => {
       ],
       declarations: [
         AppComponent,
-        MockComponent({ selector: 'app-view-posts' })
+        MockComponent({ selector: 'app-view-photos' })
       ],
       providers: [Store],
     }).compileComponents();

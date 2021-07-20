@@ -10,11 +10,11 @@ import { Photo } from 'src/app/models/Post';
 import { FetchPosts } from 'src/app/state/post.actions';
 
 @Component({
-  selector: 'app-view-posts',
-  templateUrl: './view-posts.component.html',
-  styleUrls: ['./view-posts.component.scss'],
+  selector: 'app-view-photos',
+  templateUrl: './view-photos.component.html',
+  styleUrls: ['./view-photos.component.scss'],
 })
-export class ViewPostsComponent implements OnInit {
+export class ViewPhotosComponent implements OnInit {
   photos: Photo[] = [];
   loading = false;
   endOfInputReached = false;
