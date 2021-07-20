@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, timer } from 'rxjs';
 import { Store } from '@ngxs/store';
-import { PageResponse } from '../models/Post';
+import { PageResponse } from '../models/Photo';
 import { delayWhen, retryWhen, shareReplay, tap } from 'rxjs/operators';
 
 @Injectable({

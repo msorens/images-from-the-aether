@@ -6,7 +6,7 @@ import { filter } from 'rxjs/operators';
 import { IPageInfo } from 'ngx-virtual-scroller';
 
 import { PhotoState } from '../../state/photo.store';
-import { Photo } from 'src/app/models/Post';
+import { Photo } from 'src/app/models/Photo';
 import { FetchPhotos } from 'src/app/state/photo.actions';
 
 @Component({

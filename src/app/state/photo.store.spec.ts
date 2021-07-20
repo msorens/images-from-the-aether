@@ -6,7 +6,7 @@ import { NgxsModule, Select, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 
 import { PhotoState, PhotoStateModel, STATE_NAME } from 'src/app/state/photo.store';
-import { PageResponse, Photo } from 'src/app/models/Post';
+import { PageResponse, Photo } from 'src/app/models/Photo';
 import { ApiService } from 'src/app/services/api.service';
 import { FetchPhotos, SetSearchString } from './photo.actions';
 
