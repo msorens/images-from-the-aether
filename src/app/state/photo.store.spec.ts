@@ -8,7 +8,7 @@ import { Observable, of } from 'rxjs';
 import { PhotoState, PhotoStateModel, STATE_NAME } from 'src/app/state/photo.store';
 import { PageResponse, Photo } from 'src/app/models/Post';
 import { ApiService } from 'src/app/services/api.service';
-import { FetchPosts, SetSearchString } from './photo.actions';
+import { FetchPhotos, SetSearchString } from './photo.actions';
 
 describe('SetSearchString', () => {
   let store: Store;
@@ -58,7 +58,7 @@ describe('SetSearchString', () => {
 
 });
 
-describe('FetchPosts', () => {
+describe('FetchPhotos', () => {
   let store: Store;
   let initialState: PhotoStateModel;
 
@@ -80,14 +80,14 @@ describe('FetchPosts', () => {
 
   it('increments page number', () => {
     expect(store.selectSnapshot(s => stateModel(s).currentPage)).toBe(initialState.currentPage);
-    store.dispatch(new FetchPosts());
+    store.dispatch(new FetchPhotos());
     expect(store.selectSnapshot(s => stateModel(s).currentPage)).toBe(initialState.currentPage + 1);
   });
 
   it('stores new photos in state', () => {
     expect(store.selectSnapshot(s => stateModel(s).photos.length)).toBe(STATE_PHOTO_COUNT);
 
-    store.dispatch(new FetchPosts());
+    store.dispatch(new FetchPhotos());
 
     const photos = store.selectSnapshot(s => stateModel(s).photos);
     expect(photos.length).toBe(RESPONSE_PHOTO_COUNT);
@@ -99,7 +99,7 @@ describe('FetchPosts', () => {
   });
 
   it('annotates photos with sequence number', () => {
-    store.dispatch(new FetchPosts());
+    store.dispatch(new FetchPhotos());
 
     const photos = store.selectSnapshot(s => stateModel(s).photos);
     for (let i = 0; i < photos.length; i++) {
@@ -112,7 +112,7 @@ describe('FetchPosts', () => {
       MockApiService.endOfInput = endOfInput;
       expect(store.selectSnapshot(s => stateModel(s).endOfInputReached)).toBeFalse();
 
-      store.dispatch(new FetchPosts());
+      store.dispatch(new FetchPhotos());
 
       expect(store.selectSnapshot(s => stateModel(s).endOfInputReached)).toBe(endOfInput);
     });
@@ -122,7 +122,7 @@ describe('FetchPosts', () => {
     const obsClass = new ObsClass();
     expect(obsClass.events.length).toBe(0);
 
-    store.dispatch(new FetchPosts());
+    store.dispatch(new FetchPhotos());
 
     expect(obsClass.events.length).toBe(2);
     expect(obsClass.events[0]).toBeTrue();

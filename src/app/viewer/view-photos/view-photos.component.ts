@@ -7,7 +7,7 @@ import { IPageInfo } from 'ngx-virtual-scroller';
 
 import { PhotoState } from '../../state/photo.store';
 import { Photo } from 'src/app/models/Post';
-import { FetchPosts } from 'src/app/state/photo.actions';
+import { FetchPhotos } from 'src/app/state/photo.actions';
 
 @Component({
   selector: 'app-view-photos',
@@ -23,11 +23,11 @@ export class ViewPhotosComponent implements OnInit {
 
   @Select(PhotoState.loading) loading$: Observable<boolean>;
   @Select(PhotoState.endOfInputReached) endOfInputReached$: Observable<boolean>;
-  @Select(PhotoState.photos) posts$: Observable<Photo[]>;
+  @Select(PhotoState.photos) photos$: Observable<Photo[]>;
   @Select(PhotoState.searchString) searchString$: Observable<string>;
 
   ngOnInit(): void {
-    this.posts$
+    this.photos$
       .pipe(filter(newPhotos => !!newPhotos))
       .subscribe(newPhotos => {
         this.photos = this.photos.concat(newPhotos);
@@ -56,7 +56,7 @@ export class ViewPhotosComponent implements OnInit {
   }
 
   private fetchNext(): void {
-    this.store.dispatch(new FetchPosts());
+    this.store.dispatch(new FetchPhotos());
   }
 
 }

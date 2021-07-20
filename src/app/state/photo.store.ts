@@ -4,7 +4,7 @@ import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { Photo } from '../models/Post';
 
 import { ApiService } from '../services/api.service';
-import { FetchPosts, SetSearchString } from './photo.actions';
+import { FetchPhotos, SetSearchString } from './photo.actions';
 
 
 export const STATE_NAME = 'imageCollection';
@@ -66,8 +66,8 @@ export class PhotoState {
       });
   }
 
-  @Action(FetchPosts)
-  getPosts(
+  @Action(FetchPhotos)
+  getPhotos(
     { getState, patchState }: StateContext<PhotoStateModel>
   ): void {
     const state = getState();

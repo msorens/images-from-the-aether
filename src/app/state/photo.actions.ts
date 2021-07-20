@@ -1,4 +1,4 @@
-export class FetchPosts {
+export class FetchPhotos {
   static readonly type = 'Fetch Photos';
   constructor() {}
 }

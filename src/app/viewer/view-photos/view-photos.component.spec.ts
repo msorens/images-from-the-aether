@@ -8,10 +8,10 @@ import { PhotoState } from 'src/app/state/photo.store';
 import { IPageInfo } from 'ngx-virtual-scroller';
 import { ApiService } from 'src/app/services/api.service';
 import { genPhotos, MockApiService, RESPONSE_PHOTO_COUNT } from 'src/app/state/photo.store.spec';
-import { FetchPosts } from 'src/app/state/photo.actions';
+import { FetchPhotos } from 'src/app/state/photo.actions';
 import { ViewPhotosComponent } from './view-photos.component';
 
-describe('ViewPostsComponent', () => {
+describe('ViewPhotosComponent', () => {
   let fixture: ComponentFixture<ViewPhotosComponent>;
   let component: ViewPhotosComponent;
   let store: Store;
@@ -104,7 +104,7 @@ describe('ViewPostsComponent', () => {
     component.fetchMore({ endIndex: originalPhotoQty - 1 } as IPageInfo);
     fixture.detectChanges();
 
-    expect(store.dispatch).toHaveBeenCalledWith(new FetchPosts());
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchPhotos());
   });
 
 });
