@@ -7,7 +7,7 @@ import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { PostsModule } from './posts/posts.module';
+import { PostsModule } from './viewer/posts.module';
 import { PostState } from './state/post.store';
 
 @NgModule({
