@@ -7,7 +7,7 @@ import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { PostsModule } from './viewer/posts.module';
+import { ViewerModule } from './viewer/viewer.module';
 import { PostState } from './state/post.store';
 
 @NgModule({
@@ -21,8 +21,8 @@ import { PostState } from './state/post.store';
       disabled: !isDevMode(), // disable for production builds
       maxAge: 25, // max number of entries
     }),
-    PostsModule,
     ReactiveFormsModule,
+    ViewerModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -3,14 +3,14 @@ import { NgModule } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 
-import { PostsRouting } from './post.routing';
+import { ViewerRouting } from './viewer.routing';
 import { ViewPhotosComponent } from './view-photos/view-photos.component';
 
 @NgModule({
   imports: [
     CommonModule,
     MatProgressSpinnerModule,
-    PostsRouting,
+    ViewerRouting,
     VirtualScrollerModule
   ],
   declarations: [ViewPhotosComponent],
@@ -18,4 +18,4 @@ import { ViewPhotosComponent } from './view-photos/view-photos.component';
     ViewPhotosComponent
   ],
 })
-export class PostsModule { }
+export class ViewerModule { }
