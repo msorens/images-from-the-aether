@@ -4,11 +4,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgxsModule, Store } from '@ngxs/store';
 import { MockComponent } from 'ng2-mock-component';
 
-import { PostState } from 'src/app/state/post.store';
+import { PhotoState } from 'src/app/state/photo.store';
 import { IPageInfo } from 'ngx-virtual-scroller';
 import { ApiService } from 'src/app/services/api.service';
-import { genPhotos, MockApiService, RESPONSE_PHOTO_COUNT } from 'src/app/state/post.store.spec';
-import { FetchPosts } from 'src/app/state/post.actions';
+import { genPhotos, MockApiService, RESPONSE_PHOTO_COUNT } from 'src/app/state/photo.store.spec';
+import { FetchPosts } from 'src/app/state/photo.actions';
 import { ViewPhotosComponent } from './view-photos.component';
 
 describe('ViewPostsComponent', () => {
@@ -28,7 +28,7 @@ describe('ViewPostsComponent', () => {
       imports: [
         RouterTestingModule,
         HttpClientModule,
-        [NgxsModule.forRoot([PostState])],
+        [NgxsModule.forRoot([PhotoState])],
       ],
       providers: [Store, { provide: ApiService, useClass: MockApiService }],
     }).compileComponents();

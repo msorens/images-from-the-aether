@@ -5,10 +5,10 @@ import { TestBed } from '@angular/core/testing';
 import { NgxsModule, Select, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 
-import { PostState, PostStateModel, STATE_NAME } from 'src/app/state/post.store';
+import { PhotoState, PhotoStateModel, STATE_NAME } from 'src/app/state/photo.store';
 import { PageResponse, Photo } from 'src/app/models/Post';
 import { ApiService } from 'src/app/services/api.service';
-import { FetchPosts, SetSearchString } from './post.actions';
+import { FetchPosts, SetSearchString } from './photo.actions';
 
 describe('SetSearchString', () => {
   let store: Store;
@@ -17,7 +17,7 @@ describe('SetSearchString', () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientModule,
-        [NgxsModule.forRoot([PostState])],
+        [NgxsModule.forRoot([PhotoState])],
       ],
       providers: [Store],
     }).compileComponents();
@@ -47,24 +47,24 @@ describe('SetSearchString', () => {
   it('resets photos to empty list', () => {
     const snapshot = store.snapshot();
     const ANY_NON_EMPTY_LIST: Photo[] = [{} as Photo, {} as Photo];
-    stateModel(snapshot).posts = ANY_NON_EMPTY_LIST;
+    stateModel(snapshot).photos = ANY_NON_EMPTY_LIST;
     store.reset(snapshot);
-    expect(store.selectSnapshot(s => stateModel(s).posts)).toEqual(ANY_NON_EMPTY_LIST);
+    expect(store.selectSnapshot(s => stateModel(s).photos)).toEqual(ANY_NON_EMPTY_LIST);
 
     store.dispatch(new SetSearchString('cat'));
 
-    expect(store.selectSnapshot(s => stateModel(s).posts)).toEqual([]);
+    expect(store.selectSnapshot(s => stateModel(s).photos)).toEqual([]);
   });
 
 });
 
 describe('FetchPosts', () => {
   let store: Store;
-  let initialState: PostStateModel;
+  let initialState: PhotoStateModel;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, [NgxsModule.forRoot([PostState])]],
+      imports: [HttpClientModule, [NgxsModule.forRoot([PhotoState])]],
       providers: [
         Store,
         { provide: ApiService, useClass: MockApiService }
@@ -85,23 +85,23 @@ describe('FetchPosts', () => {
   });
 
   it('stores new photos in state', () => {
-    expect(store.selectSnapshot(s => stateModel(s).posts.length)).toBe(STATE_PHOTO_COUNT);
+    expect(store.selectSnapshot(s => stateModel(s).photos.length)).toBe(STATE_PHOTO_COUNT);
 
     store.dispatch(new FetchPosts());
 
-    const photos = store.selectSnapshot(s => stateModel(s).posts);
+    const photos = store.selectSnapshot(s => stateModel(s).photos);
     expect(photos.length).toBe(RESPONSE_PHOTO_COUNT);
     // IDs in the response are offset by a constant amount from IDs in the initial state,
     // so a simple addition allows checking each item
     for (let i = 0; i < photos.length; i++) {
-      expect(photos[i].id).toBe(initialState.posts[i].id + BASE_OFFSET);
+      expect(photos[i].id).toBe(initialState.photos[i].id + BASE_OFFSET);
     }
   });
 
   it('annotates photos with sequence number', () => {
     store.dispatch(new FetchPosts());
 
-    const photos = store.selectSnapshot(s => stateModel(s).posts);
+    const photos = store.selectSnapshot(s => stateModel(s).photos);
     for (let i = 0; i < photos.length; i++) {
       expect(photos[i].refIndex).toBe(initialState.currentPage * initialState.itemsPerPage + i + 1);
     }
@@ -132,7 +132,7 @@ describe('FetchPosts', () => {
 });
 
 class ObsClass {
-  @Select(PostState.loading) loading$: Observable<boolean>;
+  @Select(PhotoState.loading) loading$: Observable<boolean>;
   public events: boolean[] = [];
   private initializeEvent = true;
 
@@ -156,8 +156,8 @@ export class MockApiService extends ApiService {
   }
 }
 
-function stateModel(snapshot: any): PostStateModel {
-  return snapshot[STATE_NAME] as PostStateModel;
+function stateModel(snapshot: any): PhotoStateModel {
+  return snapshot[STATE_NAME] as PhotoStateModel;
 }
 
 export function genPhotos(prefix: number, count: number): Photo[] {
@@ -177,10 +177,10 @@ const BASE_OFFSET = RESPONSE_BASE - STATE_BASE;
 export const STATE_PHOTO_COUNT = 12;
 export const RESPONSE_PHOTO_COUNT = 9;
 
-export function genState(): PostStateModel {
+export function genState(): PhotoStateModel {
   return {
     searchString: 'dog',
-    posts: genPhotos(STATE_BASE, STATE_PHOTO_COUNT),
+    photos: genPhotos(STATE_BASE, STATE_PHOTO_COUNT),
     loading: false,
     endOfInputReached: false,
     currentPage: 10,

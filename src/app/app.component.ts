@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngxs/store';
-import { SetSearchString } from './state/post.actions';
+import { SetSearchString } from './state/photo.actions';
 
 @Component({
   selector: 'app-root',

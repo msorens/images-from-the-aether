@@ -5,9 +5,9 @@ import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { IPageInfo } from 'ngx-virtual-scroller';
 
-import { PostState } from '../../state/post.store';
+import { PhotoState } from '../../state/photo.store';
 import { Photo } from 'src/app/models/Post';
-import { FetchPosts } from 'src/app/state/post.actions';
+import { FetchPosts } from 'src/app/state/photo.actions';
 
 @Component({
   selector: 'app-view-photos',
@@ -21,10 +21,10 @@ export class ViewPhotosComponent implements OnInit {
 
   constructor(private store: Store, private ngZone: NgZone) {}
 
-  @Select(PostState.loading) loading$: Observable<boolean>;
-  @Select(PostState.endOfInputReached) endOfInputReached$: Observable<boolean>;
-  @Select(PostState.posts) posts$: Observable<Photo[]>;
-  @Select(PostState.searchString) searchString$: Observable<string>;
+  @Select(PhotoState.loading) loading$: Observable<boolean>;
+  @Select(PhotoState.endOfInputReached) endOfInputReached$: Observable<boolean>;
+  @Select(PhotoState.photos) posts$: Observable<Photo[]>;
+  @Select(PhotoState.searchString) searchString$: Observable<string>;
 
   ngOnInit(): void {
     this.posts$

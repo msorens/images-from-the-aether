@@ -4,24 +4,24 @@ import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { Photo } from '../models/Post';
 
 import { ApiService } from '../services/api.service';
-import { FetchPosts, SetSearchString } from './post.actions';
+import { FetchPosts, SetSearchString } from './photo.actions';
 
 
 export const STATE_NAME = 'imageCollection';
-export interface PostStateModel {
+export interface PhotoStateModel {
   searchString: string;
-  posts: Photo[];
+  photos: Photo[];
   loading: boolean;
   endOfInputReached: boolean;
   currentPage: number;
   itemsPerPage: number;
 }
 
-@State<PostStateModel>({
+@State<PhotoStateModel>({
   name: STATE_NAME,
   defaults: {
     searchString: '',
-    posts: [],
+    photos: [],
     loading: false,
     endOfInputReached: false,
     currentPage: 0,
@@ -29,38 +29,38 @@ export interface PostStateModel {
   },
 })
 @Injectable()
-export class PostState {
+export class PhotoState {
   constructor(private http: HttpClient, private readonly api: ApiService) {}
 
   @Selector()
-  public static searchString(state: PostStateModel): string {
+  public static searchString(state: PhotoStateModel): string {
     return state.searchString;
   }
 
   @Selector()
-  public static loading(state: PostStateModel): boolean {
+  public static loading(state: PhotoStateModel): boolean {
     return state.loading;
   }
 
   @Selector()
-  public static posts(state: PostStateModel): Photo[] {
-    return state.posts;
+  public static photos(state: PhotoStateModel): Photo[] {
+    return state.photos;
   }
 
   @Selector()
-  public static endOfInputReached(state: PostStateModel): boolean {
+  public static endOfInputReached(state: PhotoStateModel): boolean {
     return state.endOfInputReached;
   }
 
   @Action(SetSearchString)
   setSearchString(
-    { patchState }: StateContext<PostStateModel>,
+    { patchState }: StateContext<PhotoStateModel>,
     { searchString }: SetSearchString
   ): void {
       patchState({
         searchString,
         currentPage: 0,
-        posts: [],
+        photos: [],
         loading: false,
         endOfInputReached: false
       });
@@ -68,7 +68,7 @@ export class PostState {
 
   @Action(FetchPosts)
   getPosts(
-    { getState, patchState }: StateContext<PostStateModel>
+    { getState, patchState }: StateContext<PhotoStateModel>
   ): void {
     const state = getState();
     const [itemsPerPage, currentPage] = [state.itemsPerPage, ++state.currentPage];
@@ -88,7 +88,7 @@ export class PostState {
         response.photos[i].refIndex = (currentPage - 1) * itemsPerPage + i + 1;
       }
       patchState({
-        posts: response.photos,
+        photos: response.photos,
         loading: false,
         endOfInputReached: !response.next_page
       });
@@ -96,7 +96,7 @@ export class PostState {
       (errResponse: HttpErrorResponse) => {
         console.log(errResponse.message);
         patchState({
-          posts: [],
+          photos: [],
           loading: false,
           endOfInputReached: false
         });

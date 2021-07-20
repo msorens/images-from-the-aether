@@ -8,7 +8,7 @@ import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ViewerModule } from './viewer/viewer.module';
-import { PostState } from './state/post.store';
+import { PhotoState } from './state/photo.store';
 
 @NgModule({
   declarations: [AppComponent],
@@ -16,7 +16,7 @@ import { PostState } from './state/post.store';
     AppRoutingModule,
     BrowserModule,
     HttpClientModule,
-    NgxsModule.forRoot([PostState]),
+    NgxsModule.forRoot([PhotoState]),
     NgxsReduxDevtoolsPluginModule.forRoot({
       disabled: !isDevMode(), // disable for production builds
       maxAge: 25, // max number of entries
