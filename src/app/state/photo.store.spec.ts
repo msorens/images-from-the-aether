@@ -1,8 +1,7 @@
-import { state } from '@angular/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { NgxsModule, Select, Store } from '@ngxs/store';
+import { NgxsModule, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 
 import { PhotoState, PhotoStateModel, STATE_NAME } from 'src/app/state/photo.store';

@@ -1,9 +1,9 @@
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { Photo } from '../models/Photo';
 
-import { ApiService } from '../services/api.service';
+import { Photo } from 'src/app/models/Photo';
+import { ApiService } from 'src/app/services/api.service';
 import { FetchPhotos, SetSearchString } from './photo.actions';
 
 
