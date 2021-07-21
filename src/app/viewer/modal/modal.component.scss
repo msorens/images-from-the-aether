@@ -1,0 +1,35 @@
+:host {
+
+  display: none;
+
+  &.visible {
+    display: block;
+  }
+
+  .modal {
+    z-index: 1000; // on top of everything
+    position: fixed;
+    // TODO: CENTER IT!
+    top: 30px;
+    // bottom: 0;
+    left: 300px;
+    // width: 500px;
+
+    .modal-body {
+        background: #fff;
+        margin: 2px;
+        padding: 20px;
+    }
+  }
+
+  .modal-background {
+    z-index: 900; // below the modal but above anything else
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #000;
+    opacity: 0.75;
+  }
+}

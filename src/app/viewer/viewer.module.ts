@@ -5,6 +5,7 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 
 import { ViewerRouting } from './viewer.routing';
 import { ViewPhotosComponent } from './view-photos/view-photos.component';
+import { ModalComponent } from './modal/modal.component';
 
 @NgModule({
   imports: [
@@ -13,7 +14,7 @@ import { ViewPhotosComponent } from './view-photos/view-photos.component';
     ViewerRouting,
     VirtualScrollerModule
   ],
-  declarations: [ViewPhotosComponent],
+  declarations: [ViewPhotosComponent, ModalComponent],
   exports: [
     ViewPhotosComponent
   ],

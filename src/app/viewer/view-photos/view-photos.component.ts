@@ -18,6 +18,7 @@ export class ViewPhotosComponent implements OnInit {
   photos: Photo[] = [];
   loading = false;
   endOfInputReached = false;
+  showModal = false;
 
   constructor(private store: Store, private ngZone: NgZone) {}
 
@@ -28,28 +29,34 @@ export class ViewPhotosComponent implements OnInit {
 
   ngOnInit(): void {
     this.photos$
-      .pipe(filter(newPhotos => !!newPhotos))
-      .subscribe(newPhotos => {
+      .pipe(filter((newPhotos) => !!newPhotos))
+      .subscribe((newPhotos) => {
         this.photos = this.photos.concat(newPhotos);
       });
 
     this.searchString$
-      .pipe( filter(searchString => !!searchString))
+      .pipe(filter((searchString) => !!searchString))
       .subscribe(() => {
         this.photos = []; // new search; clear display
         this.fetchNext();
       });
 
-    this.loading$.subscribe(flag => { this.loading = flag; });
+    this.loading$.subscribe((flag) => {
+      this.loading = flag;
+    });
 
-    this.endOfInputReached$.subscribe(flag => { this.endOfInputReached = flag; });
+    this.endOfInputReached$.subscribe((flag) => {
+      this.endOfInputReached = flag;
+    });
   }
 
   fetchMore(event: IPageInfo): void {
-    if (this.loading ||
+    if (
+      this.loading ||
       this.endOfInputReached ||
       event.endIndex === -1 || // essentially suppress page load event with empty search
-      event.endIndex !== this.photos.length - 1) { // wait until reaching the bottom
+      event.endIndex !== this.photos.length - 1 // wait until reaching the bottom of list
+    ) {
       return;
     }
     this.fetchNext();
@@ -59,4 +66,7 @@ export class ViewPhotosComponent implements OnInit {
     this.store.dispatch(new FetchPhotos());
   }
 
+  closeModal(): void {
+    this.showModal = false;
+  }
 }
