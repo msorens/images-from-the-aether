@@ -19,6 +19,7 @@ export class ViewPhotosComponent implements OnInit {
   loading = false;
   endOfInputReached = false;
   showModal = false;
+  currentPhoto: Photo;
 
   constructor(private store: Store, private ngZone: NgZone) {}
 
@@ -68,5 +69,11 @@ export class ViewPhotosComponent implements OnInit {
 
   closeModal(): void {
     this.showModal = false;
+  }
+
+  showDetail(item: Photo): void {
+    console.log(item.src.medium);
+    this.currentPhoto = item;
+    this.showModal = true;
   }
 }
