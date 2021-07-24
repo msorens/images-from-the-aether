@@ -9,6 +9,7 @@
   .modal {
     z-index: 1000; // on top of everything
     position: fixed;
+    max-width: 95%;
     // center it; refererence https://www.w3.org/Style/Examples/007/center.en.html#viewport3
     top: 50%;
     left: 50%;
@@ -16,9 +17,10 @@
     transform: translate(-50%, -50%);
 
     .modal-body {
-        background: #fff;
-        margin: 2px;
-        padding: 20px;
+      border-radius: 10px;
+      background: #fff;
+      margin: 2px;
+      padding: 10px;
     }
   }
 
