@@ -1,5 +1,5 @@
 
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, EventEmitter, NgZone, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -18,8 +18,8 @@ export class ViewPhotosComponent implements OnInit {
   photos: Photo[] = [];
   loading = false;
   endOfInputReached = false;
-  showModal = false;
   currentPhoto: Photo;
+  openUserModal = new EventEmitter();
 
   constructor(private store: Store, private ngZone: NgZone) {}
 
@@ -67,13 +67,9 @@ export class ViewPhotosComponent implements OnInit {
     this.store.dispatch(new FetchPhotos());
   }
 
-  closeModal(): void {
-    this.showModal = false;
-  }
-
   showDetail(item: Photo): void {
     console.log(item.src.medium);
     this.currentPhoto = item;
-    this.showModal = true;
+    this.openUserModal.emit();
   }
 }

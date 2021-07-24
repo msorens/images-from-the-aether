@@ -17,7 +17,7 @@
     <img src="https://cdn.pixabay.com/photo/2013/06/17/10/28/end-139848__480.jpg" height="50px" width="100px">
   </div>
 
-  <app-modal [visible]="showModal" (closeModal)="closeModal()" >
+  <app-modal2 [openEvent]="openUserModal">
     <img [src]="currentPhoto?.src.large">
-  </app-modal>
+  </app-modal2>
 </div>
