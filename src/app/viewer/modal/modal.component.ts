@@ -1,5 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 
+// Interesting read on options for creating modals:
+// https://blog.bitsrc.io/creating-modals-in-angular-cb32b126a88e
+
 @Component({
   selector: 'app-modal',
   templateUrl: './modal.component.html',
