@@ -9,3 +9,13 @@ form {
 .ng-invalid:not(form).ng-dirty  {
   border-left: 8px solid #a94442;
 }
+
+h1 {
+  font-family: Palatino, sans-serif;
+}
+
+input {
+  margin-left: 0.5em;
+  width: 400px;
+  max-width: 90%;
+}
