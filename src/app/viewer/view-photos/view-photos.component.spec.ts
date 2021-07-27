@@ -8,13 +8,16 @@ import { Observable } from 'rxjs';
 
 import { PhotoState } from 'src/app/state/photo.store';
 import { ApiService } from 'src/app/services/api.service';
-import { genPhotos, MockApiService, RESPONSE_PHOTO_COUNT } from 'src/app/state/photo.store.spec';
+import { Photo } from 'src/app/models/Photo';
 import { FetchPhotos } from 'src/app/state/photo.actions';
+import { genPhotos, MockApiService, RESPONSE_PHOTO_COUNT } from 'src/app/state/photo.store.spec';
 import { ViewPhotosComponent } from './view-photos.component';
+import { ViewerModule } from '../viewer.module';
 
 describe('ViewPhotosComponent', () => {
-  let fixture: ComponentFixture<ViewPhotosComponent>;
   let component: ViewPhotosComponent;
+  let fixture: ComponentFixture<ViewPhotosComponent>;
+  let element: HTMLElement;
   let store: Store;
 
   beforeEach(() => {
@@ -24,6 +27,10 @@ describe('ViewPhotosComponent', () => {
         MockComponent({
           selector: 'virtual-scroller',
           inputs: ['items', 'enableUnequalChildrenSizes'],
+        }),
+        MockComponent({
+          selector: 'app-modal2',
+          inputs: ['openEvent'],
         }),
       ],
       imports: [
@@ -36,11 +43,8 @@ describe('ViewPhotosComponent', () => {
     store = TestBed.inject(Store);
     fixture = TestBed.createComponent(ViewPhotosComponent);
     component = fixture.debugElement.componentInstance;
+    element = fixture.nativeElement;
   });
-
-  it('creates a component', waitForAsync(() => {
-    expect(component).toBeTruthy();
-  }));
 
   it('more photos are fetched when event is triggered by final photo', () => {
     const originalPhotoQty = 10;
@@ -134,16 +138,85 @@ describe('ViewPhotosComponent', () => {
     component.photos = genPhotos(1000, originalPhotoQty);
     expect(component.photos.length).toBe(originalPhotoQty);
 
-    let endFlag = fixture.nativeElement.querySelector('#endFlag');
+    let endFlag = element.querySelector('#endFlag');
     expect(endFlag).toBeNull();
 
     component.fetchMore({ endIndex: originalPhotoQty - 1 } as IPageInfo);
     fixture.detectChanges();
 
-    endFlag = fixture.nativeElement.querySelector('#endFlag');
+    endFlag = element.querySelector('#endFlag');
     expect(endFlag).not.toBeNull();
   });
 
+  it('signals modal to open when user selects an image', () => {
+    const photo: Photo = {
+      src: {
+        medium: 'some-medium-url'
+      }
+    } as Photo;
+    let emitted = false;
+    component.openUserModal.subscribe((event: string) => {
+      emitted = true;
+    });
+    component.showDetail(photo);
+    fixture.detectChanges();
+
+    expect(emitted).toBeTrue();
+  });
+
+});
+
+describe('ViewPhotosComponent without mocks', () => {
+  let component: ViewPhotosComponent;
+  let fixture: ComponentFixture<ViewPhotosComponent>;
+  let element: HTMLElement;
+  let store: Store;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [
+        ViewPhotosComponent
+      ],
+      imports: [
+        RouterTestingModule,
+        HttpClientModule,
+        ViewerModule,
+        [NgxsModule.forRoot([PhotoState])],
+      ],
+      providers: [Store, { provide: ApiService, useClass: MockApiService }],
+    }).compileComponents();
+    store = TestBed.inject(Store);
+    fixture = TestBed.createComponent(ViewPhotosComponent);
+    component = fixture.debugElement.componentInstance;
+    element = fixture.nativeElement;
+  });
+
+  it('renders larger image of selected photo in modal ', () => {
+    const photo: Photo = {
+      src: {
+        large: 'some-large-url'
+      }
+    } as Photo;
+    component.showDetail(photo);
+    fixture.detectChanges();
+
+    const imageElement: HTMLImageElement = element.querySelector('app-modal2 img');
+    expect(imageElement.src.substring(imageElement.baseURI.length)).toBe(photo.src.large);
+  });
+
+  it('renders author of photo\'s name in modal ', () => {
+    const photo: Photo = {
+      src: {
+        medium: 'some-medium-url'
+      },
+      photographer: 'bob smith'
+    } as Photo;
+    component.showDetail(photo);
+    fixture.detectChanges();
+
+    const nameElement: HTMLElement = element.querySelector('app-modal2 #author');
+    expect(nameElement.textContent).toBe(photo.photographer);
+  });
 
 });
 

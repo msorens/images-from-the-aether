@@ -18,6 +18,7 @@
   </div>
 
   <app-modal2 [openEvent]="openUserModal">
+    <div id="author">{{currentPhoto?.photographer}}</div>
     <img [src]="currentPhoto?.src.large">
   </app-modal2>
 </div>
