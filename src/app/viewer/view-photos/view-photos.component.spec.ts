@@ -191,7 +191,7 @@ describe('ViewPhotosComponent without mocks', () => {
     element = fixture.nativeElement;
   });
 
-  it('renders larger image of selected photo in modal ', () => {
+  it('renders larger image of selected photo in modal', () => {
     const photo: Photo = {
       src: {
         large: 'some-large-url'
@@ -204,7 +204,7 @@ describe('ViewPhotosComponent without mocks', () => {
     expect(imageElement.src.substring(imageElement.baseURI.length)).toBe(photo.src.large);
   });
 
-  it('renders author of photo\'s name in modal ', () => {
+  it('renders author of photo\'s name in modal', () => {
     const photo: Photo = {
       src: {
         medium: 'some-medium-url'
@@ -216,6 +216,21 @@ describe('ViewPhotosComponent without mocks', () => {
 
     const nameElement: HTMLElement = element.querySelector('app-modal2 #author');
     expect(nameElement.textContent).toBe(photo.photographer);
+  });
+
+  it('renders link to author enclosing the name', () => {
+    const photo: Photo = {
+      src: {
+        medium: 'some-medium-url'
+      },
+      photographer: 'bob smith',
+      photographer_url: 'http://www.any.com/'
+    } as Photo;
+    component.showDetail(photo);
+    fixture.detectChanges();
+
+    const anchorElement = element.querySelector('app-modal2 #author').parentElement as HTMLAnchorElement;
+    expect(anchorElement.href).toBe(photo.photographer_url);
   });
 
 });

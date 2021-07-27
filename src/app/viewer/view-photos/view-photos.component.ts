@@ -68,7 +68,6 @@ export class ViewPhotosComponent implements OnInit {
   }
 
   showDetail(item: Photo): void {
-    console.log(item.src.medium);
     this.currentPhoto = item;
     this.openUserModal.emit();
   }

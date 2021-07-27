@@ -18,7 +18,9 @@
   </div>
 
   <app-modal2 [openEvent]="openUserModal">
-    <div id="author">{{currentPhoto?.photographer}}</div>
+    <a href="{{currentPhoto?.photographer_url}}" target="_blank">
+      <div id="author">{{currentPhoto?.photographer}}</div>
+    </a>
     <img [src]="currentPhoto?.src.large">
   </app-modal2>
 </div>
