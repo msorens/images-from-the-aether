@@ -21,7 +21,7 @@ export class AppComponent {
     });
   }
 
-  onSubmit(): void {
+  handleKeyup(): void {
     this.store.dispatch(new SetSearchString(this.searchForm.controls.searchString.value.trim()));
   }
 }
