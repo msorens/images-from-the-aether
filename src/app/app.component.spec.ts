@@ -70,4 +70,37 @@ describe('AppComponent', () => {
       expect(store.dispatch).toHaveBeenCalled();
     }));
 
+  [
+    [ 'dog', 'no whitespace in user input used as is' ],
+    ['  dog', 'leading whitespace in user input ignored' ],
+    ['dog       ', 'trailing whitespace in user input ignored' ],
+    ['   dog ', 'leading and trailing whitespace in user input ignored' ]
+  ].forEach(([searchString, description]) => {
+    it(`${description}`, fakeAsync(
+      (): void => {
+        spyOn(store, 'dispatch');
+
+        const inputElem: HTMLInputElement = element.querySelector('#searchString');
+        inputElem.value = searchString;
+        inputElem.dispatchEvent(new KeyboardEvent('keyup'));
+        tick(component.DEBOUNCE_TIME);
+
+        expect(store.dispatch).toHaveBeenCalledWith(new SetSearchString('dog'));
+      }));
+  });
+
+  it('images are NOT fetched when input is empty', fakeAsync(
+    (): void => {
+      spyOn(store, 'dispatch');
+      const searchString = '';
+
+      const inputElem: HTMLInputElement = element.querySelector('#searchString');
+      inputElem.value = searchString;
+      inputElem.dispatchEvent(new KeyboardEvent('keyup'));
+      tick(component.DEBOUNCE_TIME);
+
+      expect(store.dispatch).not.toHaveBeenCalled();
+    }));
+
+
 });

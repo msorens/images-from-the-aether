@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngxs/store';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { SetSearchString } from './state/photo.actions';
 
 @Component({
@@ -26,6 +26,7 @@ export class AppComponent {
     this.keyUp
       .pipe(
         map(event => (event.target as HTMLInputElement).value.trim()),
+        filter(searchString => !!searchString),
         debounceTime(this.DEBOUNCE_TIME),
         distinctUntilChanged(),
       )
