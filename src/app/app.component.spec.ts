@@ -41,21 +41,33 @@ describe('AppComponent', () => {
     expect(element.querySelector('h1').textContent).toContain('Images');
   });
 
-  it('images are refreshed on every keystroke', fakeAsync(
+  it('images are fetched on every keystroke (after debounce period)', fakeAsync(
     (): void => {
-      const searchString = 'tiger';
-      const inputElem: HTMLInputElement = element.querySelector('#searchString');
-
-      // This is ineffectual for updating the form element...
-      //         inputElem.dispatchEvent(new Event('input'));
-      // ...so update it directly:
-      component.searchForm.controls.searchString.setValue(searchString);
       spyOn(store, 'dispatch');
+      const searchString = 'tiger';
 
+      const inputElem: HTMLInputElement = element.querySelector('#searchString');
+      inputElem.value = searchString;
       inputElem.dispatchEvent(new KeyboardEvent('keyup'));
-      tick();
-      fixture.detectChanges();
+      tick(component.DEBOUNCE_TIME);
 
       expect(store.dispatch).toHaveBeenCalledWith(new SetSearchString(searchString));
     }));
+
+  it('images are NOT fetched if debounce period has not expired', fakeAsync(
+    (): void => {
+      spyOn(store, 'dispatch');
+      const searchString = 'tiger';
+
+      const inputElem: HTMLInputElement = element.querySelector('#searchString');
+      inputElem.value = searchString;
+      inputElem.dispatchEvent(new KeyboardEvent('keyup'));
+
+      tick(component.DEBOUNCE_TIME / 2);
+      expect(store.dispatch).not.toHaveBeenCalled();
+
+      tick(component.DEBOUNCE_TIME);
+      expect(store.dispatch).toHaveBeenCalled();
+    }));
+
 });
