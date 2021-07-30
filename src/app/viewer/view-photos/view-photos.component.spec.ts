@@ -14,6 +14,17 @@ import { genPhotos, genResponse, MockApiService, RESPONSE_PHOTO_COUNT } from 'sr
 import { ViewPhotosComponent } from './view-photos.component';
 import { ViewerModule } from '../viewer.module';
 
+const baseConfig = {
+  declarations: [ViewPhotosComponent],
+  imports: [
+    RouterTestingModule,
+    HttpClientModule,
+    [NgxsModule.forRoot([PhotoState])],
+  ],
+  providers: [ Store ],
+  schemas: [NO_ERRORS_SCHEMA]
+};
+
 describe('ViewPhotosComponent', () => {
   let component: ViewPhotosComponent;
   let fixture: ComponentFixture<ViewPhotosComponent>;
@@ -21,16 +32,8 @@ describe('ViewPhotosComponent', () => {
   let store: Store;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [ViewPhotosComponent],
-      imports: [
-        RouterTestingModule,
-        HttpClientModule,
-        [NgxsModule.forRoot([PhotoState])],
-      ],
-      providers: [Store],
-      schemas: [NO_ERRORS_SCHEMA],
-    }).compileComponents();
+    const config = { ...baseConfig };
+    TestBed.configureTestingModule(config).compileComponents();
     store = TestBed.inject(Store);
     fixture = TestBed.createComponent(ViewPhotosComponent);
     component = fixture.debugElement.componentInstance;
@@ -117,18 +120,11 @@ describe('ViewPhotosComponent with mock API', () => {
   let store: Store;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [ViewPhotosComponent],
-      imports: [
-        RouterTestingModule,
-        HttpClientModule,
-        [NgxsModule.forRoot([PhotoState])],
-      ],
-      providers: [
-        Store,
-        { provide: ApiService, useClass: MockApiService }], // the addition for this set of tests
-      schemas: [NO_ERRORS_SCHEMA],
-    }).compileComponents();
+    const config = {
+      ...baseConfig,
+      providers: [...baseConfig.providers, { provide: ApiService, useClass: MockApiService } ]
+    };
+    TestBed.configureTestingModule(config).compileComponents();
     store = TestBed.inject(Store);
     fixture = TestBed.createComponent(ViewPhotosComponent);
     component = fixture.debugElement.componentInstance;
@@ -194,18 +190,12 @@ describe('ViewPhotosComponent with spy API', () => {
     const apiServiceSpy = jasmine.createSpyObj('ApiService', ['loadPage']);
     apiServiceSpy.loadPage.and.returnValue(
       of(genResponse({ includePhotos: false })));
-    TestBed.configureTestingModule({
-      declarations: [ViewPhotosComponent],
-      imports: [
-        RouterTestingModule,
-        HttpClientModule,
-        [NgxsModule.forRoot([PhotoState])],
-      ],
-      providers: [
-        Store,
-        { provide: ApiService, useValue: apiServiceSpy }], // the addition for this set of tests
-      schemas: [NO_ERRORS_SCHEMA],
-    }).compileComponents();
+    const config = {
+      ...baseConfig,
+      providers: [...baseConfig.providers, { provide: ApiService, useValue: apiServiceSpy } ]
+    };
+    TestBed.configureTestingModule(config).compileComponents();
+
     store = TestBed.inject(Store);
     fixture = TestBed.createComponent(ViewPhotosComponent);
     component = fixture.debugElement.componentInstance;
@@ -257,18 +247,14 @@ describe('ViewPhotosComponent (with modal component)', () => {
   let store: Store;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        ViewPhotosComponent
-      ],
-      imports: [
-        RouterTestingModule,
-        HttpClientModule,
-        ViewerModule, // the addition for this set of tests
-        [NgxsModule.forRoot([PhotoState])],
-      ],
-      providers: [Store],
-    }).compileComponents();
+
+    const config = {
+      ...baseConfig,
+      imports: [...baseConfig.imports, ViewerModule],
+      schemas: []
+    };
+    TestBed.configureTestingModule(config).compileComponents();
+
     store = TestBed.inject(Store);
     fixture = TestBed.createComponent(ViewPhotosComponent);
     component = fixture.debugElement.componentInstance;
