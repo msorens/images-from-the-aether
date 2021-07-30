@@ -125,7 +125,7 @@ export class MockApiService extends ApiService {
   public static endOfInput: boolean;
 
   loadPage(pageId: number, itemsPerPage: number, searchString: string): Observable<PageResponse> {
-    return of(genResponse(MockApiService.endOfInput));
+    return of(genResponse({ endOfInput: MockApiService.endOfInput }));
   }
 }
 
@@ -161,11 +161,11 @@ export function genState(): PhotoStateModel {
   };
 }
 
-function genResponse(endOfInput?: boolean): PageResponse {
+export function genResponse({ endOfInput = false, includePhotos = true } ): PageResponse {
   return {
     page: 5,
     per_page: 20,
-    photos: genPhotos(RESPONSE_BASE, RESPONSE_PHOTO_COUNT),
+    photos: genPhotos(RESPONSE_BASE, includePhotos ? RESPONSE_PHOTO_COUNT : 0),
     total_results: 100,
     next_page: endOfInput ? null : 'any next page',
     prev_page: ''
