@@ -20,6 +20,7 @@ export class ViewPhotosComponent implements OnInit {
   endOfInputReached = false;
   currentPhoto: Photo;
   openUserModal = new EventEmitter();
+  searchString = '';
 
   constructor(private store: Store, private ngZone: NgZone) {}
 
@@ -37,7 +38,8 @@ export class ViewPhotosComponent implements OnInit {
 
     this.searchString$
       .pipe(filter((searchString) => !!searchString))
-      .subscribe(() => {
+      .subscribe((searchString) => {
+        this.searchString = searchString;
         this.photos = []; // new search; clear display
         this.fetchNext();
       });

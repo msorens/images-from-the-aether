@@ -13,8 +13,16 @@
   <div class="spinner-item" *ngIf="loading">
     <mat-spinner [diameter]="50"></mat-spinner>
   </div>
-  <div class="spinner-item" id="endFlag" *ngIf="endOfInputReached">
+  <div class="spinner-item" id="endFlag" *ngIf="endOfInputReached && photos.length !== 0">
     <img src="https://cdn.pixabay.com/photo/2013/06/17/10/28/end-139848__480.jpg" height="50px" width="100px">
+  </div>
+  <div class="notice" *ngIf="photos.length === 0 && searchString.length > 0">
+    <img id="noResultsFound" height="80%" width="80%"
+      src="assets/set-empty-picture-frames-with-free-space-inside-isolated-white_76080-5386.jpeg" >
+  </div>
+  <div class="notice" *ngIf="this.photos.length === 0 && this.searchString.length === 0">
+    <img id="noSearchPerformed" height="80%"
+      src="assets/treasure-clipart-empty.jpeg" >
   </div>
 
   <app-modal2 [openEvent]="openUserModal">
