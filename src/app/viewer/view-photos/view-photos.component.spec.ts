@@ -225,6 +225,29 @@ describe('ViewPhotosComponent with spy API', () => {
     expect(element.querySelector('#noResultsFound')).not.toBeNull();
   });
 
+  it('does not display either empty graphic while loading', () => {
+    fixture.detectChanges();
+    component.loading = true;
+    fixture.detectChanges();
+
+    expect(element.querySelector('#noSearchPerformed')).toBeNull();
+    expect(element.querySelector('#noResultsFound')).toBeNull();
+
+    store.dispatch(new SetSearchString('any'));
+    fixture.detectChanges();
+    component.loading = true;
+    fixture.detectChanges();
+
+    expect(element.querySelector('#noSearchPerformed')).toBeNull();
+    expect(element.querySelector('#noResultsFound')).toBeNull();
+    fixture.detectChanges();
+    component.loading = true;
+    fixture.detectChanges();
+
+    expect(element.querySelector('#noSearchPerformed')).toBeNull();
+    expect(element.querySelector('#noResultsFound')).toBeNull();
+  });
+
 });
 
 describe('ViewPhotosComponent (with modal component)', () => {
