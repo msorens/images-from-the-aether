@@ -78,29 +78,31 @@ export class PhotoState {
     });
 
     // page index is 1-based not 0-based here
-    this.api.loadPage(currentPage, itemsPerPage, state.searchString)
-      .subscribe((response) => {
-      console.log(
-        `Received ${response.photos.length} photos on page ${response.page} (${response.total_results} total)`
+    this.api
+      .loadPage(currentPage, itemsPerPage, state.searchString)
+      .subscribe(
+        (response) => {
+          console.log(
+            `Received ${response.photos.length} photos on page ${response.page} (${response.total_results} total)`
+          );
+          // Add local display indices before storing data
+          for (let i = 0; i < response.photos.length; i++) {
+            response.photos[i].refIndex = (currentPage - 1) * itemsPerPage + i + 1;
+          }
+          patchState({
+            photos: response.photos,
+            loading: false,
+            endOfInputReached: !response.next_page
+          });
+        },
+        (errResponse: HttpErrorResponse) => {
+          console.log(errResponse.message);
+          patchState({
+            photos: [],
+            loading: false,
+            endOfInputReached: false
+          });
+        }
       );
-      // Add local display indices before storing data
-      for (let i = 0; i < response.photos.length; i++) {
-        response.photos[i].refIndex = (currentPage - 1) * itemsPerPage + i + 1;
-      }
-      patchState({
-        photos: response.photos,
-        loading: false,
-        endOfInputReached: !response.next_page
-      });
-      },
-      (errResponse: HttpErrorResponse) => {
-        console.log(errResponse.message);
-        patchState({
-          photos: [],
-          loading: false,
-          endOfInputReached: false
-        });
-       }
-    );
   }
 }

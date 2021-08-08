@@ -17,7 +17,8 @@ import { Modal2Component } from './modal2/modal2.component';
   ],
   declarations: [ViewPhotosComponent, ModalComponent, Modal2Component],
   exports: [
-    ViewPhotosComponent
+    ViewPhotosComponent,
+    Modal2Component
   ],
 })
 export class ViewerModule { }

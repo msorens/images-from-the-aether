@@ -4,3 +4,17 @@
   <input type="text" (keyup)="handleKeyup($event)" required formControlName="searchString" id="searchString">
 </form>
 <app-view-photos></app-view-photos>
+<app-modal2 [openEvent]="openUserModal">
+  <div>
+    Welcome! There is just one bit of setup before you can explore images galore.
+    This site leverages the extensive Pexels photo library but, as such,
+    you need a key from them (it is free!) to access it.
+    Just go to https://www.pexels.com/join/, then come back here and enter your key.
+  </div>
+  <!--
+    This is a safe use of an ElementRef (#myKey) -- strictly local use here in the template.
+    See https://ultimatecourses.com/blog/element-refs-in-angular-templates for details.
+  -->
+  <input ngModel #myKey>
+  <button [disabled]="!myKey.value.trim()" (click)="saveKey(myKey.value.trim())">Save My Key</button>
+</app-modal2>
