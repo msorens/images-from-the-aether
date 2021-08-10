@@ -4,7 +4,7 @@
   <input type="text" (keyup)="handleKeyup($event)" required formControlName="searchString" id="searchString">
 </form>
 <app-view-photos></app-view-photos>
-<app-modal2 [openEvent]="openUserModal">
+<app-modal2 [visibility]="keyModalVisibility">
   <div>
     Welcome! There is just one bit of setup before you can explore images galore.
     This site leverages the extensive Pexels photo library but, as such,

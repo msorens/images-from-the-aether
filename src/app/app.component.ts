@@ -16,7 +16,7 @@ export class AppComponent implements AfterViewInit {
   public DEBOUNCE_TIME = 400;
   public searchForm: FormGroup;
   private keyUp = new Subject<KeyboardEvent>();
-  openUserModal = new EventEmitter();
+  keyModalVisibility = new EventEmitter<boolean>();
 
   constructor(
     private store: Store,
@@ -44,7 +44,7 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     const apiKey = this.keyStore.get();
     if (!apiKey) {
-      this.openUserModal.emit();
+      this.keyModalVisibility.emit(true);
     }
   }
 
@@ -55,6 +55,6 @@ export class AppComponent implements AfterViewInit {
 
   saveKey(key: string): void {
     this.keyStore.set(key);
-    // TODO: close modal, too!
+    this.keyModalVisibility.emit(false);
   }
 }

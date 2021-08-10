@@ -14,7 +14,7 @@ export class Modal2Component implements OnInit {
   /**
    * Inform the modal to display itself.
    */
-  @Input() openEvent: EventEmitter<null>;
+  @Input() visibility: EventEmitter<boolean>;
 
   private isDestroyed = new Subject<boolean>();
 
@@ -31,14 +31,23 @@ export class Modal2Component implements OnInit {
     outsideModal.addEventListener('click', () => {
       this.close();
     });
-    this.openEvent.pipe(takeUntil(this.isDestroyed))
-      .subscribe(() => {
-        // TODO: only do this if not already present
-        this.nativeElement.classList.add('visible');
+    this.visibility.pipe(takeUntil(this.isDestroyed))
+      .subscribe((open) => {
+        if (open) {
+          this.open();
+        } else {
+          this.close();
+        }
+
       });
   }
 
-  close(): void {
+  private open(): void {
+    // TODO: only do this if not already present
+    this.nativeElement.classList.add('visible');
+  }
+
+  private close(): void {
     this.nativeElement.classList.remove('visible');
   }
 }

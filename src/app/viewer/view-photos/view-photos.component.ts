@@ -19,7 +19,7 @@ export class ViewPhotosComponent implements OnInit {
   loading = false;
   endOfInputReached = false;
   currentPhoto: Photo;
-  openUserModal = new EventEmitter();
+  detailModalVisibility = new EventEmitter<boolean>();
   searchString = '';
 
   constructor(private store: Store, private ngZone: NgZone) {}
@@ -71,6 +71,6 @@ export class ViewPhotosComponent implements OnInit {
 
   showDetail(item: Photo): void {
     this.currentPhoto = item;
-    this.openUserModal.emit();
+    this.detailModalVisibility.emit(true);
   }
 }

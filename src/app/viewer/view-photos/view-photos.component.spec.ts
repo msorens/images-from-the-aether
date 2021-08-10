@@ -102,7 +102,7 @@ describe('ViewPhotosComponent', () => {
       }
     } as Photo;
     let emitted = false;
-    component.openUserModal.subscribe((event: string) => {
+    component.detailModalVisibility.subscribe((event: string) => {
       emitted = true;
     });
     component.showDetail(photo);

@@ -5,13 +5,13 @@ import { Modal2Component } from './modal2.component';
 @Component({
   template: `
     <div>text always displays</div>
-    <app-modal2 [openEvent]="openUserModal">
+    <app-modal2 [visibility]="visibilityControl">
       <div id="myContent">any content here...</div>
     </app-modal2>
   `,
 })
 class TestHostComponent {
-  openUserModal = new EventEmitter();
+  visibilityControl = new EventEmitter<boolean>();
 }
 
 describe('HostedMessageModalComponent', () => {
@@ -33,7 +33,7 @@ describe('HostedMessageModalComponent', () => {
     modalComponent = fixture.debugElement.children[0].componentInstance;
     modalElement =
       fixture.debugElement.nativeElement.querySelector('app-modal2');
-    modalComponent.openEvent = new EventEmitter();
+    modalComponent.visibility = new EventEmitter<boolean>();
   });
 
   it('should be created', () => {
@@ -47,7 +47,15 @@ describe('HostedMessageModalComponent', () => {
     expect(isModalVisible()).toBeTrue();
   });
 
-  it('modal closes when clicking the background', () => {
+  it('modal can be closed on demand', () => {
+    openModal();
+    expect(isModalVisible()).toBeTrue();
+
+    closeModal();
+    expect(isModalVisible()).toBeFalse();
+  });
+
+  it('modal also knows how to close itself when clicking the background', () => {
     openModal();
     expect(isModalVisible()).toBeTrue();
 
@@ -81,7 +89,12 @@ describe('HostedMessageModalComponent', () => {
 
   function openModal(): void {
     fixture.detectChanges();
-    hostComponent.openUserModal.emit(); // this is how a client directs the modal to open
+    hostComponent.visibilityControl.emit(true);
+  }
+
+  function closeModal(): void {
+    fixture.detectChanges();
+    hostComponent.visibilityControl.emit(false);
   }
 
   function getElement(selector: string): HTMLElement {
@@ -108,7 +121,7 @@ describe('ModalComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(Modal2Component);
     component = fixture.componentInstance;
-    component.openEvent = new EventEmitter();
+    component.visibility = new EventEmitter();
     fixture.detectChanges();
   });
 
