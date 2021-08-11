@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
-export class KeyService {
+export class KeyService implements IKeyService{
   constructor() {}
 
   private KEY_NAME = 'api_key';
@@ -15,4 +15,9 @@ export class KeyService {
     return value;
   }
 
+}
+
+export interface IKeyService {
+  get: () => string;
+  set: (s: string) => string;
 }

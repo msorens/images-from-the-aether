@@ -15,6 +15,6 @@
     This is a safe use of an ElementRef (#myKey) -- strictly local use here in the template.
     See https://ultimatecourses.com/blog/element-refs-in-angular-templates for details.
   -->
-  <input ngModel #myKey>
-  <button [disabled]="!myKey.value.trim()" (click)="saveKey(myKey.value.trim())">Save My Key</button>
+  <input id="test-inputKey" ngModel #myKey>
+  <button id="test-saveKey" [disabled]="!myKey.value.trim()" (click)="saveKey(myKey.value.trim())">Save My Key</button>
 </app-modal2>

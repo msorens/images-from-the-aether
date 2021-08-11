@@ -3,16 +3,20 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { RouterTestingModule } from '@angular/router/testing';
 import { NgxsModule, Store } from '@ngxs/store';
 import { MockComponent } from 'ng2-mock-component';
-import { AppComponent } from './app.component';
+import { Modal2Component } from './viewer/modal2/modal2.component';
 import { SetSearchString } from './state/photo.actions';
+import { IKeyService, KeyService } from './services/key.service';
+import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
   let component: AppComponent;
   let element: HTMLElement;
   let store: Store;
+  let keyServiceSpy: jasmine.SpyObj<IKeyService>;
 
   beforeEach(async () => {
+    keyServiceSpy = jasmine.createSpyObj('KeyService', ['get', 'set']);
     await TestBed.configureTestingModule({
       imports: [
         FormsModule,
@@ -22,9 +26,13 @@ describe('AppComponent', () => {
       ],
       declarations: [
         AppComponent,
+        Modal2Component,
         MockComponent({ selector: 'app-view-photos' })
       ],
-      providers: [Store],
+      providers: [
+        Store,
+        { provide: KeyService, useValue: keyServiceSpy }
+      ],
     }).compileComponents();
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
@@ -37,19 +45,51 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
+  it('pops up the key-entering modal when no key found stored', () => {
+    let emitted = false;
+    keyServiceSpy.get.and.returnValue('');
+    component.keyModalVisibility.subscribe((setVisible: boolean) => {
+      if (setVisible) {
+        emitted = true;
+      }
+    });
+    fixture.detectChanges();
+
+    expect(emitted).toBeTrue();
+  });
+
+  it('does NOT pop up the key-entering modal when key is found stored', () => {
+    let emitted = false;
+    keyServiceSpy.get.and.returnValue('any');
+    component.keyModalVisibility.subscribe((setVisible: boolean) => {
+      emitted = true;
+    });
+    fixture.detectChanges();
+
+    expect(emitted).toBeFalse();
+  });
+
+  it('stores the user-entered key in browser local storage', () => {
+    findAs<HTMLInputElement>('#test-inputKey').value = 'some key';
+    find('#test-saveKey').click();
+    expect(keyServiceSpy.set).toHaveBeenCalledWith('some key');
+  });
+
+  it('at startup, retrieves the previously saved user-entered key from browser local storage', () => {
+    fixture.detectChanges();
+    expect(keyServiceSpy.get).toHaveBeenCalled();
+  });
+
   it('should render heading', () => {
     fixture.detectChanges();
-    expect(element.querySelector('h1').textContent).toContain('Images');
+    expect(find('h1').textContent).toContain('Images');
   });
 
   it('images are fetched on every keystroke (after debounce period)', fakeAsync(
     (): void => {
       spyOn(store, 'dispatch');
       const searchString = 'tiger';
-
-      const inputElem: HTMLInputElement = element.querySelector('#searchString');
-      inputElem.value = searchString;
-      inputElem.dispatchEvent(new KeyboardEvent('keyup'));
+      setInputValue('#searchString', searchString);
       tick(component.DEBOUNCE_TIME);
 
       expect(store.dispatch).toHaveBeenCalledWith(new SetSearchString(searchString));
@@ -58,11 +98,8 @@ describe('AppComponent', () => {
   it('images are NOT fetched if debounce period has not expired', fakeAsync(
     (): void => {
       spyOn(store, 'dispatch');
-      const searchString = 'tiger';
-
-      const inputElem: HTMLInputElement = element.querySelector('#searchString');
-      inputElem.value = searchString;
-      inputElem.dispatchEvent(new KeyboardEvent('keyup'));
+      const searchString = 'any';
+      setInputValue('#searchString', searchString);
 
       tick(component.DEBOUNCE_TIME / 2);
       expect(store.dispatch).not.toHaveBeenCalled();
@@ -80,10 +117,8 @@ describe('AppComponent', () => {
     it(`${description}`, fakeAsync(
       (): void => {
         spyOn(store, 'dispatch');
+        setInputValue('#searchString', searchString);
 
-        const inputElem: HTMLInputElement = element.querySelector('#searchString');
-        inputElem.value = searchString;
-        inputElem.dispatchEvent(new KeyboardEvent('keyup'));
         tick(component.DEBOUNCE_TIME);
 
         expect(store.dispatch).toHaveBeenCalledWith(new SetSearchString('dog'));
@@ -94,14 +129,23 @@ describe('AppComponent', () => {
     (): void => {
       spyOn(store, 'dispatch');
       const searchString = '';
-
-      const inputElem: HTMLInputElement = element.querySelector('#searchString');
-      inputElem.value = searchString;
-      inputElem.dispatchEvent(new KeyboardEvent('keyup'));
+      setInputValue('#searchString', searchString);
       tick(component.DEBOUNCE_TIME);
 
       expect(store.dispatch).not.toHaveBeenCalled();
     }));
 
+  function find(selector: string): HTMLElement {
+    return fixture.nativeElement.querySelector(selector);
+  }
 
+  function findAs<T>(selector: string): T {
+    return fixture.nativeElement.querySelector(selector) as T;
+  }
+
+  function setInputValue(selector: string, value: string): void {
+    const inputElem = findAs<HTMLInputElement>(selector);
+    inputElem.value = value;
+    inputElem.dispatchEvent(new KeyboardEvent('keyup'));
+  }
 });
