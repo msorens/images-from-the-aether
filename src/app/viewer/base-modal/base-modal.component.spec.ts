@@ -1,13 +1,13 @@
 import { Component, EventEmitter } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { Modal2Component } from './modal2.component';
+import { BaseModalComponent } from './base-modal.component';
 
 @Component({
   template: `
     <div>text always displays</div>
-    <app-modal2 [visibility]="visibilityControl">
+    <app-base-modal [visibility]="visibilityControl">
       <div id="myContent">any content here...</div>
-    </app-modal2>
+    </app-base-modal>
   `,
 })
 class TestHostComponent {
@@ -17,13 +17,13 @@ class TestHostComponent {
 describe('HostedMessageModalComponent', () => {
   let hostComponent: TestHostComponent;
   let fixture: ComponentFixture<TestHostComponent>;
-  let modalComponent: Modal2Component;
+  let modalComponent: BaseModalComponent;
   let modalElement: HTMLElement;
 
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [TestHostComponent, Modal2Component],
+        declarations: [TestHostComponent, BaseModalComponent],
       }).compileComponents();
     })
   );
@@ -32,7 +32,7 @@ describe('HostedMessageModalComponent', () => {
     hostComponent = fixture.componentInstance;
     modalComponent = fixture.debugElement.children[0].componentInstance;
     modalElement =
-      fixture.debugElement.nativeElement.querySelector('app-modal2');
+      fixture.debugElement.nativeElement.querySelector('app-base-modal');
     modalComponent.visibility = new EventEmitter<boolean>();
   });
 
@@ -108,18 +108,18 @@ describe('HostedMessageModalComponent', () => {
 });
 
 describe('ModalComponent', () => {
-  let component: Modal2Component;
-  let fixture: ComponentFixture<Modal2Component>;
+  let component: BaseModalComponent;
+  let fixture: ComponentFixture<BaseModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ Modal2Component ]
+      declarations: [ BaseModalComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(Modal2Component);
+    fixture = TestBed.createComponent(BaseModalComponent);
     component = fixture.componentInstance;
     component.visibility = new EventEmitter();
     fixture.detectChanges();

@@ -6,11 +6,11 @@ import { takeUntil } from 'rxjs/operators';
 // https://blog.bitsrc.io/creating-modals-in-angular-cb32b126a88e
 
 @Component({
-  selector: 'app-modal2',
-  templateUrl: './modal2.component.html',
-  styleUrls: ['./modal2.component.scss'],
+  selector: 'app-base-modal',
+  templateUrl: './base-modal.component.html',
+  styleUrls: ['./base-modal.component.scss'],
 })
-export class Modal2Component implements OnInit {
+export class BaseModalComponent implements OnInit {
   /**
    * Inform the modal to display itself.
    */

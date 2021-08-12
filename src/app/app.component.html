@@ -4,7 +4,7 @@
   <input type="text" (keyup)="handleKeyup($event)" required formControlName="searchString" id="searchString">
 </form>
 <app-view-photos></app-view-photos>
-<app-modal2 [visibility]="keyModalVisibility">
+<app-base-modal [visibility]="keyModalVisibility">
   <div>
     Welcome! There is just one bit of setup before you can explore images galore.
     This site leverages the extensive Pexels photo library but, as such,
@@ -17,4 +17,4 @@
   -->
   <input id="test-inputKey" ngModel #myKey>
   <button id="test-saveKey" [disabled]="!myKey.value.trim()" (click)="saveKey(myKey.value.trim())">Save My Key</button>
-</app-modal2>
+</app-base-modal>

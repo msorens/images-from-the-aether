@@ -3,7 +3,7 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { RouterTestingModule } from '@angular/router/testing';
 import { NgxsModule, Store } from '@ngxs/store';
 import { MockComponent } from 'ng2-mock-component';
-import { Modal2Component } from './viewer/modal2/modal2.component';
+import { BaseModalComponent } from './viewer/base-modal/base-modal.component';
 import { SetSearchString } from './state/photo.actions';
 import { IKeyService, KeyService } from './services/key.service';
 import { AppComponent } from './app.component';
@@ -26,7 +26,7 @@ describe('AppComponent', () => {
       ],
       declarations: [
         AppComponent,
-        Modal2Component,
+        BaseModalComponent,
         MockComponent({ selector: 'app-view-photos' })
       ],
       providers: [

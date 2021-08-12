@@ -271,7 +271,7 @@ describe('ViewPhotosComponent (with modal component)', () => {
     component.showDetail(photo);
     fixture.detectChanges();
 
-    const imageElement: HTMLImageElement = element.querySelector('app-modal2 img');
+    const imageElement: HTMLImageElement = element.querySelector('app-base-modal img');
     expect(imageElement.src.substring(imageElement.baseURI.length)).toBe(photo.src.large);
   });
 
@@ -285,7 +285,7 @@ describe('ViewPhotosComponent (with modal component)', () => {
     component.showDetail(photo);
     fixture.detectChanges();
 
-    const nameElement: HTMLElement = element.querySelector('app-modal2 #author');
+    const nameElement: HTMLElement = element.querySelector('app-base-modal #author');
     expect(nameElement.textContent).toBe(photo.photographer);
   });
 
@@ -300,7 +300,7 @@ describe('ViewPhotosComponent (with modal component)', () => {
     component.showDetail(photo);
     fixture.detectChanges();
 
-    const anchorElement = element.querySelector('app-modal2 #author').parentElement as HTMLAnchorElement;
+    const anchorElement = element.querySelector('app-base-modal #author').parentElement as HTMLAnchorElement;
     expect(anchorElement.href).toBe(photo.photographer_url);
   });
 

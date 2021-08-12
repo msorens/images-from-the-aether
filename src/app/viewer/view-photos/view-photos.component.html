@@ -25,10 +25,10 @@
       src="assets/treasure-clipart-empty.jpeg" >
   </div>
 
-  <app-modal2 [visibility]="detailModalVisibility">
+  <app-base-modal [visibility]="detailModalVisibility">
     <a href="{{currentPhoto?.photographer_url}}" target="_blank">
       <div id="author">{{currentPhoto?.photographer}}</div>
     </a>
     <img [src]="currentPhoto?.src.large">
-  </app-modal2>
+  </app-base-modal>
 </div>
