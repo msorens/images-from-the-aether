@@ -7,7 +7,7 @@ import { KeyService } from './key.service';
 @Injectable({
   providedIn: 'root',
 })
-export class ImageService {
+export class ImageService implements IImageService {
   constructor(
     private readonly http: HttpClient,
     private keyStore: KeyService
@@ -42,4 +42,8 @@ export class ImageService {
       //   })
       // );
   }
+}
+
+export interface IImageService {
+  loadPage(pageId: number, itemsPerPage: number, searchString: string): Observable<PageResponse>;
 }

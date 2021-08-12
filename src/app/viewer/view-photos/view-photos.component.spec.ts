@@ -7,7 +7,7 @@ import { IPageInfo } from 'ngx-virtual-scroller';
 import { Observable, of } from 'rxjs';
 
 import { PhotoState } from 'src/app/state/photo.store';
-import { ImageService } from 'src/app/services/image.service';
+import { IImageService, ImageService } from 'src/app/services/image.service';
 import { Photo } from 'src/app/models/Photo';
 import { FetchPhotos, SetSearchString } from 'src/app/state/photo.actions';
 import { genPhotos, genResponse, MockImageService, RESPONSE_PHOTO_COUNT } from 'src/app/state/photo.store.spec';
@@ -187,8 +187,8 @@ describe('ViewPhotosComponent with spy API', () => {
   let store: Store;
 
   beforeEach(() => {
-    // TODO: Add IImageService; rename all to ImageService
-    const imageServiceSpy = jasmine.createSpyObj('ImageService', ['loadPage']);
+    const imageServiceSpy: jasmine.SpyObj<IImageService>
+      = jasmine.createSpyObj('ImageService', ['loadPage']);
     imageServiceSpy.loadPage.and.returnValue(
       of(genResponse({ includePhotos: false })));
     const config = {
