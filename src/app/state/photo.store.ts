@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 
 import { Photo } from 'src/app/models/Photo';
-import { ApiService } from 'src/app/services/api.service';
+import { ImageService } from 'src/app/services/image.service';
 import { FetchPhotos, SetSearchString } from './photo.actions';
 
 
@@ -30,7 +30,7 @@ export interface PhotoStateModel {
 })
 @Injectable()
 export class PhotoState {
-  constructor(private http: HttpClient, private readonly api: ApiService) {}
+  constructor(private http: HttpClient, private readonly api: ImageService) {}
 
   @Selector()
   public static searchString(state: PhotoStateModel): string {

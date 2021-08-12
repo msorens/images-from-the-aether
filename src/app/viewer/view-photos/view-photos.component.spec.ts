@@ -7,10 +7,10 @@ import { IPageInfo } from 'ngx-virtual-scroller';
 import { Observable, of } from 'rxjs';
 
 import { PhotoState } from 'src/app/state/photo.store';
-import { ApiService } from 'src/app/services/api.service';
+import { ImageService } from 'src/app/services/image.service';
 import { Photo } from 'src/app/models/Photo';
 import { FetchPhotos, SetSearchString } from 'src/app/state/photo.actions';
-import { genPhotos, genResponse, MockApiService, RESPONSE_PHOTO_COUNT } from 'src/app/state/photo.store.spec';
+import { genPhotos, genResponse, MockImageService, RESPONSE_PHOTO_COUNT } from 'src/app/state/photo.store.spec';
 import { ViewPhotosComponent } from './view-photos.component';
 import { ViewerModule } from '../viewer.module';
 
@@ -122,7 +122,7 @@ describe('ViewPhotosComponent with mock API', () => {
   beforeEach(() => {
     const config = {
       ...baseConfig,
-      providers: [...baseConfig.providers, { provide: ApiService, useClass: MockApiService } ]
+      providers: [...baseConfig.providers, { provide: ImageService, useClass: MockImageService } ]
     };
     TestBed.configureTestingModule(config).compileComponents();
     store = TestBed.inject(Store);
@@ -132,7 +132,7 @@ describe('ViewPhotosComponent with mock API', () => {
   });
 
   it('displays end marker when collection exhausted (logic)', () => {
-    MockApiService.endOfInput = true;
+    MockImageService.endOfInput = true;
     const monitor = new EndOfInputMonitor();
     expect(monitor.events).toEqual([false]); // initialization
 
@@ -152,7 +152,7 @@ describe('ViewPhotosComponent with mock API', () => {
   });
 
   it('displays end marker when collection exhausted (rendering)', () => {
-    MockApiService.endOfInput = true;
+    MockImageService.endOfInput = true;
     const originalPhotoQty = 10;
     component.photos = genPhotos(1000, originalPhotoQty);
     expect(component.photos.length).toBe(originalPhotoQty);
@@ -187,12 +187,13 @@ describe('ViewPhotosComponent with spy API', () => {
   let store: Store;
 
   beforeEach(() => {
-    const apiServiceSpy = jasmine.createSpyObj('ApiService', ['loadPage']);
-    apiServiceSpy.loadPage.and.returnValue(
+    // TODO: Add IImageService; rename all to ImageService
+    const imageServiceSpy = jasmine.createSpyObj('ImageService', ['loadPage']);
+    imageServiceSpy.loadPage.and.returnValue(
       of(genResponse({ includePhotos: false })));
     const config = {
       ...baseConfig,
-      providers: [...baseConfig.providers, { provide: ApiService, useValue: apiServiceSpy } ]
+      providers: [...baseConfig.providers, { provide: ImageService, useValue: imageServiceSpy } ]
     };
     TestBed.configureTestingModule(config).compileComponents();
 

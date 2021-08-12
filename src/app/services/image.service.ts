@@ -7,7 +7,7 @@ import { KeyService } from './key.service';
 @Injectable({
   providedIn: 'root',
 })
-export class ApiService {
+export class ImageService {
   constructor(
     private readonly http: HttpClient,
     private keyStore: KeyService

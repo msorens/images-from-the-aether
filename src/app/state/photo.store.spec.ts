@@ -6,7 +6,7 @@ import { Observable, of } from 'rxjs';
 
 import { PhotoState, PhotoStateModel, STATE_NAME } from 'src/app/state/photo.store';
 import { PageResponse, Photo } from 'src/app/models/Photo';
-import { ApiService } from 'src/app/services/api.service';
+import { ImageService } from 'src/app/services/image.service';
 import { FetchPhotos, SetSearchString } from './photo.actions';
 
 describe('SetSearchString', () => {
@@ -66,7 +66,7 @@ describe('FetchPhotos', () => {
       imports: [HttpClientModule, [NgxsModule.forRoot([PhotoState])]],
       providers: [
         Store,
-        { provide: ApiService, useClass: MockApiService }
+        { provide: ImageService, useClass: MockImageService }
       ],
     }).compileComponents();
     store = TestBed.inject(Store);
@@ -108,7 +108,7 @@ describe('FetchPhotos', () => {
 
   [true, false].forEach(endOfInput => {
     it(`end of input reflects in state with value '${endOfInput}'`, () => {
-      MockApiService.endOfInput = endOfInput;
+      MockImageService.endOfInput = endOfInput;
       expect(store.selectSnapshot(s => stateModel(s).endOfInputReached)).toBeFalse();
 
       store.dispatch(new FetchPhotos());
@@ -120,12 +120,12 @@ describe('FetchPhotos', () => {
 });
 
 @Injectable()
-export class MockApiService extends ApiService {
+export class MockImageService extends ImageService {
 
   public static endOfInput: boolean;
 
   loadPage(pageId: number, itemsPerPage: number, searchString: string): Observable<PageResponse> {
-    return of(genResponse({ endOfInput: MockApiService.endOfInput }));
+    return of(genResponse({ endOfInput: MockImageService.endOfInput }));
   }
 }
 
