@@ -14,6 +14,10 @@ export class ApiService {
 
     const url = 'https://api.pexels.com/v1/search';
     const apiKey = 'FILL THIS IN';
+    if (!apiKey) {
+      // UI safeguard against empty key should make this line unreachable
+      return throwError(new Error('no api key loaded!'));
+    }
     return this.http.get<PageResponse>(url, {
         headers: {
           Authorization: apiKey
