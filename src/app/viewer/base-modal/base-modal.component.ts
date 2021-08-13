@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -12,12 +12,11 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class BaseModalComponent implements OnInit {
   /**
-   * Inform the modal to display itself.
+   * Inform the modal to display or hide itself.
    */
   @Input() visibility: EventEmitter<boolean>;
 
   private isDestroyed = new Subject<boolean>();
-
   private nativeElement: any;
 
   constructor(private element: ElementRef) {
@@ -33,17 +32,25 @@ export class BaseModalComponent implements OnInit {
     });
     this.visibility.pipe(takeUntil(this.isDestroyed))
       .subscribe((open) => {
-        if (open) {
-          this.open();
-        } else {
-          this.close();
-        }
+      if (open) {
+        this.open();
+      } else {
+        this.close();
+      }
+    });
+  }
 
-      });
+  // HostListener OK for this simple use case but beware of performance issues with multiple uses;
+  // see https://dev.to/angular/ain-t-nobody-needs-hostlistener-fg4
+  // For list of key values
+  // see https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
+  @HostListener('document:keyup.escape', ['$event'])
+  onKeydownHandler(event: KeyboardEvent): void {
+    this.close();
   }
 
   private open(): void {
-    // TODO: only do this if not already present
+    // NB: inherently smart enough to skip if class already present
     this.nativeElement.classList.add('visible');
   }
 

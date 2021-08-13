@@ -59,7 +59,7 @@ describe('HostedMessageModalComponent', () => {
     openModal();
     expect(isModalVisible()).toBeTrue();
 
-    getElement('.modal-background').click();
+    find('.modal-background').click();
 
     expect(isModalVisible()).toBeFalse();
   });
@@ -73,7 +73,7 @@ describe('HostedMessageModalComponent', () => {
     openModal();
     expect(isModalVisible()).toBeTrue();
 
-    getElement('.modal-body').click();
+    find('.modal-body').click();
 
     expect(isModalVisible()).toBeTrue();
   });
@@ -82,9 +82,39 @@ describe('HostedMessageModalComponent', () => {
     openModal();
     expect(isModalVisible()).toBeTrue();
 
-    getElement('#myContent').click();
+    find('#myContent').click();
 
     expect(isModalVisible()).toBeTrue();
+  });
+
+  it('modal closes upon pressing "escape"', () => {
+    openModal();
+    expect(isModalVisible()).toBeTrue();
+
+    document.dispatchEvent(new KeyboardEvent('keyup', { key: 'escape' }));
+    fixture.detectChanges();
+
+    expect(isModalVisible()).toBeFalse();
+  });
+
+  it('modal does NOT close upon pressing keys other than "escape"', () => {
+    openModal();
+    expect(isModalVisible()).toBeTrue();
+
+    [
+      'c', // alphabetic
+      '5', // numeric
+      '.', // punctuation
+      '+', // special
+      ' ', // whitespace
+      'enter',
+      'tab'
+    ].forEach(ch => {
+      document.dispatchEvent(new KeyboardEvent('keyup', { key: ch }));
+      fixture.detectChanges();
+      expect(isModalVisible()).toBeTrue();
+    });
+
   });
 
   function openModal(): void {
@@ -97,7 +127,7 @@ describe('HostedMessageModalComponent', () => {
     hostComponent.visibilityControl.emit(false);
   }
 
-  function getElement(selector: string): HTMLElement {
+  function find(selector: string): HTMLElement {
     return fixture.nativeElement.querySelector(selector);
   }
 
