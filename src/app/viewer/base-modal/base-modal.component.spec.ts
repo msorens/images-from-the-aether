@@ -14,7 +14,7 @@ class TestHostComponent {
   visibilityControl = new EventEmitter<boolean>();
 }
 
-describe('HostedMessageModalComponent', () => {
+describe('BaseModalComponent', () => {
   let hostComponent: TestHostComponent;
   let fixture: ComponentFixture<TestHostComponent>;
   let modalComponent: BaseModalComponent;
@@ -31,8 +31,7 @@ describe('HostedMessageModalComponent', () => {
     fixture = TestBed.createComponent(TestHostComponent);
     hostComponent = fixture.componentInstance;
     modalComponent = fixture.debugElement.children[0].componentInstance;
-    modalElement =
-      fixture.debugElement.nativeElement.querySelector('app-base-modal');
+    modalElement = find('app-base-modal');
     modalComponent.visibility = new EventEmitter<boolean>();
   });
 
@@ -55,7 +54,7 @@ describe('HostedMessageModalComponent', () => {
     expect(isModalVisible()).toBeFalse();
   });
 
-  it('modal also knows how to close itself when clicking the background', () => {
+  it('modal closes itself when clicking the background', () => {
     openModal();
     expect(isModalVisible()).toBeTrue();
 
@@ -87,7 +86,7 @@ describe('HostedMessageModalComponent', () => {
     expect(isModalVisible()).toBeTrue();
   });
 
-  it('modal closes upon pressing "escape"', () => {
+  it('modal closes itself upon pressing "escape"', () => {
     openModal();
     expect(isModalVisible()).toBeTrue();
 
@@ -127,36 +126,12 @@ describe('HostedMessageModalComponent', () => {
     hostComponent.visibilityControl.emit(false);
   }
 
-  function find(selector: string): HTMLElement {
-    return fixture.nativeElement.querySelector(selector);
-  }
-
   function isModalVisible(): boolean {
     fixture.detectChanges();
     return modalElement.classList.contains('visible');
   }
+
+  function find(selector: string): HTMLElement {
+    return fixture.nativeElement.querySelector(selector);
+  }
 });
-
-describe('ModalComponent', () => {
-  let component: BaseModalComponent;
-  let fixture: ComponentFixture<BaseModalComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ BaseModalComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(BaseModalComponent);
-    component = fixture.componentInstance;
-    component.visibility = new EventEmitter();
-    fixture.detectChanges();
-  });
-
-  it('creates a component', () => {
-    expect(component).toBeTruthy();
-  });
-});
-
