@@ -1,8 +1,9 @@
-$gap: 16px;
+
+@import "src/styles/_variables";
 
 .container {
-  margin-left: $gap;
-  margin-right: $gap;
+  margin-left: $standard-margin;
+  margin-right: $standard-margin;
 
   virtual-scroller {
     width: 100%;
@@ -12,7 +13,7 @@ $gap: 16px;
     .responsive-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: $gap;
+      gap: $standard-margin;
 
       .item {
         display: block;
@@ -32,7 +33,7 @@ $gap: 16px;
         .id {
           position: absolute;
           color: white;
-          margin: $gap;
+          margin: $standard-margin;
           font-size: 1.5rem;
         }
       }
