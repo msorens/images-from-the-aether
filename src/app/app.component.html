@@ -15,6 +15,23 @@
     This is a safe use of an ElementRef (#myKey) -- strictly local use here in the template.
     See https://ultimatecourses.com/blog/element-refs-in-angular-templates for details.
   -->
-  <input id="test-inputKey" ngModel #myKey>
-  <button id="test-saveKey" [disabled]="!myKey.value.trim()" (click)="saveKey(myKey.value.trim())">Save My Key</button>
+  <div class="control-bar">
+    <input id="test-inputKey" ngModel #myKey>
+    <button id="test-testKey" [disabled]="!myKey.value.trim()" (click)="testKey(myKey.value.trim())">
+      <div id="button-label">
+        Test
+        <mat-spinner *ngIf="(testStatus$ | async) === TestState.Loading" [diameter]="20"></mat-spinner>
+        <!-- See https://fonts.google.com/icons for icon index -->
+        <mat-icon color="warn"
+          *ngIf="(testStatus$ | async) === TestState.Failure"
+          title="key is NOT valid -- check it and try again"
+        >error</mat-icon>
+        <mat-icon color="primary"
+          *ngIf="(testStatus$ | async) === TestState.Success"
+          title="key is valid!"
+          >verified</mat-icon>
+      </div>
+    </button>
+    <button id="test-saveKey" [disabled]="!myKey.value.trim()" (click)="saveKey(myKey.value.trim())">Save My Key</button>
+  </div>
 </app-base-modal>

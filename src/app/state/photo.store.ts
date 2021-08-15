@@ -4,14 +4,22 @@ import { Action, Selector, State, StateContext } from '@ngxs/store';
 
 import { Photo } from 'src/app/models/Photo';
 import { ImageService } from 'src/app/services/image.service';
-import { FetchPhotos, SetSearchString } from './photo.actions';
+import { FetchPhotos, SetSearchString, TestApi } from './photo.actions';
 
+
+export enum TestState {
+  Uninitialized,
+  Loading,
+  Success,
+  Failure,
+}
 
 export const STATE_NAME = 'imageCollection';
 export interface PhotoStateModel {
   searchString: string;
   photos: Photo[];
   loading: boolean;
+  testStatus: TestState;
   endOfInputReached: boolean;
   currentPage: number;
   itemsPerPage: number;
@@ -23,6 +31,7 @@ export interface PhotoStateModel {
     searchString: '',
     photos: [],
     loading: false,
+    testStatus: TestState.Uninitialized,
     endOfInputReached: false,
     currentPage: 0,
     itemsPerPage: 20
@@ -50,6 +59,11 @@ export class PhotoState {
   @Selector()
   public static endOfInputReached(state: PhotoStateModel): boolean {
     return state.endOfInputReached;
+  }
+
+  @Selector()
+  public static testStatus(state: PhotoStateModel): TestState {
+    return state.testStatus;
   }
 
   @Action(SetSearchString)
@@ -100,6 +114,39 @@ export class PhotoState {
           patchState({
             photos: [],
             loading: false,
+            endOfInputReached: false
+          });
+        }
+      );
+  }
+
+  @Action(TestApi)
+  testApi(
+    { getState, patchState }: StateContext<PhotoStateModel>,
+    { apiKey }: TestApi
+  ): void {
+    const state = getState();
+    const [itemsPerPage, currentPage] = [state.itemsPerPage, ++state.currentPage];
+    patchState({
+      testStatus: TestState.Loading,
+    });
+
+    this.api
+      .testPage(apiKey)
+      .subscribe(
+        (response) => {
+          console.log(
+            `Received ${response.photos.length} photos on page ${response.page} (${response.total_results} total)`
+          );
+          patchState({
+            testStatus: TestState.Success,
+            endOfInputReached: !response.next_page
+          });
+        },
+        (errResponse: HttpErrorResponse) => {
+          console.log(errResponse.message);
+          patchState({
+            testStatus: TestState.Failure,
             endOfInputReached: false
           });
         }

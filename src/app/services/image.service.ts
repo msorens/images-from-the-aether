@@ -13,15 +13,24 @@ export class ImageService implements IImageService {
     private keyStore: KeyService
   ) { }
 
+  private url = 'https://api.pexels.com/v1/search';
+
+  testPage(apiKey: string): Observable<PageResponse> {
+    return this.fetch(apiKey, 'cat', 10, 1);
+  }
+
   loadPage(pageId: number, itemsPerPage: number, searchString: string): Observable<PageResponse> {
 
-    const url = 'https://api.pexels.com/v1/search';
     const apiKey = this.keyStore.get();
     if (!apiKey) {
       // UI safeguard against empty key should make this line unreachable
       return throwError(new Error('no api key loaded!'));
     }
-    return this.http.get<PageResponse>(url, {
+    return this.fetch(apiKey, searchString, itemsPerPage, pageId);
+  }
+
+  private fetch(apiKey: string, searchString: string, itemsPerPage: number, pageId: number): Observable<PageResponse> {
+    return this.http.get<PageResponse>(this.url, {
       headers: {
         Authorization: apiKey
       },
@@ -31,19 +40,10 @@ export class ImageService implements IImageService {
         page: String(pageId)
       }
     });
-      // cf https://blog.angular-university.io/rxjs-error-handling/
-      // .pipe(
-      //   shareReplay(),
-      //   retryWhen((errors) => {
-      //     return errors.pipe(
-      //       delayWhen(() => timer(2000)),
-      //       tap(() => console.log('retrying...'))
-      //     );
-      //   })
-      // );
   }
 }
 
 export interface IImageService {
   loadPage(pageId: number, itemsPerPage: number, searchString: string): Observable<PageResponse>;
+  testPage(apiKey: string): Observable<PageResponse>;
 }

@@ -22,3 +22,35 @@ input {
   width: 400px;
   max-width: 90%;
 }
+
+.control-bar {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 1rem;
+
+  button {
+    font-family: Optima;
+    font-size: 1rem;
+    height: 2.5rem;
+    margin-left: 1rem;
+
+    #button-label {
+      display: flex;
+      align-items: center;
+
+      mat-spinner, mat-ico {
+        margin-left: 0.5rem;
+      }
+
+      // override icon colors from https://www.materialpalette.com/colors
+      // see also https://stackoverflow.com/a/67544343/115690
+      .mat-primary {
+        color: $success-color;
+      }
+
+      .mat-warn {
+        color: $failure-color;
+      }
+    }
+  }
+}
