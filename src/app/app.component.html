@@ -16,8 +16,8 @@
     See https://ultimatecourses.com/blog/element-refs-in-angular-templates for details.
   -->
   <div class="control-bar">
-    <input id="test-inputKey" ngModel #myKey>
-    <button id="test-testKey" [disabled]="!myKey.value.trim()" (click)="testKey(myKey.value.trim())">
+    <input ngModel #myKey>
+    <button [disabled]="!myKey.value.trim()" (click)="testKey(myKey.value.trim())">
       <div id="button-label">
         Test
         <mat-spinner *ngIf="(testStatus$ | async) === TestState.Loading" [diameter]="20"></mat-spinner>
@@ -32,6 +32,6 @@
           >verified</mat-icon>
       </div>
     </button>
-    <button id="test-saveKey" [disabled]="!myKey.value.trim()" (click)="saveKey(myKey.value.trim())">Save My Key</button>
+    <button [disabled]="!myKey.value.trim()" (click)="saveKey(myKey.value.trim())">Save My Key</button>
   </div>
 </app-base-modal>

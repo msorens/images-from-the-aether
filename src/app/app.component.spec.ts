@@ -1,9 +1,12 @@
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NgxsModule, Store } from '@ngxs/store';
 import { MockComponent } from 'ng2-mock-component';
+
 import { BaseModalComponent } from './viewer/base-modal/base-modal.component';
 import { SetSearchString } from './state/photo.actions';
 import { PhotoState, STATE_NAME, TestState } from './state/photo.store';
@@ -21,6 +24,8 @@ describe('AppComponent', () => {
     imports: [
       FormsModule,
       HttpClientModule,
+      MatIconModule,
+      MatProgressSpinnerModule,
       [NgxsModule.forRoot([PhotoState])],
       RouterTestingModule,
       ReactiveFormsModule
@@ -55,13 +60,10 @@ describe('AppComponent', () => {
   });
 
   describe('API key', () => {
-    let store: Store;
-
     beforeEach(() => {
       TestBed.configureTestingModule(config).compileComponents();
       fixture = TestBed.createComponent(AppComponent);
       component = fixture.componentInstance;
-      store = TestBed.inject(Store);
     });
 
     it('pops up the key-entering modal when no key found stored', () => {
@@ -89,8 +91,12 @@ describe('AppComponent', () => {
     });
 
     it('stores the user-entered key in browser local storage', () => {
-      findAs<HTMLInputElement>('#test-inputKey').value = 'some key';
-      find('#test-saveKey').click();
+      findAs<HTMLInputElement>('.control-bar input').value = 'some key';
+      const saveButton = findOneAs<HTMLButtonElement>('.control-bar button', 'Save');
+      expect(saveButton).toBeTruthy();
+
+      saveButton.click();
+
       expect(keyServiceSpy.set).toHaveBeenCalledWith('some key');
     });
 
@@ -98,45 +104,61 @@ describe('AppComponent', () => {
       fixture.detectChanges();
       expect(keyServiceSpy.get).toHaveBeenCalled();
     });
+  });
 
-    it('modal has an input field to enter the key', () => {
-      expect(find('#test-inputKey')).toBeTruthy();
+  describe('key modal', () => {
+    let store: Store;
+
+    beforeEach(() => {
+      TestBed.configureTestingModule(config).compileComponents();
+      fixture = TestBed.createComponent(AppComponent);
+      component = fixture.componentInstance;
+      store = TestBed.inject(Store);
     });
 
-    it('modal has a button to save the key', () => {
-      expect(find('#test-saveKey')).toBeTruthy();
+
+    it('has an input field to enter the key', () => {
+      expect(find('.control-bar input')).toBeTruthy();
     });
 
-    it('modal has a button to test the key', () => {
-      expect(find('#test-testKey')).toBeTruthy();
-    });
+    it('has buttons to save and to test the key', () => {
+      const buttons = findAllAs<HTMLButtonElement>('.control-bar button');
+      expect(buttons.length).toBe(2);
 
-    it('modal buttons are initially disabled', () => {
-      fixture.detectChanges();
-      expect(findAs<HTMLInputElement>('#test-inputKey').value).toBe('');
-
-      ['#test-saveKey', '#test-testKey'].forEach(button => {
-        expect(findAs<HTMLButtonElement>(button).disabled).toBeTrue();
+      ['Save', 'Test'].forEach(label => {
+        expect(buttons.filter(b => b.textContent.indexOf(label) >= 0).length)
+          .toBe(1, `no button with text "${label}" found`);
       });
     });
 
-    it('enabled state of modal buttons reacts to presence of input', () => {
-      const inputElem = findAs<HTMLInputElement>('#test-inputKey');
+    it('buttons are initially disabled', () => {
+      fixture.detectChanges();
+      expect(findAs<HTMLInputElement>('.control-bar input').value).toBe('');
+
+      findAllAs<HTMLButtonElement>('.control-bar button')
+        .forEach(button => {
+          expect(button.disabled).toBeTrue();
+        });
+    });
+
+    it('buttons reacts to presence of input', () => {
+      const inputElem = findAs<HTMLInputElement>('.control-bar input');
       fixture.detectChanges();
 
-      ['#test-saveKey', '#test-testKey'].forEach(button => {
-        inputElem.value = '';
-        fixture.detectChanges();
-        expect(findAs<HTMLButtonElement>(button).disabled).toBeTrue();
+      findAllAs<HTMLButtonElement>('.control-bar button')
+        .forEach(button => {
+          inputElem.value = '';
+          fixture.detectChanges();
+          expect(button.disabled).toBeTrue();
 
-        inputElem.value = 'any value';
-        fixture.detectChanges();
-        expect(findAs<HTMLButtonElement>(button).disabled).toBeFalse();
+          inputElem.value = 'any value';
+          fixture.detectChanges();
+          expect(button.disabled).toBeFalse();
 
-        inputElem.value = '         ';
-        fixture.detectChanges();
-        expect(findAs<HTMLButtonElement>(button).disabled).toBeTrue();
-      });
+          inputElem.value = '         ';
+          fixture.detectChanges();
+          expect(button.disabled).toBeTrue();
+        });
     });
 
     it('test button has status indicators that are initially hidden', () => {
@@ -144,19 +166,19 @@ describe('AppComponent', () => {
       expect(find('#button-label mat-spinner')).toBeNull();
     });
 
-    it('reveals only success indicator when API reports success', () => {
+    it('test button reveals only success indicator when API reports success', () => {
       setTestStatus(store, TestState.Success);
       expect(find('#button-label mat-icon').textContent).toBe('verified');
       expect(find('#button-label mat-spinner')).toBeNull();
     });
 
-    it('reveals only failure indicator when API reports failure', () => {
+    it('test button reveals only failure indicator when API reports failure', () => {
       setTestStatus(store, TestState.Failure);
       expect(find('#button-label mat-icon').textContent).toBe('error');
       expect(find('#button-label mat-spinner')).toBeNull();
     });
 
-    it('reveals only spinner when API operation is in progress', () => {
+    it('test button reveals only spinner when API operation is in progress', () => {
       setTestStatus(store, TestState.Loading);
       expect(find('#button-label mat-spinner')).toBeTruthy();
       expect(find('#button-label mat-icon')).toBeNull();
@@ -232,6 +254,19 @@ describe('AppComponent', () => {
 
   function findAs<T extends HTMLElement>(selector: string): T {
     return (fixture.nativeElement as HTMLElement).querySelector(selector) as T;
+  }
+
+  function findAllAs<T extends HTMLElement>(selector: string): T[] {
+    return Array.from((fixture.nativeElement as HTMLElement)
+      .querySelectorAll(selector))
+      .map(e => e as T);
+  }
+
+  function findOneAs<T extends HTMLElement>(selector: string, text: string): T {
+    return Array.from((fixture.nativeElement as HTMLElement)
+      .querySelectorAll(selector))
+      .map(e => e as T)
+      .find(e => e.textContent.indexOf(text) >= 0);
   }
 
   function setInputValue(selector: string, value: string): void {
