@@ -16,7 +16,7 @@ import { FetchPhotos } from 'src/app/state/photo.actions';
 })
 export class ViewPhotosComponent implements OnInit {
   photos: Photo[] = [];
-  loading = false;
+  fetchStatus = false;
   endOfInputReached = false;
   currentPhoto: Photo | null = null;
   detailModalVisibility = new EventEmitter<boolean>();
@@ -24,7 +24,7 @@ export class ViewPhotosComponent implements OnInit {
 
   constructor(private store: Store, private ngZone: NgZone) {}
 
-  @Select(PhotoState.loading) loading$!: Observable<boolean>;
+  @Select(PhotoState.fetchStatus) fetchStatus$!: Observable<boolean>;
   @Select(PhotoState.endOfInputReached) endOfInputReached$!: Observable<boolean>;
   @Select(PhotoState.photos) photos$!: Observable<Photo[]>;
   @Select(PhotoState.searchString) searchString$!: Observable<string>;
@@ -44,8 +44,8 @@ export class ViewPhotosComponent implements OnInit {
         this.fetchNext();
       });
 
-    this.loading$.subscribe((flag) => {
-      this.loading = flag;
+    this.fetchStatus$.subscribe((flag) => {
+      this.fetchStatus = flag;
     });
 
     this.endOfInputReached$.subscribe((flag) => {
@@ -55,7 +55,7 @@ export class ViewPhotosComponent implements OnInit {
 
   fetchMore(event: IPageInfo): void {
     if (
-      this.loading ||
+      this.fetchStatus ||
       this.endOfInputReached ||
       event.endIndex === -1 || // essentially suppress page load event with empty search
       event.endIndex !== this.photos.length - 1 // wait until reaching the bottom of list

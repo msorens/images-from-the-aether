@@ -44,7 +44,7 @@ describe('ViewPhotosComponent', () => {
       const originalPhotoQty = 10;
       component.photos = genPhotos(1000, originalPhotoQty);
       expect(component.photos.length).toBe(originalPhotoQty);
-      component.loading = true;
+      component.fetchStatus = true;
 
       component.fetchMore({ endIndex: originalPhotoQty - 1 } as IPageInfo);
       fixture.detectChanges();
@@ -141,7 +141,7 @@ describe('ViewPhotosComponent', () => {
 
       store.dispatch(new FetchPhotos());
 
-      // State of loading$ displays/hides the spinner.
+      // State of fetchStatus$ displays/hides the spinner.
       // Thus, toggling to true then back to false confirms the spinner shows appropriately.
       expect(monitor.events).toEqual([false, true, false]);
     });
@@ -206,7 +206,7 @@ describe('ViewPhotosComponent', () => {
 
     it('does not display either empty graphic while loading', () => {
       fixture.detectChanges();
-      component.loading = true;
+      component.fetchStatus = true;
       fixture.detectChanges();
 
       expect(find('#noSearchPerformed')).toBeNull();
@@ -214,13 +214,13 @@ describe('ViewPhotosComponent', () => {
 
       store.dispatch(new SetSearchString('any'));
       fixture.detectChanges();
-      component.loading = true;
+      component.fetchStatus = true;
       fixture.detectChanges();
 
       expect(find('#noSearchPerformed')).toBeNull();
       expect(find('#noResultsFound')).toBeNull();
       fixture.detectChanges();
-      component.loading = true;
+      component.fetchStatus = true;
       fixture.detectChanges();
 
       expect(find('#noSearchPerformed')).toBeNull();
@@ -320,11 +320,11 @@ describe('ViewPhotosComponent', () => {
 });
 
 class LoadingMonitor {
-  @Select(PhotoState.loading) loading$!: Observable<boolean>;
+  @Select(PhotoState.fetchStatus) fetchStatus$!: Observable<boolean>;
   public events: boolean[] = [];
 
   constructor() {
-    this.loading$.subscribe(flag => { this.events.push(flag); });
+    this.fetchStatus$.subscribe(status => { this.events.push(status); });
   }
 }
 

@@ -18,7 +18,7 @@ export const STATE_NAME = 'imageCollection';
 export interface PhotoStateModel {
   searchString: string;
   photos: Photo[];
-  loading: boolean;
+  fetchStatus: boolean;
   testStatus: ExecutionState;
   endOfInputReached: boolean;
   currentPage: number;
@@ -30,7 +30,7 @@ export interface PhotoStateModel {
   defaults: {
     searchString: '',
     photos: [],
-    loading: false,
+    fetchStatus: false,
     testStatus: ExecutionState.Uninitialized,
     endOfInputReached: false,
     currentPage: 0,
@@ -47,8 +47,8 @@ export class PhotoState {
   }
 
   @Selector()
-  public static loading(state: PhotoStateModel): boolean {
-    return state.loading;
+  public static fetchStatus(state: PhotoStateModel): boolean {
+    return state.fetchStatus;
   }
 
   @Selector()
@@ -75,7 +75,7 @@ export class PhotoState {
         searchString,
         currentPage: 0,
         photos: [],
-        loading: false,
+        fetchStatus: false,
         endOfInputReached: false
       });
   }
@@ -88,7 +88,7 @@ export class PhotoState {
     const [itemsPerPage, currentPage] = [state.itemsPerPage, state.currentPage + 1];
     patchState({
       currentPage,
-      loading: true
+      fetchStatus: true
     });
 
     // page index is 1-based not 0-based here
@@ -105,7 +105,7 @@ export class PhotoState {
           }
           patchState({
             photos: response.photos,
-            loading: false,
+            fetchStatus: false,
             endOfInputReached: !response.next_page
           });
         },
@@ -113,7 +113,7 @@ export class PhotoState {
           console.log(errResponse.message);
           patchState({
             photos: [],
-            loading: false,
+            fetchStatus: false,
             endOfInputReached: false
           });
         }
