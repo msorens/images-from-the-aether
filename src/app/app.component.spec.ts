@@ -8,7 +8,7 @@ import { MockComponent } from 'ng2-mock-component';
 
 import { BaseModalComponent } from './viewer/base-modal/base-modal.component';
 import { SetSearchString } from './state/photo.actions';
-import { PhotoState, STATE_NAME, TestState } from './state/photo.store';
+import { PhotoState, STATE_NAME, ExecutionState } from './state/photo.store';
 import { IKeyService, KeyService } from './services/key.service';
 import { AppComponent } from './app.component';
 
@@ -164,31 +164,31 @@ describe('AppComponent', () => {
     });
 
     it('test button reveals only success indicator when API reports success', () => {
-      setTestStatus(store, TestState.Success);
+      setTestStatus(store, ExecutionState.Success);
       expect(find('#button-label mat-icon')?.textContent).toBe('verified');
       expect(find('#button-label mat-spinner')).toBeNull();
     });
 
     it('test button reveals only failure indicator when API reports failure', () => {
-      setTestStatus(store, TestState.Failure);
+      setTestStatus(store, ExecutionState.Failure);
       expect(find('#button-label mat-icon')?.textContent).toBe('error');
       expect(find('#button-label mat-spinner')).toBeNull();
     });
 
     it('test button reveals only spinner when API operation is in progress', () => {
-      setTestStatus(store, TestState.Loading);
+      setTestStatus(store, ExecutionState.Loading);
       expect(find('#button-label mat-spinner')).toBeTruthy();
       expect(find('#button-label mat-icon')).toBeNull();
     });
 
     it('test button is disabled while test operation is in progress', () => {
       findAs<HTMLInputElement>('.control-bar input').value = 'some string';
-      setTestStatus(store, TestState.Loading);
+      setTestStatus(store, ExecutionState.Loading);
       expect(findOneAs<HTMLButtonElement>('.control-bar button', 'Test')?.disabled).toBeTrue();
     });
 
     it('test button is NOT disabled when test operation completes', () => {
-      setTestStatus(store, TestState.Success);
+      setTestStatus(store, ExecutionState.Success);
       setInputValue('.control-bar input', 'some string');
       fixture.detectChanges();
       expect(findOneAs<HTMLButtonElement>('.control-bar button', 'Test')?.disabled).toBeFalse();
@@ -287,7 +287,7 @@ describe('AppComponent', () => {
     inputElem.dispatchEvent(new KeyboardEvent('keyup'));
   }
 
-  function setTestStatus(store: Store, status: TestState): void {
+  function setTestStatus(store: Store, status: ExecutionState): void {
     // see https://www.ngxs.io/recipes/unit-testing#prepping-state
     const testStore: any = {};
     testStore[STATE_NAME] = store.snapshot()[STATE_NAME];

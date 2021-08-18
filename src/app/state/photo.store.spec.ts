@@ -4,7 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { NgxsModule, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 
-import { PhotoState, PhotoStateModel, STATE_NAME, TestState } from 'src/app/state/photo.store';
+import { PhotoState, PhotoStateModel, STATE_NAME, ExecutionState } from 'src/app/state/photo.store';
 import { PageResponse, Photo } from 'src/app/models/Photo';
 import { ImageService } from 'src/app/services/image.service';
 import { FetchPhotos, SetSearchString } from './photo.actions';
@@ -158,7 +158,7 @@ export function genState(): PhotoStateModel {
     searchString: 'dog',
     photos: genPhotos(STATE_BASE, STATE_PHOTO_COUNT),
     loading: false,
-    testStatus: TestState.Uninitialized,
+    testStatus: ExecutionState.Uninitialized,
     endOfInputReached: false,
     currentPage: 10,
     itemsPerPage: 20

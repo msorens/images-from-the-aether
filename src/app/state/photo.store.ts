@@ -7,7 +7,7 @@ import { ImageService } from 'src/app/services/image.service';
 import { FetchPhotos, SetSearchString, TestApi } from './photo.actions';
 
 
-export enum TestState {
+export enum ExecutionState {
   Uninitialized,
   Loading,
   Success,
@@ -19,7 +19,7 @@ export interface PhotoStateModel {
   searchString: string;
   photos: Photo[];
   loading: boolean;
-  testStatus: TestState;
+  testStatus: ExecutionState;
   endOfInputReached: boolean;
   currentPage: number;
   itemsPerPage: number;
@@ -31,7 +31,7 @@ export interface PhotoStateModel {
     searchString: '',
     photos: [],
     loading: false,
-    testStatus: TestState.Uninitialized,
+    testStatus: ExecutionState.Uninitialized,
     endOfInputReached: false,
     currentPage: 0,
     itemsPerPage: 20
@@ -62,7 +62,7 @@ export class PhotoState {
   }
 
   @Selector()
-  public static testStatus(state: PhotoStateModel): TestState {
+  public static testStatus(state: PhotoStateModel): ExecutionState {
     return state.testStatus;
   }
 
@@ -128,7 +128,7 @@ export class PhotoState {
     const state = getState();
     const [itemsPerPage, currentPage] = [state.itemsPerPage, state.currentPage + 1];
     patchState({
-      testStatus: TestState.Loading,
+      testStatus: ExecutionState.Loading,
     });
 
     this.api
@@ -139,14 +139,14 @@ export class PhotoState {
             `Received ${response.photos.length} photos on page ${response.page} (${response.total_results} total)`
           );
           patchState({
-            testStatus: TestState.Success,
+            testStatus: ExecutionState.Success,
             endOfInputReached: !response.next_page
           });
         },
         (errResponse: HttpErrorResponse) => {
           console.log(errResponse.message);
           patchState({
-            testStatus: TestState.Failure,
+            testStatus: ExecutionState.Failure,
             endOfInputReached: false
           });
         }

@@ -5,7 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { KeyService } from './services/key.service';
 import { SetSearchString, TestApi } from './state/photo.actions';
-import { PhotoState, TestState } from './state/photo.store';
+import { PhotoState, ExecutionState } from './state/photo.store';
 
 @Component({
   selector: 'app-root',
@@ -19,11 +19,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   private keyUp = new Subject<KeyboardEvent>();
   keyModalVisibility = new EventEmitter<boolean>();
 
-  TestState = TestState; // This peculiar statement exposes the enum in the template.
+  ExecutionState = ExecutionState; // This peculiar statement exposes the enum in the template.
 
   // Definite assignment assertion used here;
   // see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html#definite-assignment-assertions
-  @Select(PhotoState.testStatus) testStatus$!: Observable<TestState>;
+  @Select(PhotoState.testStatus) testStatus$!: Observable<ExecutionState>;
 
   constructor(
     private store: Store,

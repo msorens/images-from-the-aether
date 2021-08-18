@@ -18,20 +18,20 @@
   <div class="control-bar">
     <input ngModel #myKey>
     <button
-      [disabled]="!myKey.value.trim() || (testStatus$ | async) === TestState.Loading"
+      [disabled]="!myKey.value.trim() || (testStatus$ | async) === ExecutionState.Loading"
       (click)="testKey(myKey.value.trim())">
       <div id="button-label">
         Test
         <mat-spinner [diameter]="20"
-          *ngIf="(testStatus$ | async) === TestState.Loading"
+          *ngIf="(testStatus$ | async) === ExecutionState.Loading"
         ></mat-spinner>
         <!-- See https://fonts.google.com/icons for icon index -->
         <mat-icon color="warn"
-          *ngIf="(testStatus$ | async) === TestState.Failure"
+          *ngIf="(testStatus$ | async) === ExecutionState.Failure"
           title="key is NOT valid -- check it and try again"
         >error</mat-icon>
         <mat-icon color="primary"
-          *ngIf="(testStatus$ | async) === TestState.Success"
+          *ngIf="(testStatus$ | async) === ExecutionState.Success"
           title="key is valid!"
           >verified</mat-icon>
       </div>
