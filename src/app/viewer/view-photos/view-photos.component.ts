@@ -18,16 +18,16 @@ export class ViewPhotosComponent implements OnInit {
   photos: Photo[] = [];
   loading = false;
   endOfInputReached = false;
-  currentPhoto: Photo;
+  currentPhoto: Photo | null = null;
   detailModalVisibility = new EventEmitter<boolean>();
   searchString = '';
 
   constructor(private store: Store, private ngZone: NgZone) {}
 
-  @Select(PhotoState.loading) loading$: Observable<boolean>;
-  @Select(PhotoState.endOfInputReached) endOfInputReached$: Observable<boolean>;
-  @Select(PhotoState.photos) photos$: Observable<Photo[]>;
-  @Select(PhotoState.searchString) searchString$: Observable<string>;
+  @Select(PhotoState.loading) loading$!: Observable<boolean>;
+  @Select(PhotoState.endOfInputReached) endOfInputReached$!: Observable<boolean>;
+  @Select(PhotoState.photos) photos$!: Observable<Photo[]>;
+  @Select(PhotoState.searchString) searchString$!: Observable<string>;
 
   ngOnInit(): void {
     this.photos$

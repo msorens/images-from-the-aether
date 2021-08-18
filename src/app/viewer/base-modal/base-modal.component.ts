@@ -14,7 +14,7 @@ export class BaseModalComponent implements OnInit {
   /**
    * Inform the modal to display or hide itself.
    */
-  @Input() visibility: EventEmitter<boolean>;
+  @Input() visibility!: EventEmitter<boolean>;
 
   private isDestroyed = new Subject<boolean>();
   private nativeElement: any;

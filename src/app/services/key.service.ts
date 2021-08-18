@@ -6,7 +6,7 @@ export class KeyService implements IKeyService{
 
   private KEY_NAME = 'api_key';
 
-  get(): string {
+  get(): string | null {
     return localStorage.getItem(this.KEY_NAME);
   }
 
@@ -18,6 +18,6 @@ export class KeyService implements IKeyService{
 }
 
 export interface IKeyService {
-  get: () => string;
+  get: () => string | null;
   set: (s: string) => string;
 }

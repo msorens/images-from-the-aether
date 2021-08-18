@@ -21,7 +21,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   TestState = TestState; // This peculiar statement exposes the enum in the template.
 
-  @Select(PhotoState.testStatus) testStatus$: Observable<TestState>;
+  // Definite assignment assertion used here;
+  // see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html#definite-assignment-assertions
+  @Select(PhotoState.testStatus) testStatus$!: Observable<TestState>;
 
   constructor(
     private store: Store,
@@ -39,12 +41,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.keyUp
       .pipe(
-        map(event => (event.target as HTMLInputElement).value.trim()),
-        filter(searchString => !!searchString),
+        map((event) => (event.target as HTMLInputElement).value.trim()),
+        filter((searchString) => !!searchString),
         debounceTime(this.DEBOUNCE_TIME),
         distinctUntilChanged()
       )
-      .subscribe(searchString =>
+      .subscribe((searchString) =>
         this.store.dispatch(new SetSearchString(searchString))
       );
   }

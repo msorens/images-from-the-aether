@@ -1,11 +1,14 @@
 /* To learn more about this file see: https://angular.io/config/tsconfig. */
+
+/* See https://www.typescriptlang.org/tsconfig#strict for the collection of flags
+     controlled by 'strict' mode.  */
 {
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
-    "strict": false,
+    "strict": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,

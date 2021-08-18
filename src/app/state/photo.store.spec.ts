@@ -171,7 +171,7 @@ export function genResponse({ endOfInput = false, includePhotos = true } ): Page
     per_page: 20,
     photos: genPhotos(RESPONSE_BASE, includePhotos ? RESPONSE_PHOTO_COUNT : 0),
     total_results: 100,
-    next_page: endOfInput ? null : 'any next page',
+    next_page: endOfInput ? '' : 'any next page',
     prev_page: ''
   };
 }

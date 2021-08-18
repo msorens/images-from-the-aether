@@ -53,7 +53,7 @@ describe('AppComponent', () => {
 
     it('should render heading', () => {
       fixture.detectChanges();
-      expect(find('h1').textContent).toContain('Images');
+      expect(find('h1')?.textContent).toContain('Images');
     });
   });
 
@@ -93,7 +93,7 @@ describe('AppComponent', () => {
       const saveButton = findOneAs<HTMLButtonElement>('.control-bar button', 'Save');
       expect(saveButton).toBeTruthy();
 
-      saveButton.click();
+      saveButton?.click();
 
       expect(keyServiceSpy.set).toHaveBeenCalledWith('some key');
     });
@@ -123,7 +123,7 @@ describe('AppComponent', () => {
       expect(buttons.length).toBe(2);
 
       ['Save', 'Test'].forEach(label => {
-        expect(buttons.filter(b => b.textContent.indexOf(label) >= 0).length)
+        expect(buttons.filter(b => b.textContent && b.textContent.indexOf(label) >= 0).length)
           .toBe(1, `no button with text "${label}" found`);
       });
     });
@@ -165,13 +165,13 @@ describe('AppComponent', () => {
 
     it('test button reveals only success indicator when API reports success', () => {
       setTestStatus(store, TestState.Success);
-      expect(find('#button-label mat-icon').textContent).toBe('verified');
+      expect(find('#button-label mat-icon')?.textContent).toBe('verified');
       expect(find('#button-label mat-spinner')).toBeNull();
     });
 
     it('test button reveals only failure indicator when API reports failure', () => {
       setTestStatus(store, TestState.Failure);
-      expect(find('#button-label mat-icon').textContent).toBe('error');
+      expect(find('#button-label mat-icon')?.textContent).toBe('error');
       expect(find('#button-label mat-spinner')).toBeNull();
     });
 
@@ -184,14 +184,14 @@ describe('AppComponent', () => {
     it('test button is disabled while test operation is in progress', () => {
       findAs<HTMLInputElement>('.control-bar input').value = 'some string';
       setTestStatus(store, TestState.Loading);
-      expect(findOneAs<HTMLButtonElement>('.control-bar button', 'Test').disabled).toBeTrue();
+      expect(findOneAs<HTMLButtonElement>('.control-bar button', 'Test')?.disabled).toBeTrue();
     });
 
     it('test button is NOT disabled when test operation completes', () => {
       setTestStatus(store, TestState.Success);
       setInputValue('.control-bar input', 'some string');
       fixture.detectChanges();
-      expect(findOneAs<HTMLButtonElement>('.control-bar button', 'Test').disabled).toBeFalse();
+      expect(findOneAs<HTMLButtonElement>('.control-bar button', 'Test')?.disabled).toBeFalse();
     });
 
   });
@@ -258,7 +258,7 @@ describe('AppComponent', () => {
 
   });
 
-  function find(selector: string): HTMLElement {
+  function find(selector: string): HTMLElement | null {
     return (fixture.nativeElement as HTMLElement).querySelector(selector);
   }
 
@@ -272,11 +272,12 @@ describe('AppComponent', () => {
       .map(e => e as T);
   }
 
-  function findOneAs<T extends HTMLElement>(selector: string, text: string): T {
-    return Array.from((fixture.nativeElement as HTMLElement)
+  function findOneAs<T extends HTMLElement>(selector: string, text: string): T | null {
+    const results = Array.from((fixture.nativeElement as HTMLElement)
       .querySelectorAll(selector))
       .map(e => e as T)
-      .find(e => e.textContent.indexOf(text) >= 0);
+      .find(e => e.textContent && e.textContent.indexOf(text) >= 0);
+    return results === undefined ? null : results;
   }
 
   function setInputValue(selector: string, value: string): void {
@@ -288,7 +289,7 @@ describe('AppComponent', () => {
 
   function setTestStatus(store: Store, status: TestState): void {
     // see https://www.ngxs.io/recipes/unit-testing#prepping-state
-    const testStore = {};
+    const testStore: any = {};
     testStore[STATE_NAME] = store.snapshot()[STATE_NAME];
     testStore[STATE_NAME].testStatus = status;
     store.reset(testStore);

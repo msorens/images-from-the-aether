@@ -303,7 +303,7 @@ describe('ViewPhotosComponent', () => {
 });
 
 class LoadingMonitor {
-  @Select(PhotoState.loading) loading$: Observable<boolean>;
+  @Select(PhotoState.loading) loading$!: Observable<boolean>;
   public events: boolean[] = [];
 
   constructor() {
@@ -312,7 +312,7 @@ class LoadingMonitor {
 }
 
 class EndOfInputMonitor {
-  @Select(PhotoState.endOfInputReached) endOfInputReached$: Observable<boolean>;
+  @Select(PhotoState.endOfInputReached) endOfInputReached$!: Observable<boolean>;
   public events: boolean[] = [];
 
   constructor() {
