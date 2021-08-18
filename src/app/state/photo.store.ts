@@ -85,7 +85,7 @@ export class PhotoState {
     { getState, patchState }: StateContext<PhotoStateModel>
   ): void {
     const state = getState();
-    const [itemsPerPage, currentPage] = [state.itemsPerPage, ++state.currentPage];
+    const [itemsPerPage, currentPage] = [state.itemsPerPage, state.currentPage + 1];
     patchState({
       currentPage,
       loading: true
@@ -126,7 +126,7 @@ export class PhotoState {
     { apiKey }: TestApi
   ): void {
     const state = getState();
-    const [itemsPerPage, currentPage] = [state.itemsPerPage, ++state.currentPage];
+    const [itemsPerPage, currentPage] = [state.itemsPerPage, state.currentPage + 1];
     patchState({
       testStatus: TestState.Loading,
     });
