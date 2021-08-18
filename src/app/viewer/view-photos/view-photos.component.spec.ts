@@ -286,6 +286,23 @@ describe('ViewPhotosComponent', () => {
       expect(anchorElement.href).toBe(photo.photographer_url);
     });
 
+    it('link to author will open in a new tab (or window)', () => {
+      // Default is a new tab; users can configure otherwise.
+      // See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#attr-target
+      const photo: Photo = {
+        src: {
+          medium: 'some-medium-url',
+        },
+        photographer: 'bob smith',
+        photographer_url: 'http://www.any.com/',
+      } as Photo;
+      component.showDetail(photo);
+      fixture.detectChanges();
+
+      const anchorElement = findAs<HTMLAnchorElement>('app-base-modal a');
+      expect(anchorElement.target).toBe('_blank');
+    });
+
   });
 
   function find(selector: string): HTMLElement {
