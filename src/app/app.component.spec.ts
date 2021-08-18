@@ -3,7 +3,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { NgxsModule, Store } from '@ngxs/store';
 import { MockComponent } from 'ng2-mock-component';
 
@@ -27,7 +26,6 @@ describe('AppComponent', () => {
       MatIconModule,
       MatProgressSpinnerModule,
       [NgxsModule.forRoot([PhotoState])],
-      RouterTestingModule,
       ReactiveFormsModule
     ],
     declarations: [
@@ -116,7 +114,6 @@ describe('AppComponent', () => {
       store = TestBed.inject(Store);
     });
 
-
     it('has an input field to enter the key', () => {
       expect(find('.control-bar input')).toBeTruthy();
     });
@@ -182,6 +179,19 @@ describe('AppComponent', () => {
       setTestStatus(store, TestState.Loading);
       expect(find('#button-label mat-spinner')).toBeTruthy();
       expect(find('#button-label mat-icon')).toBeNull();
+    });
+
+    it('test button is disabled while test operation is in progress', () => {
+      findAs<HTMLInputElement>('.control-bar input').value = 'some string';
+      setTestStatus(store, TestState.Loading);
+      expect(findOneAs<HTMLButtonElement>('.control-bar button', 'Test').disabled).toBeTrue();
+    });
+
+    it('test button is NOT disabled when test operation completes', () => {
+      setTestStatus(store, TestState.Success);
+      setInputValue('.control-bar input', 'some string');
+      fixture.detectChanges();
+      expect(findOneAs<HTMLButtonElement>('.control-bar button', 'Test').disabled).toBeFalse();
     });
 
   });

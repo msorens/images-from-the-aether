@@ -17,10 +17,14 @@
   -->
   <div class="control-bar">
     <input ngModel #myKey>
-    <button [disabled]="!myKey.value.trim()" (click)="testKey(myKey.value.trim())">
+    <button
+      [disabled]="!myKey.value.trim() || (testStatus$ | async) === TestState.Loading"
+      (click)="testKey(myKey.value.trim())">
       <div id="button-label">
         Test
-        <mat-spinner *ngIf="(testStatus$ | async) === TestState.Loading" [diameter]="20"></mat-spinner>
+        <mat-spinner [diameter]="20"
+          *ngIf="(testStatus$ | async) === TestState.Loading"
+        ></mat-spinner>
         <!-- See https://fonts.google.com/icons for icon index -->
         <mat-icon color="warn"
           *ngIf="(testStatus$ | async) === TestState.Failure"
