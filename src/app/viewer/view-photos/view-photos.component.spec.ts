@@ -1,10 +1,10 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { NgxsModule, Select, Store } from '@ngxs/store';
 import { IPageInfo } from 'ngx-virtual-scroller';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 
 import { ExecutionState, PhotoState } from 'src/app/state/photo.store';
 import { IImageService, ImageService } from 'src/app/services/image.service';
@@ -177,12 +177,12 @@ describe('ViewPhotosComponent', () => {
   });
 
   describe('with spy API', () => {
+    let imageServiceSpy: jasmine.SpyObj<IImageService>;
 
     beforeEach(() => {
-      const imageServiceSpy: jasmine.SpyObj<IImageService>
-        = jasmine.createSpyObj('ImageService', ['loadPage']);
-      imageServiceSpy.loadPage.and.returnValue(
-        of(genResponse({ includePhotos: false })));
+      imageServiceSpy = jasmine.createSpyObj('ImageService', ['loadPage']);
+      imageServiceSpy.loadPage.and
+        .returnValue(of(genResponse({ includePhotos: false })));
       const config = {
         ...baseConfig,
         providers: [...baseConfig.providers, { provide: ImageService, useValue: imageServiceSpy }]
@@ -198,6 +198,7 @@ describe('ViewPhotosComponent', () => {
       fixture.detectChanges();
       expect(find('#noSearchPerformed')).not.toBeNull();
       expect(find('#noResultsFound')).toBeNull();
+      expect(find('#unauthorized')).toBeNull();
     });
 
     it('displays no-results-graphic with some input but no results', () => {
@@ -205,15 +206,36 @@ describe('ViewPhotosComponent', () => {
       fixture.detectChanges();
       expect(find('#noSearchPerformed')).toBeNull();
       expect(find('#noResultsFound')).not.toBeNull();
+      expect(find('#unauthorized')).toBeNull();
     });
 
-    it('does not display either empty graphic while loading', () => {
+    it('displays unauthorized-graphic for failed results', () => {
+      imageServiceSpy.loadPage.and
+        .returnValue(throwError(
+          new HttpErrorResponse({
+            status: 403,
+            statusText: 'OK',
+            // This structure mimics what Chrome shows on an actual error
+            error: { error: 'unauthorized' }
+          }))
+      );
+
+      store.dispatch(new SetSearchString('any'));
+      fixture.detectChanges();
+
+      expect(find('#noSearchPerformed')).toBeNull();
+      expect(find('#noResultsFound')).toBeNull();
+      expect(find('#unauthorized')).not.toBeNull();
+    });
+
+    it('does not display any graphic while loading', () => {
       fixture.detectChanges();
       component.fetchStatus = ExecutionState.Loading;
       fixture.detectChanges();
 
       expect(find('#noSearchPerformed')).toBeNull();
       expect(find('#noResultsFound')).toBeNull();
+      expect(find('#unauthorized')).toBeNull();
 
       store.dispatch(new SetSearchString('any'));
       fixture.detectChanges();
@@ -222,12 +244,14 @@ describe('ViewPhotosComponent', () => {
 
       expect(find('#noSearchPerformed')).toBeNull();
       expect(find('#noResultsFound')).toBeNull();
+      expect(find('#unauthorized')).toBeNull();
       fixture.detectChanges();
       component.fetchStatus = ExecutionState.Loading;
       fixture.detectChanges();
 
       expect(find('#noSearchPerformed')).toBeNull();
       expect(find('#noResultsFound')).toBeNull();
+      expect(find('#unauthorized')).toBeNull();
     });
 
   });

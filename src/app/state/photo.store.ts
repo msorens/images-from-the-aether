@@ -110,7 +110,7 @@ export class PhotoState {
           });
         },
         (errResponse: HttpErrorResponse) => {
-          console.log(errResponse.message);
+          console.log(`${errResponse.status}: ${errResponse.error.error || errResponse.error}`);
           patchState({
             photos: [],
             fetchStatus: ExecutionState.Failure,
