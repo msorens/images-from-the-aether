@@ -5,6 +5,7 @@ import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { NgxsModule, Select, Store } from '@ngxs/store';
 import { IPageInfo } from 'ngx-virtual-scroller';
 import { Observable, of, throwError } from 'rxjs';
+import { StatusCodes } from 'http-status-codes';
 
 import { ExecutionState, PhotoState } from 'src/app/state/photo.store';
 import { IImageService, ImageService } from 'src/app/services/image.service';
@@ -196,24 +197,20 @@ describe('ViewPhotosComponent', () => {
 
     it('displays no-search-started-graphic with no input', () => {
       fixture.detectChanges();
-      expect(find('#noSearchPerformed')).not.toBeNull();
-      expect(find('#noResultsFound')).toBeNull();
-      expect(find('#unauthorized')).toBeNull();
+      expectOnlyVisibleImage('noSearchPerformed');
     });
 
     it('displays no-results-graphic with some input but no results', () => {
       store.dispatch(new SetSearchString('any'));
       fixture.detectChanges();
-      expect(find('#noSearchPerformed')).toBeNull();
-      expect(find('#noResultsFound')).not.toBeNull();
-      expect(find('#unauthorized')).toBeNull();
+      expectOnlyVisibleImage('noResultsFound');
     });
 
-    it('displays unauthorized-graphic for failed results', () => {
+    it('displays unauthorized-graphic for authorization failure', () => {
       imageServiceSpy.loadPage.and
         .returnValue(throwError(
           new HttpErrorResponse({
-            status: 403,
+            status: StatusCodes.FORBIDDEN,
             statusText: 'OK',
             // This structure mimics what Chrome shows on an actual error
             error: { error: 'unauthorized' }
@@ -223,9 +220,23 @@ describe('ViewPhotosComponent', () => {
       store.dispatch(new SetSearchString('any'));
       fixture.detectChanges();
 
-      expect(find('#noSearchPerformed')).toBeNull();
-      expect(find('#noResultsFound')).toBeNull();
-      expect(find('#unauthorized')).not.toBeNull();
+      expectOnlyVisibleImage('unauthorized');
+    });
+
+    it('displays general-error-graphic for NON-authorization failure', () => {
+      imageServiceSpy.loadPage.and
+        .returnValue(throwError(
+          new HttpErrorResponse({
+            status: StatusCodes.GATEWAY_TIMEOUT,
+            statusText: 'OK',
+            error: { error: 'some other error' }
+          }))
+      );
+
+      store.dispatch(new SetSearchString('any'));
+      fixture.detectChanges();
+
+      expectOnlyVisibleImage('generalError');
     });
 
     it('does not display any graphic while loading', () => {
@@ -233,25 +244,7 @@ describe('ViewPhotosComponent', () => {
       component.fetchStatus = ExecutionState.Loading;
       fixture.detectChanges();
 
-      expect(find('#noSearchPerformed')).toBeNull();
-      expect(find('#noResultsFound')).toBeNull();
-      expect(find('#unauthorized')).toBeNull();
-
-      store.dispatch(new SetSearchString('any'));
-      fixture.detectChanges();
-      component.fetchStatus = ExecutionState.Loading;
-      fixture.detectChanges();
-
-      expect(find('#noSearchPerformed')).toBeNull();
-      expect(find('#noResultsFound')).toBeNull();
-      expect(find('#unauthorized')).toBeNull();
-      fixture.detectChanges();
-      component.fetchStatus = ExecutionState.Loading;
-      fixture.detectChanges();
-
-      expect(find('#noSearchPerformed')).toBeNull();
-      expect(find('#noResultsFound')).toBeNull();
-      expect(find('#unauthorized')).toBeNull();
+      expectOnlyVisibleImage();
     });
 
   });
@@ -342,6 +335,22 @@ describe('ViewPhotosComponent', () => {
 
   function findParentAs<T extends HTMLElement>(selector: string): T {
     return fixture.nativeElement.querySelector(selector).parentElement as T;
+  }
+
+  function findAllAs<T extends HTMLElement>(selector: string): T[] {
+    return Array.from((fixture.nativeElement as HTMLElement)
+      .querySelectorAll(selector))
+      .map(e => e as T);
+  }
+
+  function expectOnlyVisibleImage(imgId?: string): void {
+    findAllAs<HTMLImageElement>('.notice img').forEach(img => {
+      if (img.id === imgId) {
+        expect(img).not.toBeNull();
+      } else {
+        expect(img).toBeNull();
+      }
+    });
   }
 
 });

@@ -24,9 +24,20 @@
       src="assets/graphics/set-empty-picture-frames-with-free-space-inside-isolated-white_76080-5386.jpeg" >
   </div>
    <div class="notice"
-    *ngIf="fetchStatus === ExecutionState.Failure">
+    *ngIf="fetchStatus === ExecutionState.Failure && (statusCode$ | async) === StatusCodes.FORBIDDEN">
     <img id="unauthorized" height="80%" width="80%"
       src="assets/graphics/unauthorized.png" >
+      <div class="notice-note">
+        (Go to Dev Tools >> Application >> Local Storage in your browser and delete the stored key, then reload the page)
+      </div>
+  </div>
+  <div class="notice"
+    *ngIf="fetchStatus === ExecutionState.Failure && (statusCode$ | async) !== StatusCodes.FORBIDDEN">
+    <img id="generalError" height="80%" width="80%"
+      src="assets/graphics/general-error.png" >
+      <div class="notice-note">
+        (Error code {{ statusCode$ | async }})
+      </div>
   </div>
   <div class="notice"
     *ngIf="fetchStatus === ExecutionState.Uninitialized && photos.length === 0 && searchString.length === 0">

@@ -55,6 +55,11 @@ export class PhotoState {
   }
 
   @Selector()
+  public static statusCode(state: PhotoStateModel): StatusCodes {
+    return state.statusCode;
+  }
+
+  @Selector()
   public static photos(state: PhotoStateModel): Photo[] {
     return state.photos;
   }
