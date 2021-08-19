@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { NgxsModule, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
+import { StatusCodes } from 'http-status-codes';
 
 import { PhotoState, PhotoStateModel, STATE_NAME, ExecutionState } from 'src/app/state/photo.store';
 import { PageResponse, Photo } from 'src/app/models/Photo';
@@ -161,7 +162,8 @@ export function genState(): PhotoStateModel {
     testStatus: ExecutionState.Uninitialized,
     endOfInputReached: false,
     currentPage: 10,
-    itemsPerPage: 20
+    itemsPerPage: 20,
+    statusCode: StatusCodes.OK
   };
 }
 

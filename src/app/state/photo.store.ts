@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { StatusCodes } from 'http-status-codes';
 
 import { Photo } from 'src/app/models/Photo';
 import { ImageService } from 'src/app/services/image.service';
@@ -23,6 +24,7 @@ export interface PhotoStateModel {
   endOfInputReached: boolean;
   currentPage: number;
   itemsPerPage: number;
+  statusCode: StatusCodes;
 }
 
 @State<PhotoStateModel>({
@@ -34,7 +36,8 @@ export interface PhotoStateModel {
     testStatus: ExecutionState.Uninitialized,
     endOfInputReached: false,
     currentPage: 0,
-    itemsPerPage: 20
+    itemsPerPage: 20,
+    statusCode: StatusCodes.OK
   },
 })
 @Injectable()
@@ -76,7 +79,8 @@ export class PhotoState {
         currentPage: 0,
         photos: [],
         fetchStatus: ExecutionState.Uninitialized,
-        endOfInputReached: false
+        endOfInputReached: false,
+        statusCode: StatusCodes.OK
       });
   }
 
@@ -106,7 +110,8 @@ export class PhotoState {
           patchState({
             photos: response.photos,
             fetchStatus: ExecutionState.Success,
-            endOfInputReached: !response.next_page
+            endOfInputReached: !response.next_page,
+            statusCode: StatusCodes.OK
           });
         },
         (errResponse: HttpErrorResponse) => {
@@ -114,7 +119,8 @@ export class PhotoState {
           patchState({
             photos: [],
             fetchStatus: ExecutionState.Failure,
-            endOfInputReached: false
+            endOfInputReached: false,
+            statusCode: errResponse.status
           });
         }
       );
