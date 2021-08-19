@@ -6,7 +6,7 @@ import { NgxsModule, Select, Store } from '@ngxs/store';
 import { IPageInfo } from 'ngx-virtual-scroller';
 import { Observable, of } from 'rxjs';
 
-import { PhotoState } from 'src/app/state/photo.store';
+import { ExecutionState, PhotoState } from 'src/app/state/photo.store';
 import { IImageService, ImageService } from 'src/app/services/image.service';
 import { Photo } from 'src/app/models/Photo';
 import { FetchPhotos, SetSearchString } from 'src/app/state/photo.actions';
@@ -44,7 +44,7 @@ describe('ViewPhotosComponent', () => {
       const originalPhotoQty = 10;
       component.photos = genPhotos(1000, originalPhotoQty);
       expect(component.photos.length).toBe(originalPhotoQty);
-      component.fetchStatus = true;
+      component.fetchStatus = ExecutionState.Loading;
 
       component.fetchMore({ endIndex: originalPhotoQty - 1 } as IPageInfo);
       fixture.detectChanges();
@@ -137,13 +137,16 @@ describe('ViewPhotosComponent', () => {
 
     it('displays spinner while fetching photos', () => {
       const monitor = new LoadingMonitor();
-      expect(monitor.events).toEqual([false]); // initialization
+      expect(monitor.events).toEqual([ExecutionState.Uninitialized]); // initialization
 
       store.dispatch(new FetchPhotos());
 
-      // State of fetchStatus$ displays/hides the spinner.
-      // Thus, toggling to true then back to false confirms the spinner shows appropriately.
-      expect(monitor.events).toEqual([false, true, false]);
+      // Spinner only appears during loading state, so if this sequence is observed
+      // then spinner visibility is correct.
+      expect(monitor.events).toEqual(
+        [ExecutionState.Uninitialized, ExecutionState.Loading, ExecutionState.Success],
+        'should have seen (0) Uninitialized, (1) Loading, and (2) Success'
+      );
     });
 
     it('displays end marker when collection exhausted (rendering)', () => {
@@ -206,7 +209,7 @@ describe('ViewPhotosComponent', () => {
 
     it('does not display either empty graphic while loading', () => {
       fixture.detectChanges();
-      component.fetchStatus = true;
+      component.fetchStatus = ExecutionState.Loading;
       fixture.detectChanges();
 
       expect(find('#noSearchPerformed')).toBeNull();
@@ -214,13 +217,13 @@ describe('ViewPhotosComponent', () => {
 
       store.dispatch(new SetSearchString('any'));
       fixture.detectChanges();
-      component.fetchStatus = true;
+      component.fetchStatus = ExecutionState.Loading;
       fixture.detectChanges();
 
       expect(find('#noSearchPerformed')).toBeNull();
       expect(find('#noResultsFound')).toBeNull();
       fixture.detectChanges();
-      component.fetchStatus = true;
+      component.fetchStatus = ExecutionState.Loading;
       fixture.detectChanges();
 
       expect(find('#noSearchPerformed')).toBeNull();
@@ -320,11 +323,12 @@ describe('ViewPhotosComponent', () => {
 });
 
 class LoadingMonitor {
-  @Select(PhotoState.fetchStatus) fetchStatus$!: Observable<boolean>;
-  public events: boolean[] = [];
+  @Select(PhotoState.fetchStatus) fetchStatus$!: Observable<ExecutionState>;
+  public events: ExecutionState[] = [];
 
   constructor() {
-    this.fetchStatus$.subscribe(status => { this.events.push(status); });
+    this.fetchStatus$.subscribe(
+      status => { this.events.push(status); });
   }
 }
 

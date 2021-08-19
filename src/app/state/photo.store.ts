@@ -18,7 +18,7 @@ export const STATE_NAME = 'imageCollection';
 export interface PhotoStateModel {
   searchString: string;
   photos: Photo[];
-  fetchStatus: boolean;
+  fetchStatus: ExecutionState;
   testStatus: ExecutionState;
   endOfInputReached: boolean;
   currentPage: number;
@@ -30,7 +30,7 @@ export interface PhotoStateModel {
   defaults: {
     searchString: '',
     photos: [],
-    fetchStatus: false,
+    fetchStatus: ExecutionState.Uninitialized,
     testStatus: ExecutionState.Uninitialized,
     endOfInputReached: false,
     currentPage: 0,
@@ -47,7 +47,7 @@ export class PhotoState {
   }
 
   @Selector()
-  public static fetchStatus(state: PhotoStateModel): boolean {
+  public static fetchStatus(state: PhotoStateModel): ExecutionState {
     return state.fetchStatus;
   }
 
@@ -75,7 +75,7 @@ export class PhotoState {
         searchString,
         currentPage: 0,
         photos: [],
-        fetchStatus: false,
+        fetchStatus: ExecutionState.Uninitialized,
         endOfInputReached: false
       });
   }
@@ -88,7 +88,7 @@ export class PhotoState {
     const [itemsPerPage, currentPage] = [state.itemsPerPage, state.currentPage + 1];
     patchState({
       currentPage,
-      fetchStatus: true
+      fetchStatus: ExecutionState.Loading
     });
 
     // page index is 1-based not 0-based here
@@ -105,7 +105,7 @@ export class PhotoState {
           }
           patchState({
             photos: response.photos,
-            fetchStatus: false,
+            fetchStatus: ExecutionState.Success,
             endOfInputReached: !response.next_page
           });
         },
@@ -113,7 +113,7 @@ export class PhotoState {
           console.log(errResponse.message);
           patchState({
             photos: [],
-            fetchStatus: false,
+            fetchStatus: ExecutionState.Failure,
             endOfInputReached: false
           });
         }

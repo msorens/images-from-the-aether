@@ -157,7 +157,7 @@ export function genState(): PhotoStateModel {
   return {
     searchString: 'dog',
     photos: genPhotos(STATE_BASE, STATE_PHOTO_COUNT),
-    fetchStatus: false,
+    fetchStatus: ExecutionState.Uninitialized,
     testStatus: ExecutionState.Uninitialized,
     endOfInputReached: false,
     currentPage: 10,
