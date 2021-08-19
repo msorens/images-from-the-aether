@@ -97,16 +97,11 @@ describe('ViewPhotosComponent', () => {
     });
 
     it('signals modal to open when user selects an image', () => {
-      const photo: Photo = {
-        src: {
-          medium: 'some-medium-url'
-        }
-      } as Photo;
       let emitted = false;
       component.detailModalVisibility.subscribe((event: string) => {
         emitted = true;
       });
-      component.showDetail(photo);
+      component.showDetail(genPhoto());
       fixture.detectChanges();
 
       expect(emitted).toBeTrue();
@@ -244,7 +239,7 @@ describe('ViewPhotosComponent', () => {
       component.fetchStatus = ExecutionState.Loading;
       fixture.detectChanges();
 
-      expectOnlyVisibleImage();
+      expect(findAllAs<HTMLImageElement>('.notice img')).toEqual([]);
     });
 
   });
@@ -266,11 +261,7 @@ describe('ViewPhotosComponent', () => {
     });
 
     it('renders larger image of selected photo in modal', () => {
-      const photo: Photo = {
-        src: {
-          large: 'some-large-url'
-        }
-      } as Photo;
+      const photo = genPhoto();
       component.showDetail(photo);
       fixture.detectChanges();
 
@@ -279,12 +270,7 @@ describe('ViewPhotosComponent', () => {
     });
 
     it('renders author of photo\'s name in modal', () => {
-      const photo: Photo = {
-        src: {
-          medium: 'some-medium-url'
-        },
-        photographer: 'bob smith'
-      } as Photo;
+      const photo = genPhoto();
       component.showDetail(photo);
       fixture.detectChanges();
 
@@ -292,13 +278,7 @@ describe('ViewPhotosComponent', () => {
     });
 
     it('renders link to author enclosing the name', () => {
-      const photo: Photo = {
-        src: {
-          medium: 'some-medium-url'
-        },
-        photographer: 'bob smith',
-        photographer_url: 'http://www.any.com/'
-      } as Photo;
+      const photo = genPhoto();
       component.showDetail(photo);
       fixture.detectChanges();
 
@@ -309,14 +289,7 @@ describe('ViewPhotosComponent', () => {
     it('link to author will open in a new tab (or window)', () => {
       // Default is a new tab; users can configure otherwise.
       // See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#attr-target
-      const photo: Photo = {
-        src: {
-          medium: 'some-medium-url',
-        },
-        photographer: 'bob smith',
-        photographer_url: 'http://www.any.com/',
-      } as Photo;
-      component.showDetail(photo);
+      component.showDetail(genPhoto());
       fixture.detectChanges();
 
       const anchorElement = findAs<HTMLAnchorElement>('app-base-modal a');
@@ -343,7 +316,7 @@ describe('ViewPhotosComponent', () => {
       .map(e => e as T);
   }
 
-  function expectOnlyVisibleImage(imgId?: string): void {
+  function expectOnlyVisibleImage(imgId: string): void {
     findAllAs<HTMLImageElement>('.notice img').forEach(img => {
       if (img.id === imgId) {
         expect(img).not.toBeNull();
@@ -353,6 +326,16 @@ describe('ViewPhotosComponent', () => {
     });
   }
 
+  function genPhoto(): Photo {
+    return {
+      src: {
+        large: 'some-large-url',
+        medium: 'some-medium-url'
+      },
+      photographer: 'bob smith',
+      photographer_url: 'http://www.any.com/',
+    } as Photo;
+  }
 });
 
 class LoadingMonitor {
