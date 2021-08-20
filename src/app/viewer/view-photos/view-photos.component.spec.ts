@@ -7,6 +7,7 @@ import { IPageInfo } from 'ngx-virtual-scroller';
 import { Observable, of, throwError } from 'rxjs';
 import { StatusCodes } from 'http-status-codes';
 
+import { find, findAllAs, findAs, findParentAs, setFixture } from 'src/app/utility/queryHelper';
 import { ExecutionState, PhotoState } from 'src/app/state/photo.store';
 import { IImageService, ImageService } from 'src/app/services/image.service';
 import { Photo } from 'src/app/models/Photo';
@@ -119,6 +120,7 @@ describe('ViewPhotosComponent', () => {
       TestBed.configureTestingModule(config).compileComponents();
       store = TestBed.inject(Store);
       fixture = TestBed.createComponent(ViewPhotosComponent);
+      setFixture(fixture);
       component = fixture.debugElement.componentInstance;
     });
 
@@ -187,6 +189,7 @@ describe('ViewPhotosComponent', () => {
 
       store = TestBed.inject(Store);
       fixture = TestBed.createComponent(ViewPhotosComponent);
+      setFixture(fixture);
       component = fixture.debugElement.componentInstance;
     });
 
@@ -257,6 +260,7 @@ describe('ViewPhotosComponent', () => {
 
       store = TestBed.inject(Store);
       fixture = TestBed.createComponent(ViewPhotosComponent);
+      setFixture(fixture);
       component = fixture.debugElement.componentInstance;
     });
 
@@ -274,7 +278,7 @@ describe('ViewPhotosComponent', () => {
       component.showDetail(photo);
       fixture.detectChanges();
 
-      expect(find('app-base-modal #author').textContent).toBe(photo.photographer);
+      expect(find('app-base-modal #author')?.textContent).toBe(photo.photographer);
     });
 
     it('renders link to author enclosing the name', () => {
@@ -297,24 +301,6 @@ describe('ViewPhotosComponent', () => {
     });
 
   });
-
-  function find(selector: string): HTMLElement {
-    return fixture.nativeElement.querySelector(selector);
-  }
-
-  function findAs<T>(selector: string): T {
-    return fixture.nativeElement.querySelector(selector) as T;
-  }
-
-  function findParentAs<T extends HTMLElement>(selector: string): T {
-    return fixture.nativeElement.querySelector(selector).parentElement as T;
-  }
-
-  function findAllAs<T extends HTMLElement>(selector: string): T[] {
-    return Array.from((fixture.nativeElement as HTMLElement)
-      .querySelectorAll(selector))
-      .map(e => e as T);
-  }
 
   function expectOnlyVisibleImage(imgId: string): void {
     findAllAs<HTMLImageElement>('.notice img').forEach(img => {

@@ -1,5 +1,6 @@
 import { Component, EventEmitter } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { find, setFixture } from 'src/app/utility/queryHelper';
 import { BaseModalComponent } from './base-modal.component';
 
 @Component({
@@ -29,9 +30,10 @@ describe('BaseModalComponent', () => {
   );
   beforeEach(() => {
     fixture = TestBed.createComponent(TestHostComponent);
+    setFixture(fixture);
     hostComponent = fixture.componentInstance;
     modalComponent = fixture.debugElement.children[0].componentInstance;
-    modalElement = find('app-base-modal');
+    modalElement = find('app-base-modal') as HTMLElement;
     modalComponent.visibility = new EventEmitter<boolean>();
   });
 
@@ -58,7 +60,7 @@ describe('BaseModalComponent', () => {
     openModal();
     expect(isModalVisible()).toBeTrue();
 
-    find('.modal-background').click();
+    find('.modal-background')?.click();
 
     expect(isModalVisible()).toBeFalse();
   });
@@ -72,7 +74,7 @@ describe('BaseModalComponent', () => {
     openModal();
     expect(isModalVisible()).toBeTrue();
 
-    find('.modal-body').click();
+    find('.modal-body')?.click();
 
     expect(isModalVisible()).toBeTrue();
   });
@@ -81,7 +83,7 @@ describe('BaseModalComponent', () => {
     openModal();
     expect(isModalVisible()).toBeTrue();
 
-    find('#myContent').click();
+    find('#myContent')?.click();
 
     expect(isModalVisible()).toBeTrue();
   });
@@ -129,9 +131,5 @@ describe('BaseModalComponent', () => {
   function isModalVisible(): boolean {
     fixture.detectChanges();
     return modalElement.classList.contains('visible');
-  }
-
-  function find(selector: string): HTMLElement {
-    return fixture.nativeElement.querySelector(selector);
   }
 });

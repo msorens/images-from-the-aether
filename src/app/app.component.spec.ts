@@ -11,6 +11,7 @@ import { SetSearchString } from './state/photo.actions';
 import { PhotoState, STATE_NAME, ExecutionState } from './state/photo.store';
 import { IKeyService, KeyService } from './services/key.service';
 import { AppComponent } from './app.component';
+import { find, findAllAs, findAs, findOneAs, setFixture } from './utility/queryHelper';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -43,6 +44,7 @@ describe('AppComponent', () => {
     beforeEach(() => {
       TestBed.configureTestingModule(config).compileComponents();
       fixture = TestBed.createComponent(AppComponent);
+      setFixture(fixture);
       component = fixture.componentInstance;
     });
 
@@ -61,6 +63,7 @@ describe('AppComponent', () => {
     beforeEach(() => {
       TestBed.configureTestingModule(config).compileComponents();
       fixture = TestBed.createComponent(AppComponent);
+      setFixture(fixture);
       component = fixture.componentInstance;
     });
 
@@ -110,6 +113,7 @@ describe('AppComponent', () => {
     beforeEach(() => {
       TestBed.configureTestingModule(config).compileComponents();
       fixture = TestBed.createComponent(AppComponent);
+      setFixture(fixture);
       component = fixture.componentInstance;
       store = TestBed.inject(Store);
     });
@@ -202,6 +206,7 @@ describe('AppComponent', () => {
     beforeEach(async () => {
       await TestBed.configureTestingModule(config).compileComponents();
       fixture = TestBed.createComponent(AppComponent);
+      setFixture(fixture);
       component = fixture.componentInstance;
       store = TestBed.inject(Store);
     });
@@ -257,28 +262,6 @@ describe('AppComponent', () => {
     });
 
   });
-
-  function find(selector: string): HTMLElement | null {
-    return (fixture.nativeElement as HTMLElement).querySelector(selector);
-  }
-
-  function findAs<T extends HTMLElement>(selector: string): T {
-    return (fixture.nativeElement as HTMLElement).querySelector(selector) as T;
-  }
-
-  function findAllAs<T extends HTMLElement>(selector: string): T[] {
-    return Array.from((fixture.nativeElement as HTMLElement)
-      .querySelectorAll(selector))
-      .map(e => e as T);
-  }
-
-  function findOneAs<T extends HTMLElement>(selector: string, text: string): T | null {
-    const results = Array.from((fixture.nativeElement as HTMLElement)
-      .querySelectorAll(selector))
-      .map(e => e as T)
-      .find(e => e.textContent && e.textContent.indexOf(text) >= 0);
-    return results === undefined ? null : results;
-  }
 
   function setInputValue(selector: string, value: string): void {
     fixture.detectChanges();
