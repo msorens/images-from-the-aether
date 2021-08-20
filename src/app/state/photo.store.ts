@@ -16,6 +16,11 @@ export enum ExecutionState {
 }
 
 export const STATE_NAME = 'imageCollection';
+
+export interface ApiResponse {
+  statusCode: StatusCodes;
+  statusMsg: string;
+}
 export interface PhotoStateModel {
   searchString: string;
   photos: Photo[];
@@ -24,7 +29,7 @@ export interface PhotoStateModel {
   endOfInputReached: boolean;
   currentPage: number;
   itemsPerPage: number;
-  statusCode: StatusCodes;
+  apiResponse: ApiResponse;
 }
 
 @State<PhotoStateModel>({
@@ -37,7 +42,10 @@ export interface PhotoStateModel {
     endOfInputReached: false,
     currentPage: 0,
     itemsPerPage: 20,
-    statusCode: StatusCodes.OK
+    apiResponse: {
+      statusCode: StatusCodes.OK,
+      statusMsg: ''
+    }
   },
 })
 @Injectable()
@@ -55,8 +63,8 @@ export class PhotoState {
   }
 
   @Selector()
-  public static statusCode(state: PhotoStateModel): StatusCodes {
-    return state.statusCode;
+  public static apiResponse(state: PhotoStateModel): ApiResponse {
+    return state.apiResponse;
   }
 
   @Selector()
@@ -85,7 +93,10 @@ export class PhotoState {
         photos: [],
         fetchStatus: ExecutionState.Uninitialized,
         endOfInputReached: false,
-        statusCode: StatusCodes.OK
+        apiResponse: {
+          statusCode: StatusCodes.OK,
+          statusMsg: ''
+        }
       });
   }
 
@@ -116,7 +127,10 @@ export class PhotoState {
             photos: response.photos,
             fetchStatus: ExecutionState.Success,
             endOfInputReached: !response.next_page,
-            statusCode: StatusCodes.OK
+            apiResponse: {
+              statusCode: StatusCodes.OK,
+              statusMsg: ''
+            },
           });
         },
         (errResponse: HttpErrorResponse) => {
@@ -125,7 +139,10 @@ export class PhotoState {
             photos: [],
             fetchStatus: ExecutionState.Failure,
             endOfInputReached: false,
-            statusCode: errResponse.status
+            apiResponse: {
+              statusCode: errResponse.status,
+              statusMsg: errResponse.error.error || errResponse.error
+            }
           });
         }
       );

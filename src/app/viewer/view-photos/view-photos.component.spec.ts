@@ -1,15 +1,15 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { NgxsModule, Select, Store } from '@ngxs/store';
 import { IPageInfo } from 'ngx-virtual-scroller';
 import { Observable, of, throwError } from 'rxjs';
-import { StatusCodes } from 'http-status-codes';
+import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 
 import { find, findAllAs, findAs, findParentAs, setFixture } from 'src/app/utility/queryHelper';
 import { ExecutionState, PhotoState } from 'src/app/state/photo.store';
-import { IImageService, ImageService } from 'src/app/services/image.service';
+import { generateErrorResponse, IImageService, ImageService } from 'src/app/services/image.service';
 import { Photo } from 'src/app/models/Photo';
 import { FetchPhotos, SetSearchString } from 'src/app/state/photo.actions';
 import { genPhotos, genResponse, MockImageService, RESPONSE_PHOTO_COUNT } from 'src/app/state/photo.store.spec';
@@ -207,13 +207,8 @@ describe('ViewPhotosComponent', () => {
     it('displays unauthorized-graphic for authorization failure', () => {
       imageServiceSpy.loadPage.and
         .returnValue(throwError(
-          new HttpErrorResponse({
-            status: StatusCodes.FORBIDDEN,
-            statusText: 'OK',
-            // This structure mimics what Chrome shows on an actual error
-            error: { error: 'unauthorized' }
-          }))
-      );
+          generateErrorResponse(StatusCodes.FORBIDDEN, 'unauthorized')
+        ));
 
       store.dispatch(new SetSearchString('any'));
       fixture.detectChanges();
@@ -221,20 +216,44 @@ describe('ViewPhotosComponent', () => {
       expectOnlyVisibleImage('unauthorized');
     });
 
+    it('displays note for authorization failure', () => {
+      imageServiceSpy.loadPage.and
+        .returnValue(throwError(
+          generateErrorResponse(StatusCodes.FORBIDDEN, 'unauthorized')
+        ));
+
+      store.dispatch(new SetSearchString('any'));
+      fixture.detectChanges();
+
+      const note = find('#unauthorized + .notice-note');
+      expect(note?.textContent?.indexOf('Go to Dev Tools')).toBeGreaterThanOrEqual(0);
+    });
+
     it('displays general-error-graphic for NON-authorization failure', () => {
       imageServiceSpy.loadPage.and
         .returnValue(throwError(
-          new HttpErrorResponse({
-            status: StatusCodes.GATEWAY_TIMEOUT,
-            statusText: 'OK',
-            error: { error: 'some other error' }
-          }))
-      );
+          generateErrorResponse(StatusCodes.GATEWAY_TIMEOUT, 'some other error')
+        ));
 
       store.dispatch(new SetSearchString('any'));
       fixture.detectChanges();
 
       expectOnlyVisibleImage('generalError');
+    });
+
+    it('displays error code and message for NON-authorization failure', () => {
+      imageServiceSpy.loadPage.and
+        .returnValue(throwError(
+          generateErrorResponse(StatusCodes.GATEWAY_TIMEOUT, 'some other error')
+        ));
+
+      store.dispatch(new SetSearchString('any'));
+      fixture.detectChanges();
+
+      const note = find('#generalError + .notice-note');
+      expect(note?.textContent?.indexOf('some other error')).toBeGreaterThanOrEqual(0);
+      expect(note?.textContent?.indexOf(String(StatusCodes.GATEWAY_TIMEOUT))).toBeGreaterThanOrEqual(0);
+      expect(note?.textContent?.indexOf(getReasonPhrase(StatusCodes.GATEWAY_TIMEOUT))).toBeGreaterThanOrEqual(0);
     });
 
     it('does not display any graphic while loading', () => {

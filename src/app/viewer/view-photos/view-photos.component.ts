@@ -4,9 +4,9 @@ import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { IPageInfo } from 'ngx-virtual-scroller';
-import { StatusCodes } from 'http-status-codes';
+import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 
-import { ExecutionState, PhotoState } from 'src/app/state/photo.store';
+import { ApiResponse, ExecutionState, PhotoState } from 'src/app/state/photo.store';
 import { Photo } from 'src/app/models/Photo';
 import { FetchPhotos } from 'src/app/state/photo.actions';
 
@@ -25,11 +25,12 @@ export class ViewPhotosComponent implements OnInit {
 
   ExecutionState = ExecutionState; // This peculiar statement exposes the enum in the template.
   StatusCodes = StatusCodes;
+  getReasonPhrase = getReasonPhrase;
 
   constructor(private store: Store, private ngZone: NgZone) {}
 
   @Select(PhotoState.fetchStatus) fetchStatus$!: Observable<ExecutionState>;
-  @Select(PhotoState.statusCode) statusCode$!: Observable<StatusCodes>;
+  @Select(PhotoState.apiResponse) apiResponse$!: Observable<ApiResponse>;
   @Select(PhotoState.endOfInputReached) endOfInputReached$!: Observable<boolean>;
   @Select(PhotoState.photos) photos$!: Observable<Photo[]>;
   @Select(PhotoState.searchString) searchString$!: Observable<string>;

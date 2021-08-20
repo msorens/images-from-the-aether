@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
+import { StatusCodes } from 'http-status-codes';
 import { PageResponse } from 'src/app/models/Photo';
 import { KeyService } from './key.service';
 
@@ -24,7 +25,8 @@ export class ImageService implements IImageService {
     const apiKey = this.keyStore.get();
     if (!apiKey) {
       // UI safeguard against empty key should make this line unreachable
-      return throwError(new Error('no api key loaded!'));
+      return throwError(
+        generateErrorResponse(StatusCodes.PRECONDITION_FAILED, 'no api key loaded!'));
     }
     return this.fetch(apiKey, searchString, itemsPerPage, pageId);
   }
@@ -41,6 +43,15 @@ export class ImageService implements IImageService {
       }
     });
   }
+}
+
+export function generateErrorResponse(status: StatusCodes, message: string): HttpErrorResponse {
+  return new HttpErrorResponse({
+    status,
+    statusText: 'OK',
+    // This structure mimics what Chrome shows on an actual error
+    error: { error: message }
+  });
 }
 
 export interface IImageService {

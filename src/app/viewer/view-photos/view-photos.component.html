@@ -24,7 +24,7 @@
       src="assets/graphics/set-empty-picture-frames-with-free-space-inside-isolated-white_76080-5386.jpeg" >
   </div>
    <div class="notice"
-    *ngIf="fetchStatus === ExecutionState.Failure && (statusCode$ | async) === StatusCodes.FORBIDDEN">
+    *ngIf="fetchStatus === ExecutionState.Failure && (apiResponse$ | async)?.statusCode === StatusCodes.FORBIDDEN">
     <img id="unauthorized" height="80%" width="80%"
       src="assets/graphics/unauthorized.png" >
       <div class="notice-note">
@@ -32,11 +32,13 @@
       </div>
   </div>
   <div class="notice"
-    *ngIf="fetchStatus === ExecutionState.Failure && (statusCode$ | async) !== StatusCodes.FORBIDDEN">
+    *ngIf="fetchStatus === ExecutionState.Failure && (apiResponse$ | async)?.statusCode !== StatusCodes.FORBIDDEN">
     <img id="generalError" height="80%" width="80%"
       src="assets/graphics/general-error.png" >
       <div class="notice-note">
-        (Error code {{ statusCode$ | async }})
+        (If you really want to know, the HTTP response was
+        <br>
+        [ {{ (apiResponse$ | async)?.statusCode }} {{ getReasonPhrase((apiResponse$ | async)?.statusCode || 0) }} ] {{ (apiResponse$ | async)?.statusMsg }})
       </div>
   </div>
   <div class="notice"

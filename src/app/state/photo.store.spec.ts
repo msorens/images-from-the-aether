@@ -163,7 +163,10 @@ export function genState(): PhotoStateModel {
     endOfInputReached: false,
     currentPage: 10,
     itemsPerPage: 20,
-    statusCode: StatusCodes.OK
+    apiResponse: {
+      statusCode: StatusCodes.OK,
+      statusMsg: ''
+    }
   };
 }
 
