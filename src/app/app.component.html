@@ -1,4 +1,9 @@
 <h1>Images from the Aether</h1>
+<div class="apikey"
+  (click)="setVisibility(true)"
+  title="Set or test API key">
+  <mat-icon>vpn_key</mat-icon>
+</div>
 <form [formGroup]="searchForm">
   <label for="searchString">Search string</label>
   <input type="text" (keyup)="handleKeyup($event)" required formControlName="searchString" id="searchString">

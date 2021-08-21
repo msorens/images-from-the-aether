@@ -54,7 +54,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     const apiKey = this.keyStore.get();
     if (!apiKey) {
-      this.keyModalVisibility.emit(true);
+      this.setVisibility(true);
     }
   }
 
@@ -65,10 +65,14 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   saveKey(key: string): void {
     this.keyStore.set(key);
-    this.keyModalVisibility.emit(false);
+    this.setVisibility(false);
   }
 
   testKey(key: string): void {
     this.store.dispatch(new TestApi(key));
+  }
+
+  setVisibility(state: boolean): void {
+    this.keyModalVisibility.emit(state);
   }
 }

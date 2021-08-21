@@ -67,7 +67,7 @@ describe('AppComponent', () => {
       component = fixture.componentInstance;
     });
 
-    it('pops up the key-entering modal when no key found stored', () => {
+    it('opens the key-entering modal automatically when no key found stored', () => {
       let emitted = false;
       keyServiceSpy.get.and.returnValue('');
       component.keyModalVisibility.subscribe((setVisible: boolean) => {
@@ -80,15 +80,30 @@ describe('AppComponent', () => {
       expect(emitted).toBeTrue();
     });
 
-    it('does NOT pop up the key-entering modal when key is found stored', () => {
+    it('does NOT open the key-entering modal automatically when key is found stored', () => {
       let emitted = false;
-      keyServiceSpy.get.and.returnValue('any');
+      keyServiceSpy.get.and.returnValue('any non-empty');
       component.keyModalVisibility.subscribe((setVisible: boolean) => {
         emitted = true;
       });
       fixture.detectChanges();
 
       expect(emitted).toBeFalse();
+    });
+
+    it('opens the key-entering modal manually by clicking on the key icon', () => {
+      let emitted = false;
+      keyServiceSpy.get.and.returnValue('any non-empty');
+      component.keyModalVisibility.subscribe((setVisible: boolean) => {
+        if (setVisible) {
+          emitted = true;
+        }
+      });
+      fixture.detectChanges();
+      expect(emitted).toBeFalse(); // baseline; not open yet
+
+      find('.apikey')?.click();
+      expect(emitted).toBeTrue();
     });
 
     it('stores the user-entered key in browser local storage', () => {
