@@ -5,7 +5,6 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 
 import { ViewerRouting } from './viewer.routing';
 import { ViewPhotosComponent } from './view-photos/view-photos.component';
-import { ModalComponent } from './modal/modal.component';
 import { BaseModalComponent } from './base-modal/base-modal.component';
 
 @NgModule({
@@ -15,7 +14,7 @@ import { BaseModalComponent } from './base-modal/base-modal.component';
     ViewerRouting,
     VirtualScrollerModule
   ],
-  declarations: [ViewPhotosComponent, ModalComponent, BaseModalComponent],
+  declarations: [ViewPhotosComponent, BaseModalComponent],
   exports: [
     ViewPhotosComponent,
     BaseModalComponent
