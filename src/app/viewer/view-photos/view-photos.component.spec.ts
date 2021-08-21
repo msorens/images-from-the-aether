@@ -226,7 +226,7 @@ describe('ViewPhotosComponent', () => {
       fixture.detectChanges();
 
       const note = find('#unauthorized + .notice-note');
-      expect(note?.textContent?.indexOf('Go to Dev Tools')).toBeGreaterThanOrEqual(0);
+      expect(note?.textContent).toMatch('Select the key.*re-enter your API key');
     });
 
     it('displays general-error-graphic for NON-authorization failure', () => {
@@ -251,9 +251,9 @@ describe('ViewPhotosComponent', () => {
       fixture.detectChanges();
 
       const note = find('#generalError + .notice-note');
-      expect(note?.textContent?.indexOf('some other error')).toBeGreaterThanOrEqual(0);
-      expect(note?.textContent?.indexOf(String(StatusCodes.GATEWAY_TIMEOUT))).toBeGreaterThanOrEqual(0);
-      expect(note?.textContent?.indexOf(getReasonPhrase(StatusCodes.GATEWAY_TIMEOUT))).toBeGreaterThanOrEqual(0);
+      expect(note?.textContent).toMatch('some other error');
+      expect(note?.textContent).toMatch(String(StatusCodes.GATEWAY_TIMEOUT));
+      expect(note?.textContent).toMatch(getReasonPhrase(StatusCodes.GATEWAY_TIMEOUT));
     });
 
     it('does not display any graphic while loading', () => {

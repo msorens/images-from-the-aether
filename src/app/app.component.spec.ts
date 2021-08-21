@@ -11,7 +11,7 @@ import { SetSearchString } from './state/photo.actions';
 import { PhotoState, STATE_NAME, ExecutionState } from './state/photo.store';
 import { IKeyService, KeyService } from './services/key.service';
 import { AppComponent } from './app.component';
-import { find, findAllAs, findAs, findOneAs, setFixture } from './utility/queryHelper';
+import { cssSelector, find, findAllAs, findAs, findOneAs, setFixture } from './utility/queryHelper';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -142,8 +142,8 @@ describe('AppComponent', () => {
       expect(buttons.length).toBe(2);
 
       ['Save', 'Test'].forEach(label => {
-        expect(buttons.filter(b => b.textContent && b.textContent.indexOf(label) >= 0).length)
-          .toBe(1, `no button with text "${label}" found`);
+        expect(findOneAs<HTMLButtonElement>(buttons, label))
+          .not.toBeNull(`no button with text "${label}" found`);
       });
     });
 
@@ -278,7 +278,7 @@ describe('AppComponent', () => {
 
   });
 
-  function setInputValue(selector: string, value: string): void {
+  function setInputValue(selector: cssSelector, value: string): void {
     fixture.detectChanges();
     const inputElem = findAs<HTMLInputElement>(selector);
     inputElem.value = value;

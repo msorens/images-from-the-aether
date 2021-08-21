@@ -7,38 +7,39 @@ export function setFixture(userFixture: ComponentFixture<any>): void {
   fixture = userFixture;
 }
 
+export type cssSelector = string;
+
 // return a single element matching the CSS selector.
-export function find(selector: string): HTMLElement | null {
+export function find(selector: cssSelector): HTMLElement | null {
   return (fixture.nativeElement as HTMLElement).querySelector(selector);
 }
 
 // return a single element matching the CSS selector and coerce to type T.
-export function findAs<T extends HTMLElement>(selector: string): T {
+export function findAs<T extends HTMLElement>(selector: cssSelector): T {
   return (fixture.nativeElement as HTMLElement).querySelector(selector) as T;
 }
 
 // return the parent of the element matching the CSS selector as type T.
-export function findParentAs<T extends HTMLElement>(selector: string): T {
+export function findParentAs<T extends HTMLElement>(selector: cssSelector): T {
   return (fixture.nativeElement as HTMLElement).querySelector(selector)
     ?.parentElement as T;
 }
 
 // return all elements matching the CSS selector as an array of type T.
-export function findAllAs<T extends HTMLElement>(selector: string): T[] {
+export function findAllAs<T extends HTMLElement>(selector: cssSelector): T[] {
   return Array.from(
     (fixture.nativeElement as HTMLElement).querySelectorAll(selector)
   ).map((e) => e as T);
 }
 
-// return a single element from a matching collection differentiated by text content "text".
+// return a single element from a collection differentiated by specified text content.
+// can feed an element array or a CSS selector as input.
 export function findOneAs<T extends HTMLElement>(
-  selector: string,
+  target: cssSelector | T[],
   text: string
 ): T | null {
-  const results = Array.from(
-    (fixture.nativeElement as HTMLElement).querySelectorAll(selector)
-  )
-    .map((e) => e as T)
-    .find((e) => e.textContent && e.textContent.indexOf(text) >= 0);
-  return results === undefined ? null : results;
+  const elements: T[] = (typeof(target) === 'string')
+    ? Array.from((fixture.nativeElement as HTMLElement).querySelectorAll(target as string))
+    : target;
+  return elements.find(e => e.textContent && e.textContent.indexOf(text) >= 0) || null;
 }
