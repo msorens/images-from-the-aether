@@ -226,54 +226,62 @@ describe('AppComponent', () => {
       store = TestBed.inject(Store);
     });
 
-    it('images are fetched on every keystroke (after debounce period)', fakeAsync(
-      (): void => {
-        spyOn(store, 'dispatch');
-        const searchString = 'tiger';
-        setInputValue('#searchString', searchString);
-        tick(component.DEBOUNCE_TIME);
+    describe('react to keystrokes', () => {
 
-        expect(store.dispatch).toHaveBeenCalledWith(new SetSearchString(searchString));
-      }));
-
-    it('images are NOT fetched if debounce period has not expired', fakeAsync(
-      (): void => {
-        spyOn(store, 'dispatch');
-        const searchString = 'any';
-        setInputValue('#searchString', searchString);
-
-        tick(component.DEBOUNCE_TIME / 2);
-        expect(store.dispatch).not.toHaveBeenCalled();
-
-        tick(component.DEBOUNCE_TIME);
-        expect(store.dispatch).toHaveBeenCalled();
-      }));
-
-    it('images are NOT fetched when input is empty', fakeAsync(
-      (): void => {
-        spyOn(store, 'dispatch');
-        const searchString = '';
-        setInputValue('#searchString', searchString);
-        tick(component.DEBOUNCE_TIME);
-
-        expect(store.dispatch).not.toHaveBeenCalled();
-      }));
-
-    [
-      ['dog', 'no whitespace in user input used as is'],
-      ['  dog', 'leading whitespace in user input ignored'],
-      ['dog       ', 'trailing whitespace in user input ignored'],
-      ['   dog ', 'leading and trailing whitespace in user input ignored']
-    ].forEach(([searchString, description]) => {
-      it(`${description}`, fakeAsync(
+      it('images are fetched on every keystroke (after debounce period)', fakeAsync(
         (): void => {
           spyOn(store, 'dispatch');
+          const searchString = 'tiger';
           setInputValue('#searchString', searchString);
-
           tick(component.DEBOUNCE_TIME);
 
-          expect(store.dispatch).toHaveBeenCalledWith(new SetSearchString('dog'));
+          expect(store.dispatch).toHaveBeenCalledWith(new SetSearchString(searchString));
         }));
+
+      it('images are NOT fetched if debounce period has not expired', fakeAsync(
+        (): void => {
+          spyOn(store, 'dispatch');
+          const searchString = 'any';
+          setInputValue('#searchString', searchString);
+
+          tick(component.DEBOUNCE_TIME / 2);
+          expect(store.dispatch).not.toHaveBeenCalled();
+
+          tick(component.DEBOUNCE_TIME);
+          expect(store.dispatch).toHaveBeenCalled();
+        }));
+
+      it('images are NOT fetched when input is empty', fakeAsync(
+        (): void => {
+          spyOn(store, 'dispatch');
+          const searchString = '';
+          setInputValue('#searchString', searchString);
+          tick(component.DEBOUNCE_TIME);
+
+          expect(store.dispatch).not.toHaveBeenCalled();
+        }));
+    });
+
+    describe('normalizing input', () => {
+
+      [
+        ['dog', 'user input used verbatim when no whitespace present'],
+        ['dog cat', 'intermediate whitespace in user input is preserved'],
+        ['  dog', 'leading whitespace in user input ignored'],
+        ['dog       ', 'trailing whitespace in user input ignored'],
+        ['   dog ', 'leading and trailing whitespace in user input ignored'],
+        ['dog! + (cat)', 'special characters used verbatim'],
+      ].forEach(([searchString, description]) => {
+        it(`${description}`, fakeAsync(
+          (): void => {
+            spyOn(store, 'dispatch');
+            setInputValue('#searchString', searchString);
+
+            tick(component.DEBOUNCE_TIME);
+
+            expect(store.dispatch).toHaveBeenCalledWith(new SetSearchString(searchString.trim()));
+          }));
+      });
     });
 
   });

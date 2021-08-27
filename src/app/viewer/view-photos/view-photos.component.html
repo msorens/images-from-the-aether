@@ -18,39 +18,43 @@
     *ngIf="endOfInputReached && photos.length !== 0">
     <img src="https://cdn.pixabay.com/photo/2013/06/17/10/28/end-139848__480.jpg" height="50px" width="100px">
   </div>
-  <div class="notice"
-    *ngIf="fetchStatus === ExecutionState.Success && photos.length === 0 && searchString.length > 0">
-    <img id="noResultsFound" height="80%" width="80%"
-      src="assets/graphics/set-empty-picture-frames-with-free-space-inside-isolated-white_76080-5386.jpeg" >
-  </div>
-   <div class="notice"
-    *ngIf="fetchStatus === ExecutionState.Failure && (apiResponse$ | async)?.statusCode === StatusCodes.FORBIDDEN">
-    <img id="unauthorized" height="80%" width="80%"
-      src="assets/graphics/unauthorized.png" >
-      <div class="notice-note">
-        (Select the key at upper right to re-enter your API key)
-      </div>
-  </div>
-  <div class="notice"
-    *ngIf="fetchStatus === ExecutionState.Failure && (apiResponse$ | async)?.statusCode !== StatusCodes.FORBIDDEN">
-    <img id="generalError" height="80%" width="80%"
-      src="assets/graphics/general-error.png" >
-      <div class="notice-note">
-        (If you really want to know, the HTTP response was
-        <br>
-        [ {{ (apiResponse$ | async)?.statusCode }} {{ getReasonPhrase((apiResponse$ | async)?.statusCode || 0) }} ] {{ (apiResponse$ | async)?.statusMsg }})
-      </div>
-  </div>
-  <div class="notice"
-    *ngIf="fetchStatus === ExecutionState.Uninitialized && photos.length === 0 && searchString.length === 0">
-    <img id="noSearchPerformed" height="80%"
-      src="assets/graphics/treasure-clipart-empty.jpeg" >
-  </div>
-
-  <app-base-modal [visibility]="detailModalVisibility">
-    <a href="{{currentPhoto?.photographer_url}}" target="_blank">
-      <div id="author">{{currentPhoto?.photographer}}</div>
-    </a>
-    <img [src]="currentPhoto?.src?.large">
-  </app-base-modal>
 </div>
+
+<div class="notice"
+  *ngIf="fetchStatus === ExecutionState.Uninitialized && photos.length === 0 && searchString.length === 0">
+  <img id="noSearchPerformed" height="80%"
+    src="assets/graphics/treasure-clipart-empty.jpeg" >
+</div>
+
+<div class="notice"
+  *ngIf="fetchStatus === ExecutionState.Success && photos.length === 0 && searchString.length > 0">
+  <img id="noResultsFound" height="80%" width="80%"
+    src="assets/graphics/set-empty-picture-frames-with-free-space-inside-isolated-white_76080-5386.jpeg" >
+</div>
+
+<div class="notice"
+  *ngIf="fetchStatus === ExecutionState.Failure && (apiResponse$ | async)?.statusCode === StatusCodes.FORBIDDEN">
+  <img id="unauthorized" height="80%" width="80%"
+    src="assets/graphics/unauthorized.png" >
+    <div class="notice-note">
+      (Select the key at upper right to re-enter your API key)
+    </div>
+</div>
+
+<div class="notice"
+  *ngIf="fetchStatus === ExecutionState.Failure && (apiResponse$ | async)?.statusCode !== StatusCodes.FORBIDDEN">
+  <img id="generalError" height="80%" width="80%"
+    src="assets/graphics/general-error.png" >
+    <div class="notice-note">
+      (If you really want to know, the HTTP response was
+      <br>
+      [ {{ (apiResponse$ | async)?.statusCode }} {{ getReasonPhrase((apiResponse$ | async)?.statusCode || 0) }} ] {{ (apiResponse$ | async)?.statusMsg }})
+    </div>
+</div>
+
+<app-base-modal [visibility]="detailModalVisibility">
+  <a href="{{currentPhoto?.photographer_url}}" target="_blank">
+    <div id="author">{{currentPhoto?.photographer}}</div>
+  </a>
+  <img [src]="currentPhoto?.src?.large">
+</app-base-modal>
