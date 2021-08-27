@@ -45,26 +45,26 @@
     place-items: center;
     margin-top: 10px;
   }
+}
 
-  .notice {
-    position: fixed;
-    height: 80%;
-    top: 60%; // a bit lower than center; leave room for search box above it
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%);
+.notice {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  height: 80%;
+  text-align: center;
+  top: 25%; // leave room for search box above it
 
-    .notice-note {
-      margin: 0 20vw;
-    }
+  .notice-note {
+    margin: 0 5vw;
   }
+}
 
-  app-base-modal {
-    img {
-      max-width: 100%;
-      // match the curvature of the container at the bottom;
-      // author name is above the photo so not matching curvature at top.
-      border-radius: 0 0 10px 10px;
-    }
+app-base-modal {
+  img {
+    max-width: 100%;
+    // match the curvature of the container at the bottom;
+    // author name is above the photo so not matching curvature at top.
+    border-radius: 0 0 10px 10px;
   }
 }
