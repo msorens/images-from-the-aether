@@ -1,8 +1,8 @@
 
-import { Component, EventEmitter, NgZone, OnInit } from '@angular/core';
+import { Component, EventEmitter, NgZone, OnInit, OnDestroy } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 import { IPageInfo } from 'ngx-virtual-scroller';
 import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 
@@ -15,15 +15,17 @@ import { FetchPhotos } from 'src/app/state/photo.actions';
   templateUrl: './view-photos.component.html',
   styleUrls: ['./view-photos.component.scss'],
 })
-export class ViewPhotosComponent implements OnInit {
+export class ViewPhotosComponent implements OnInit, OnDestroy {
   photos: Photo[] = [];
   fetchStatus = ExecutionState.Uninitialized;
   endOfInputReached = false;
   currentPhoto: Photo | null = null;
   detailModalVisibility = new EventEmitter<boolean>();
   searchString = '';
+  private isDestroyed = new Subject<boolean>();
 
-  ExecutionState = ExecutionState; // This peculiar statement exposes the enum in the template.
+  // These peculiar statements expose the entities in the template.
+  ExecutionState = ExecutionState;
   StatusCodes = StatusCodes;
   getReasonPhrase = getReasonPhrase;
 
@@ -37,26 +39,41 @@ export class ViewPhotosComponent implements OnInit {
 
   ngOnInit(): void {
     this.photos$
-      .pipe(filter((newPhotos) => !!newPhotos))
+      .pipe(
+        filter((newPhotos) => !!newPhotos),
+        takeUntil(this.isDestroyed)
+      )
       .subscribe((newPhotos) => {
-        this.photos = this.photos.concat(newPhotos);
+          this.photos = this.photos.concat(newPhotos);
       });
 
     this.searchString$
-      .pipe(filter((searchString) => !!searchString))
+      .pipe(
+        filter((searchString) => !!searchString),
+        takeUntil(this.isDestroyed)
+      )
       .subscribe((searchString) => {
         this.searchString = searchString;
         this.photos = []; // new search; clear display
         this.fetchNext();
       });
 
-    this.fetchStatus$.subscribe((status) => {
-      this.fetchStatus = status;
-    });
+    this.fetchStatus$
+      .pipe(takeUntil(this.isDestroyed))
+      .subscribe((status) => {
+        this.fetchStatus = status;
+      });
 
-    this.endOfInputReached$.subscribe((flag) => {
-      this.endOfInputReached = flag;
-    });
+    this.endOfInputReached$
+      .pipe(takeUntil(this.isDestroyed))
+      .subscribe((flag) => {
+        this.endOfInputReached = flag;
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.isDestroyed.next(true);
+    this.isDestroyed.complete();
   }
 
   fetchMore(event: IPageInfo): void {

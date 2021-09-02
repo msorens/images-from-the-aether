@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -10,7 +10,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './base-modal.component.html',
   styleUrls: ['./base-modal.component.scss'],
 })
-export class BaseModalComponent implements OnInit {
+export class BaseModalComponent implements OnInit, OnDestroy {
   /**
    * Inform the modal to display or hide itself.
    */
@@ -38,6 +38,11 @@ export class BaseModalComponent implements OnInit {
         this.close();
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.isDestroyed.next(true);
+    this.isDestroyed.complete();
   }
 
   // HostListener OK for this simple use case but beware of performance issues with multiple uses;
