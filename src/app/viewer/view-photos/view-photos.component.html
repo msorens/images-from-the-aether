@@ -48,7 +48,7 @@
     <div class="notice-note">
       (If you really want to know, the HTTP response was
       <br>
-      [ {{ (apiResponse$ | async)?.statusCode }} {{ getReasonPhrase((apiResponse$ | async)?.statusCode || 0) }} ] {{ (apiResponse$ | async)?.statusMsg }})
+      {{ formatErrorInfo() }} )
     </div>
 </div>
 

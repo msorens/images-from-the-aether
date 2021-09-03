@@ -237,6 +237,31 @@ describe('ViewPhotosComponent', () => {
         expect(note?.textContent).toMatch(getReasonPhrase(StatusCodes.GATEWAY_TIMEOUT));
       });
 
+      it('displays general-error graphic for empty response', () => {
+        imageServiceSpy.loadPage.and
+          .returnValue(throwError(
+            generateErrorResponse(0, 'some other error')
+          ));
+
+        store.dispatch(new SetSearchString('any'));
+        fixture.detectChanges();
+
+        expectOnlyVisibleImage('generalError');
+      });
+
+      it('displays "empty response" for empty response', () => {
+        imageServiceSpy.loadPage.and
+          .returnValue(throwError(
+            generateErrorResponse(0, 'some other error')
+          ));
+
+        store.dispatch(new SetSearchString('any'));
+        fixture.detectChanges();
+
+        const note = find('#generalError + .notice-note');
+        expect(note?.textContent).toMatch('[ empty response ]');
+      });
+
       it('does not display any graphic while loading', () => {
         fixture.detectChanges();
         component.fetchStatus = ExecutionState.Loading;
