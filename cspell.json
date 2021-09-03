@@ -6,8 +6,23 @@
     "language": "en",
     // words - list of words to be always considered correct
     "words": [
+        "kineograph",
+        "ngrx",
         "ngxs",
         "scroller"
+    ],
+    "ignoreWords": [
+        "Angular's",
+        "apikey",
+        "Doğangönül",
+        "npmcompare",
+        "npmtrends",
+        "Nwamba",
+        "Onur",
+        "Pexels",
+        "Rinto",
+        "virtualscroll",
+        "Zoaib"
     ],
     // flagWords - list of words to be always considered incorrect
     "flagWords": [
