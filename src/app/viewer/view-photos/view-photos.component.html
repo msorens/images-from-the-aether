@@ -53,8 +53,15 @@
 </div>
 
 <app-base-modal [visibility]="detailModalVisibility">
-  <a href="{{currentPhoto?.photographer_url}}" target="_blank">
-    <div id="author">{{currentPhoto?.photographer}}</div>
-  </a>
+  <div class="info">
+    <a href="{{currentPhoto?.photographer_url}}" target="_blank">
+      <div id="test-author">{{currentPhoto?.photographer}}</div>
+    </a>
+    <button id="test-download-button"
+      title="Save {{getFileName(currentPhoto?.src?.large || '')}}"
+      (click)="download(currentPhoto?.src?.large || '')">
+      <mat-icon>download</mat-icon>
+    </button>
+  </div>
   <img [src]="currentPhoto?.src?.large">
 </app-base-modal>

@@ -5,6 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { IPageInfo } from 'ngx-virtual-scroller';
 import { getReasonPhrase, StatusCodes } from 'http-status-codes';
+import { saveAs } from 'file-saver';
 
 import { ApiResponse, ExecutionState, PhotoState } from 'src/app/state/photo.store';
 import { Photo } from 'src/app/models/Photo';
@@ -44,7 +45,7 @@ export class ViewPhotosComponent implements OnInit, OnDestroy {
         takeUntil(this.isDestroyed)
       )
       .subscribe((newPhotos) => {
-          this.photos = this.photos.concat(newPhotos);
+        this.photos = this.photos.concat(newPhotos);
       });
 
     this.searchString$
@@ -61,8 +62,8 @@ export class ViewPhotosComponent implements OnInit, OnDestroy {
     this.fetchStatus$
       .pipe(takeUntil(this.isDestroyed))
       .subscribe((status) => {
-        this.fetchStatus = status;
-      });
+      this.fetchStatus = status;
+    });
 
     this.endOfInputReached$
       .pipe(takeUntil(this.isDestroyed))
@@ -110,5 +111,15 @@ export class ViewPhotosComponent implements OnInit, OnDestroy {
     return resp.statusCode
       ? `[ ${resp.statusCode} ${getReasonPhrase(resp.statusCode)} ] ${resp.statusMsg}`
       : '[ empty response ]';
+  }
+
+  download(url: string): void {
+    saveAs(url, this.getFileName(url));
+  }
+
+  getFileName(url: string): string {
+    // URL class returns encoded values (e.g. `some image.jpg` would be returned as `some%20image.jpg`)
+    // The decodeURIComponent() call decodes the encoded values for space and other specially handled characters.
+    return decodeURIComponent(url ? new URL(url).pathname.split('/').pop() || '' : '');
   }
 }

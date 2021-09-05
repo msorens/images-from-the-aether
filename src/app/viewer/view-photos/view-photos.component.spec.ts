@@ -301,21 +301,21 @@ describe('ViewPhotosComponent', () => {
         expect(emitted).toBeTrue();
       });
 
-      it('renders larger image of selected photo in modal', () => {
+      it('renders larger image of selected photo', () => {
         const photo = genPhoto();
         component.showDetail(photo);
         fixture.detectChanges();
 
         const imageElement = findAs<HTMLImageElement>('app-base-modal img');
-        expect(imageElement.src.substring(imageElement.baseURI.length)).toBe(photo.src.large);
+        expect(imageElement.src).toBe(photo.src.large);
       });
 
-      it('renders author of photo\'s name in modal', () => {
+      it('renders author of photo\'s name', () => {
         const photo = genPhoto();
         component.showDetail(photo);
         fixture.detectChanges();
 
-        expect(find('app-base-modal #author')?.textContent).toBe(photo.photographer);
+        expect(find('app-base-modal #test-author')?.textContent).toBe(photo.photographer);
       });
 
       it('renders link to author enclosing the name', () => {
@@ -323,7 +323,7 @@ describe('ViewPhotosComponent', () => {
         component.showDetail(photo);
         fixture.detectChanges();
 
-        const anchorElement = findParentAs<HTMLAnchorElement>('app-base-modal #author');
+        const anchorElement = findParentAs<HTMLAnchorElement>('app-base-modal #test-author');
         expect(anchorElement.href).toBe(photo.photographer_url);
       });
 
@@ -336,6 +336,53 @@ describe('ViewPhotosComponent', () => {
         const anchorElement = findAs<HTMLAnchorElement>('app-base-modal a');
         expect(anchorElement.target).toBe('_blank');
       });
+
+      it('renders button to save the image', () => {
+        const photo = genPhoto();
+        component.showDetail(photo);
+        fixture.detectChanges();
+
+        expect(find('app-base-modal #test-download-button')).toBeTruthy();
+      });
+
+      it('labels button with material icon "download"', () => {
+        const photo = genPhoto();
+        component.showDetail(photo);
+        fixture.detectChanges();
+
+        expect(find('app-base-modal #test-download-button mat-icon')).toBeTruthy();
+        expect(find('app-base-modal #test-download-button mat-icon')?.textContent).toBe('download');
+      });
+
+      [
+        ['http://www.foo.com/some-large-url.jpg', 'some-large-url.jpg', 'domain + only file + extension'],
+        ['http://www.foo.com/some-large-url', 'some-large-url', 'domain + only file + NO extension'],
+        ['http://www.foo.com/path/a/b/c/some-large-url.jpg', 'some-large-url.jpg', 'domain + path + file'],
+        ['http://www.foo.com/path/a/b/c/some large url.jpg', 'some large url.jpg', 'domain + path + file with spaces'],
+        ['', '', 'exception: handles empty url gracefully handled with empty string'],
+        ['http://www.foo.com/', '', 'exception: handles empty path gracefully with empty string'],
+      ].forEach(([url, filename, description]) => {
+        it(`save button includes filename tooltip for ${description}`, () => {
+          const photo = genPhoto();
+          photo.src.large = url;
+          component.showDetail(photo);
+          fixture.detectChanges();
+
+          const btnElement = find('app-base-modal #test-download-button');
+          expect(btnElement?.title).toBe(`Save ${filename}`);
+        });
+      });
+
+      it('clicking save button downloads image file URL', () => {
+        spyOn(component, 'download');
+        const photo = genPhoto();
+        component.showDetail(photo);
+
+        find('app-base-modal #test-download-button')?.click();
+
+        expect(component.download).toHaveBeenCalledWith(photo.src.large);
+      });
+
     });
   });
 
@@ -352,8 +399,8 @@ describe('ViewPhotosComponent', () => {
   function genPhoto(): Photo {
     return {
       src: {
-        large: 'some-large-url',
-        medium: 'some-medium-url'
+        large: 'http://www.foo.com/some-large-url',
+        medium: 'http://www.foo.com/some-medium-url'
       },
       photographer: 'bob smith',
       photographer_url: 'http://www.any.com/',

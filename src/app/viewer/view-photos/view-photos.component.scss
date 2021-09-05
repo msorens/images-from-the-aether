@@ -61,7 +61,15 @@
 }
 
 app-base-modal {
+  .info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    background-color: lavender;
+  }
+
   img {
+    max-height: 85vh;
     max-width: 100%;
     // match the curvature of the container at the bottom;
     // author name is above the photo so not matching curvature at top.
