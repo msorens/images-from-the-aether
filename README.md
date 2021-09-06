@@ -121,10 +121,19 @@ an enlargement of the selected photo along with some details of the photograph, 
 ```text
 Section: ViewPhotosComponent >> with modal component >> detail view
 • signals modal to open when user selects an image
-• renders larger image of selected photo in modal
-• renders author of photo's name in modal
+• renders larger image of selected photo
+• renders author of photo's name
 • renders link to author enclosing the name
 • link to author will open in a new tab (or window)
+• renders button to save the image
+• labels button with material icon "download"
+• clicking save button downloads image file URL
+• save button includes filename tooltip for domain + only file + extension
+• save button includes filename tooltip for domain + only file + NO extension
+• save button includes filename tooltip for domain + path + file
+• save button includes filename tooltip for domain + path + file with spaces
+• save button includes filename tooltip for exception: handles empty path gracefully with empty string
+• save button includes filename tooltip for exception: handles empty url gracefully handled with empty string
 ```
 
 A typical representation:
@@ -325,6 +334,17 @@ About the only thing I needed to add was the appropriate `<label>` element on in
 <label for="searchString">Search string</label>
 ```
 
+### Entities are treated as entities, not strings
+
+Often when writing a program we need to deal with a thing that has a well-defined structure: a bit of HTML or XML, a URL, an entry in a log file, etc.
+Since each of those is typically supplied as a string it is only natural that the developer treats them as strings.
+But that can lead to what I call the "subtle syntax catastrophe" which I talk about in my article [Code Smells: Raw Strings and the Subtle Syntax Catastrophe](https://www.red-gate.com/simple-talk/development/dotnet-development/code-smells-raw-strings-subtle-syntax-catastrophe/).
+For the case at hand, I had a need to extract the file name out of a URL.
+It is fairly straightforward to find the piece of string between the first virgule and question mark, and know that that is the path to the file, so the name of the file is the last piece on that path.
+But that is dealing with the URL as a raw string, and there is no benefit to that.
+Rather, treat it as a URL: create a first-class URL object and then just access the `pathname` property to get that file path.
+You can see this in action in `view-photos.component.ts::getFileName()`.
+
 ### Unit Tests Are Phantom-Aware
 
 Perhaps there is a industry term for this, but I have coined the phrase "phantom tests" in my article
@@ -337,6 +357,63 @@ I give a mention to this in base-modal.component.spec.ts.
 Native CSS does not support reusable variables or constants: if you want to reuse a number in multiple places, you just repeat that hard-coded value over and over and...
 Fortunately, SASS does support constants (except they call them variables ;-).
 The few global values I needed are recorded only once in _variables.scss and those named constants can then be used freely without any maintenance burden.
+
+### On File Downloads
+
+Such a simple notion; such a challenge to do in an in-browser application!
+
+In the early days, in-browser code could not interact with the filesystem for security reasons.
+With the advent of HTML 5, however, a simple mechanism was introduced to allow downloading a file,
+using the `download` attribute in an anchor element:
+
+```html
+    <a href='TARGET_URL' download='image.jpg'>Download</a>
+```
+
+Initially that worked, but then--again for security reasons--the `download` attribute
+became ignored for cross-origin URLs (reference:
+https://developers.google.com/web/updates/2018/02/chrome-65-deprecations#block_cross-origin_a_download).
+Patterns emerged to download the file in question asynchronously, then feed it to an anchor element so as not to violate the CORS constraint.
+One way is using the built-in `fetch` method (from https://dev.to/sbodi10/download-images-using-javascript-51a9):
+
+```javascript
+  const image = await fetch(remoteUrl)
+  const imageBlog = await image.blob()
+  const imageURL = URL.createObjectURL(imageBlog)
+  // ... pass it to a generated anchor element
+```
+
+Alternately, the axios library provides a slightly more convenient way to retrieve the remote data
+(from https://www.delftstack.com/howto/javascript/javascript-download/#use-axios-library-to-download-files): 
+
+```javascript
+  axios({
+        url: remoteUrl,
+        method: 'GET',
+        responseType: 'blob'
+  })
+  .then((response) => {
+    // ... pass it to a generated anchor element
+  }
+```
+
+Either way, after retrieving the data, it would be fed to an anchor element and one would then manually
+trigger  the link by invoking its `click` method.
+That one has to trigger the browser to do a file download via the DOM rather than writing code to do it directly seemed rather peculiar to me.
+Looking further it turns out that a new native file system API was very recently developed--but alas, at the time of writing (September 2021) it is so new that it is barely supported
+(references: Can I Use data at https://caniuse.com/native-filesystem-api and
+ Draft Report on File System Access dated August 2021 at https://wicg.github.io/file-system-access/).
+
+As all the workarounds seemed somewhat kludgy I opted to just use the [file-saver](https://www.npmjs.com/package/file-saver) library, which could do the whole operation in a single line of code ( see `view-photos.component.ts::download()` ).
+
+### More on File Downloads
+
+Yes, there is still more to say on this topic.
+My initial thought was, like a desktop application, when the user selects to download something, they are then presented with a file picker dialog, allowing specifying the directory path and the file name through OS-specific design standards.
+It turns out that displaying such a file picker though is again a large challenge; the self-same native file system API mentioned above will eventually allow that.
+Today, it is so much simpler to just let the browser "do its thing": when you select something to download it puts it in the "downloads" folder.
+If a file of the same name already exists, the browser intelligently starts adding sequence numbers.
+On a Mac, for instance, Chrome saves "image.jpg", "image (1).jpg", "image (2).jpg", etc., whereas Firefox does the same thing sans the space character: "image.jpg", "image(1).jpg", "image(2).jpg", etc.
 
 ### Beyond Breadth: Unit Tests have Depth
 
@@ -356,6 +433,12 @@ In this case: if the compiler can help you avoid errors, take advantage of it!
 There are a lot of compiler options you can set, but first and foremost should be enabling **strict** mode (in tsconfig.json).
 That tells the compiler to check for a handful of different scenarios that could cause problems down the road and point them on.
 It is always better to find errors sooner rather than later.
+
+### Unit Tests Test Behavior Rather than Implementation
+
+Testing behavior in unit tests is much more robust and much more interesting than testing implementation.
+It is more robust because testing behavior allows you to change the implementation if desired and still have all the tests pass without having to rewrite any.
+And it is much more interesting because behavior-oriented tests describe to any interested code readers something tangible, some actual behavior that the code performs, as opposed to, say, showing that some internal function with inputs `x` and `y` returns `z`.
 
 ## Default Generated Docs for this Project
 
