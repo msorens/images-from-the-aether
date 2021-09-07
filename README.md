@@ -122,18 +122,22 @@ an enlargement of the selected photo along with some details of the photograph, 
 Section: ViewPhotosComponent >> with modal component >> detail view
 • signals modal to open when user selects an image
 • renders larger image of selected photo
-• renders author of photo's name
-• renders link to author enclosing the name
-• link to author will open in a new tab (or window)
-• renders button to save the image
-• labels button with material icon "download"
-• clicking save button downloads image file URL
-• save button includes filename tooltip for domain + only file + extension
-• save button includes filename tooltip for domain + only file + NO extension
-• save button includes filename tooltip for domain + path + file
-• save button includes filename tooltip for domain + path + file with spaces
-• save button includes filename tooltip for exception: handles empty path gracefully with empty string
-• save button includes filename tooltip for exception: handles empty url gracefully handled with empty string
+• author name
+  • enclosed with link to author details
+  • renders with detail view
+  • author link will open in a new tab (or window)
+• save button
+  • downloads image file URL when clicked
+  • renders with detail view
+  • displays download icon from material icons
+• save button tooltip displays filename
+  • for domain + only file + extension
+  • for domain + only file + NO extension
+  • for domain + path + file
+  • for domain + path + file with spaces
+  • exception: handles empty path gracefully with empty string
+  • exception: handles empty url gracefully with empty string
+  • exception: handles invalid url gracefully with empty string
 ```
 
 A typical representation:
@@ -191,10 +195,15 @@ These unit tests elaborate on the opening behavior of the modal for the API key:
 ```text
 Section: AppComponent >> API key
 • at startup, retrieves the previously saved user-entered key from browser local storage
-• opens the key-entering modal automatically when no key found stored
-• does NOT open the key-entering modal automatically when key is found stored
-• opens the key-entering modal manually by clicking on the key icon
 • stores the user-entered key in browser local storage
+• key-entering modal opening
+  • opens automatically when no key found stored
+  • does NOT open automatically when key is found stored
+• button to re-open key modal
+  • has label with key icon from material icons
+  • includes tooltip
+  • renders on main window
+  • opens the key-entering modal manually when clicked
 ```
 
 That deceptively simple modal has a number of behaviors to provide a useful user experience.
@@ -260,8 +269,9 @@ Store actions >> SetSearchString action
 • puts search string into state
 • resets photos to empty list
 Store actions >> FetchPhotos action
-• end of input reflects in state with value 'true'
-• end of input reflects in state with value 'false'
+• end-of-input
+  • end of input reflects in state with value 'true'
+  • end of input reflects in state with value 'false'
 • annotates photos with sequence number
 • stores new photos in state
 • increments page number with each subsequent fetch
@@ -384,7 +394,7 @@ One way is using the built-in `fetch` method (from https://dev.to/sbodi10/downlo
 ```
 
 Alternately, the axios library provides a slightly more convenient way to retrieve the remote data
-(from https://www.delftstack.com/howto/javascript/javascript-download/#use-axios-library-to-download-files): 
+(from https://www.delftstack.com/howto/javascript/javascript-download/#use-axios-library-to-download-files):
 
 ```javascript
   axios({
@@ -420,11 +430,13 @@ On a Mac, for instance, Chrome saves "image.jpg", "image (1).jpg", "image (2).jp
 Code coverage is a great metric for unit tests.
 One should always strive for a high percentage; just what that percentage should be (80, 90, 100??) is open for debate, but picking any reasonably high number is better than not.
 However, that metric only covers breadth of tests.
-Just as important is the aspect of depth, which I talk about in the *Test Quality* section of my article [Go Unit Tests: Tips from the Trenches](https://www.red-gate.com/simple-talk/devops/testing/go-unit-tests-tips-from-the-trenches/).
+Just as important is the aspect of depth--that is all about the two-pronged approach of boundary-value analysis and equivalence class partitioning.
+I talk about those in detail in the *Test Quality* section of my article [Go Unit Tests: Tips from the Trenches](https://www.red-gate.com/simple-talk/devops/testing/go-unit-tests-tips-from-the-trenches/).
 As mentioned there, data-driven tests provide a good way to achieve depth.
-One example of that approach to deep tests is in the *normalizing input* section in app.component.spec.ts.
+One example of that approach to deep tests is in the "normalizing input" section in app.component.spec.ts.
 But test depth can also come from a series of related tests covering the same topic.
-If you look above at the set of tests under the heading "fetching more photos during scrolling" you will find one test that check for when more photos are fetched, plus several related tests where more photos are *not* fetched.
+If you look above at the set of tests under the heading "fetching more photos during scrolling" you will find one test that checks for when more photos are fetched, plus several related tests where more photos are *not* fetched.
+You can peruse all the depth coverage tests in this test suite by searching for "(DEPTH COVERAGE)".
 
 ### Strict Mode
 

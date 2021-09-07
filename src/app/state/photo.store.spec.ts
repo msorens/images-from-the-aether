@@ -109,14 +109,16 @@ describe('Store actions', () => {
       }
     });
 
-    [true, false].forEach(endOfInput => {
-      it(`end of input reflects in state with value '${endOfInput}'`, () => {
-        MockImageService.endOfInput = endOfInput;
-        expect(store.selectSnapshot(s => stateModel(s).endOfInputReached)).toBeFalse();
+    describe('end-of-input (DEPTH COVERAGE)', () => {
+      [true, false].forEach(endOfInput => {
+        it(`end of input reflects in state with value '${endOfInput}'`, () => {
+          MockImageService.endOfInput = endOfInput;
+          expect(store.selectSnapshot(s => stateModel(s).endOfInputReached)).toBeFalse();
 
-        store.dispatch(new FetchPhotos());
+          store.dispatch(new FetchPhotos());
 
-        expect(store.selectSnapshot(s => stateModel(s).endOfInputReached)).toBe(endOfInput);
+          expect(store.selectSnapshot(s => stateModel(s).endOfInputReached)).toBe(endOfInput);
+        });
       });
     });
 

@@ -67,43 +67,62 @@ describe('AppComponent', () => {
       component = fixture.componentInstance;
     });
 
-    it('opens the key-entering modal automatically when no key found stored', () => {
-      let emitted = false;
-      keyServiceSpy.get.and.returnValue('');
-      component.keyModalVisibility.subscribe((setVisible: boolean) => {
-        if (setVisible) {
-          emitted = true;
-        }
-      });
-      fixture.detectChanges();
+    describe('key-entering modal opening (DEPTH COVERAGE)', () => {
 
-      expect(emitted).toBeTrue();
+      it('opens automatically when NO key found stored', () => {
+        let emitted = false;
+        keyServiceSpy.get.and.returnValue('');
+        component.keyModalVisibility.subscribe((setVisible: boolean) => {
+          if (setVisible) {
+            emitted = true;
+          }
+        });
+        fixture.detectChanges();
+
+        expect(emitted).toBeTrue();
+      });
+
+      it('does NOT open automatically when key is found stored', () => {
+        let emitted = false;
+        keyServiceSpy.get.and.returnValue('any non-empty');
+        component.keyModalVisibility.subscribe((setVisible: boolean) => {
+          emitted = true;
+        });
+        fixture.detectChanges();
+
+        expect(emitted).toBeFalse();
+      });
     });
 
-    it('does NOT open the key-entering modal automatically when key is found stored', () => {
-      let emitted = false;
-      keyServiceSpy.get.and.returnValue('any non-empty');
-      component.keyModalVisibility.subscribe((setVisible: boolean) => {
-        emitted = true;
+    describe('button to re-open key modal', () => {
+
+      it('renders on main window', () => {
+        expect(find('.apikey')).toBeTruthy();
       });
-      fixture.detectChanges();
 
-      expect(emitted).toBeFalse();
-    });
-
-    it('opens the key-entering modal manually by clicking on the key icon', () => {
-      let emitted = false;
-      keyServiceSpy.get.and.returnValue('any non-empty');
-      component.keyModalVisibility.subscribe((setVisible: boolean) => {
-        if (setVisible) {
-          emitted = true;
-        }
+      it('has label with key icon from material icons', () => {
+        expect(find('.apikey mat-icon')).toBeTruthy();
+        expect(find('.apikey mat-icon')?.textContent).toBe('vpn_key');
       });
-      fixture.detectChanges();
-      expect(emitted).toBeFalse(); // baseline; not open yet
 
-      find('.apikey')?.click();
-      expect(emitted).toBeTrue();
+      it('includes tooltip', () => {
+        expect(find('.apikey')?.title).toBe('Set or test API key');
+      });
+
+      it('opens the key-entering modal manually when clicked', () => {
+        let emitted = false;
+        keyServiceSpy.get.and.returnValue('any non-empty');
+        component.keyModalVisibility.subscribe((setVisible: boolean) => {
+          if (setVisible) {
+            emitted = true;
+          }
+        });
+        fixture.detectChanges();
+        expect(emitted).toBeFalse(); // baseline; not open yet
+
+        find('.apikey')?.click();
+        expect(emitted).toBeTrue();
+      });
     });
 
     it('stores the user-entered key in browser local storage', () => {
@@ -262,8 +281,7 @@ describe('AppComponent', () => {
         }));
     });
 
-    describe('normalizing input', () => {
-
+    describe('normalizing input (DEPTH COVERAGE)', () => {
       [
         ['dog', 'user input used verbatim when no whitespace present'],
         ['dog cat', 'intermediate whitespace in user input is preserved'],

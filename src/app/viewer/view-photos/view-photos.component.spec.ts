@@ -86,7 +86,7 @@ describe('ViewPhotosComponent', () => {
       });
     });
 
-    describe('fetching more photos during scrolling', () => {
+    describe('fetching more photos during scrolling (DEPTH COVERAGE)', () => {
       const originalPhotoQty = 10;
       const indexOfLastPhoto = originalPhotoQty - 1;
 
@@ -310,77 +310,85 @@ describe('ViewPhotosComponent', () => {
         expect(imageElement.src).toBe(photo.src.large);
       });
 
-      it('renders author of photo\'s name', () => {
-        const photo = genPhoto();
-        component.showDetail(photo);
-        fixture.detectChanges();
+      describe('author name', () => {
 
-        expect(find('app-base-modal #test-author')?.textContent).toBe(photo.photographer);
-      });
-
-      it('renders link to author enclosing the name', () => {
-        const photo = genPhoto();
-        component.showDetail(photo);
-        fixture.detectChanges();
-
-        const anchorElement = findParentAs<HTMLAnchorElement>('app-base-modal #test-author');
-        expect(anchorElement.href).toBe(photo.photographer_url);
-      });
-
-      it('link to author will open in a new tab (or window)', () => {
-        // Default is a new tab; users can configure otherwise.
-        // See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#attr-target
-        component.showDetail(genPhoto());
-        fixture.detectChanges();
-
-        const anchorElement = findAs<HTMLAnchorElement>('app-base-modal a');
-        expect(anchorElement.target).toBe('_blank');
-      });
-
-      it('renders button to save the image', () => {
-        const photo = genPhoto();
-        component.showDetail(photo);
-        fixture.detectChanges();
-
-        expect(find('app-base-modal #test-download-button')).toBeTruthy();
-      });
-
-      it('labels button with material icon "download"', () => {
-        const photo = genPhoto();
-        component.showDetail(photo);
-        fixture.detectChanges();
-
-        expect(find('app-base-modal #test-download-button mat-icon')).toBeTruthy();
-        expect(find('app-base-modal #test-download-button mat-icon')?.textContent).toBe('download');
-      });
-
-      [
-        ['http://www.foo.com/some-large-url.jpg', 'some-large-url.jpg', 'domain + only file + extension'],
-        ['http://www.foo.com/some-large-url', 'some-large-url', 'domain + only file + NO extension'],
-        ['http://www.foo.com/path/a/b/c/some-large-url.jpg', 'some-large-url.jpg', 'domain + path + file'],
-        ['http://www.foo.com/path/a/b/c/some large url.jpg', 'some large url.jpg', 'domain + path + file with spaces'],
-        ['', '', 'exception: handles empty url gracefully handled with empty string'],
-        ['http://www.foo.com/', '', 'exception: handles empty path gracefully with empty string'],
-      ].forEach(([url, filename, description]) => {
-        it(`save button includes filename tooltip for ${description}`, () => {
+        it('renders with detail view', () => {
           const photo = genPhoto();
-          photo.src.large = url;
           component.showDetail(photo);
           fixture.detectChanges();
 
-          const btnElement = find('app-base-modal #test-download-button');
-          expect(btnElement?.title).toBe(`Save ${filename}`);
+          expect(find('app-base-modal #test-author')?.textContent).toBe(photo.photographer);
+        });
+
+        it('enclosed with link to author details', () => {
+          const photo = genPhoto();
+          component.showDetail(photo);
+          fixture.detectChanges();
+
+          const anchorElement = findParentAs<HTMLAnchorElement>('app-base-modal #test-author');
+          expect(anchorElement.href).toBe(photo.photographer_url);
+        });
+
+        it('author link will open in a new tab (or window)', () => {
+          // Default is a new tab; users can configure otherwise.
+          // See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#attr-target
+          component.showDetail(genPhoto());
+          fixture.detectChanges();
+
+          const anchorElement = findAs<HTMLAnchorElement>('app-base-modal a');
+          expect(anchorElement.target).toBe('_blank');
         });
       });
 
-      it('clicking save button downloads image file URL', () => {
-        spyOn(component, 'download');
-        const photo = genPhoto();
-        component.showDetail(photo);
+      describe('save button', () => {
 
-        find('app-base-modal #test-download-button')?.click();
+        it('renders with detail view', () => {
+          const photo = genPhoto();
+          component.showDetail(photo);
+          fixture.detectChanges();
 
-        expect(component.download).toHaveBeenCalledWith(photo.src.large);
+          expect(find('app-base-modal #test-download-button')).toBeTruthy();
+        });
+
+        it('displays download icon from material icons', () => {
+          const photo = genPhoto();
+          component.showDetail(photo);
+          fixture.detectChanges();
+
+          expect(find('app-base-modal #test-download-button mat-icon')).toBeTruthy();
+          expect(find('app-base-modal #test-download-button mat-icon')?.textContent).toBe('download');
+        });
+
+        it('downloads image file URL when clicked', () => {
+          spyOn(component, 'download');
+          const photo = genPhoto();
+          component.showDetail(photo);
+
+          find('app-base-modal #test-download-button')?.click();
+
+          expect(component.download).toHaveBeenCalledWith(photo.src.large);
+        });
+      });
+
+      describe('save button tooltip displays filename (DEPTH COVERAGE)', () => {
+        [
+          ['http://www.foo.com/some-large-url.jpg', 'some-large-url.jpg', 'for domain + only file + extension'],
+          ['http://www.foo.com/some-large-url', 'some-large-url', 'for domain + only file + NO extension'],
+          ['http://www.foo.com/path/a/b/c/some-large-url.jpg', 'some-large-url.jpg', 'for domain + path + file'],
+          ['http://www.foo.com/path/a/b/c/some large url.jpg', 'some large url.jpg', 'for domain + path + file with spaces'],
+          ['',                    '', 'exception: handles empty url gracefully with empty string'],
+          ['http://www.foo.com/', '', 'exception: handles empty path gracefully with empty string'],
+          ['not-a-valid-url',     '', 'exception: handles invalid url gracefully with empty string'],
+        ].forEach(([url, filename, description]) => {
+          it(description, () => {
+            const photo = genPhoto();
+            photo.src.large = url;
+            component.showDetail(photo);
+            fixture.detectChanges();
+
+            expect(find('app-base-modal #test-download-button')?.title).toBe(`Save ${filename}`);
+          });
+        });
       });
 
     });

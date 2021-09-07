@@ -120,6 +120,17 @@ export class ViewPhotosComponent implements OnInit, OnDestroy {
   getFileName(url: string): string {
     // URL class returns encoded values (e.g. `some image.jpg` would be returned as `some%20image.jpg`)
     // The decodeURIComponent() call decodes the encoded values for space and other specially handled characters.
-    return decodeURIComponent(url ? new URL(url).pathname.split('/').pop() || '' : '');
+    try {
+      return decodeURIComponent(
+        url
+          ? new URL(url) // could throw exception for invalid values
+            .pathname.split('/').pop()
+            || '' // return empty string for any non-truthy path
+          : ''); // return empty string for any non-truthy URL
+    }
+    catch {
+      console.log(`invalid URL encountered: ${url}`);
+      return '';
+    }
   }
 }
