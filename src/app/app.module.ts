@@ -1,4 +1,4 @@
-import { NgModule, isDevMode } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -29,7 +29,7 @@ import { PhotoState } from './state/photo.store';
       developmentMode: !environment.production,
     }),
     NgxsReduxDevtoolsPluginModule.forRoot({
-      disabled: !isDevMode(), // disable for production builds
+      disabled: environment.production,
       maxAge: 25, // max number of entries
     }),
     ReactiveFormsModule,
