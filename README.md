@@ -27,6 +27,11 @@ What I wanted to do was a clean TDD design so that, at the end, the unit tests i
 My end result was a thorough but not quite complete list.
 There are some things not really amenable to unit tests: accessibility, performance, responsiveness of the display, visual positioning (where a button or field is positioned on the page, alignment of elements, etc.), and probably a few others.
 
+## Using the Application
+
+You can certainly clone the repository and play with this application on your own machine, or you can just launch it immediately in your browser at https://msorens.github.io/images-from-the-aether/, courtesy of [GitHub Pages](https://pages.github.com/).
+Be advised, however, that you will need a Pexels API key to do anything (see _API Access_ below for further details).
+
 ## The Design and the Result
 
 What is the quickest way for you, the reader, to understand what this application does, down to every nitty gritty detail?
@@ -443,8 +448,7 @@ You can peruse all the depth coverage tests in this test suite by searching for 
 I am an ardent believer in using safety nets whenever possible.
 In this case: if the compiler can help you avoid errors, take advantage of it!
 There are a lot of compiler options you can set, but first and foremost should be enabling **strict** mode (in tsconfig.json).
-That tells the compiler to check for a handful of different scenarios that could cause problems down the road and point them on.
-It is always better to find errors sooner rather than later.
+That tells the compiler to check for a handful of different scenarios that could cause problems down the road; it is always better to find errors sooner rather than later.
 
 ### Unit Tests Test Behavior Rather than Implementation
 
