@@ -128,7 +128,9 @@
         },
         "deploy": {
           "builder": "angular-cli-ghpages:deploy",
-          "options": {}
+          "options": {
+            "baseHref": "/images-from-the-aether/"
+          }
         }
       }
     }
