@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NgxsModule, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 import { StatusCodes } from 'http-status-codes';
@@ -58,6 +58,17 @@ describe('Store actions', () => {
       expect(store.selectSnapshot(s => stateModel(s).photos)).toEqual([]);
     });
 
+    it('resets total to zero', () => {
+      const snapshot = store.snapshot();
+      stateModel(snapshot).total = STATE_TOTAL;
+      store.reset(snapshot);
+      expect(store.selectSnapshot(s => stateModel(s).total)).toEqual(STATE_TOTAL);
+
+      store.dispatch(new SetSearchString('cat'));
+
+      expect(store.selectSnapshot(s => stateModel(s).total)).toEqual(0);
+    });
+
   });
 
   describe('FetchPhotos action', () => {
@@ -100,6 +111,14 @@ describe('Store actions', () => {
       }
     });
 
+    it('stores total in state', () => {
+      expect(store.selectSnapshot(s => stateModel(s).total)).toBe(STATE_TOTAL);
+
+      store.dispatch(new FetchPhotos());
+
+      expect(store.selectSnapshot(s => stateModel(s).total)).toBe(101);
+    });
+
     it('annotates photos with sequence number', () => {
       store.dispatch(new FetchPhotos());
 
@@ -123,6 +142,7 @@ describe('Store actions', () => {
     });
 
   });
+
 });
 
 @Injectable()
@@ -135,7 +155,7 @@ export class MockImageService extends ImageService {
   }
 }
 
-function stateModel(snapshot: any): PhotoStateModel {
+export function stateModel(snapshot: any): PhotoStateModel {
   return snapshot[STATE_NAME] as PhotoStateModel;
 }
 
@@ -154,12 +174,14 @@ const STATE_BASE = 1000;
 const RESPONSE_BASE = 5000;
 const BASE_OFFSET = RESPONSE_BASE - STATE_BASE;
 export const STATE_PHOTO_COUNT = 12;
+export const STATE_TOTAL = 509;
 export const RESPONSE_PHOTO_COUNT = 9;
 
 export function genState(): PhotoStateModel {
   return {
     searchString: 'dog',
     photos: genPhotos(STATE_BASE, STATE_PHOTO_COUNT),
+    total: STATE_TOTAL,
     fetchStatus: ExecutionState.Uninitialized,
     testStatus: ExecutionState.Uninitialized,
     endOfInputReached: false,
@@ -177,7 +199,7 @@ export function genResponse({ endOfInput = false, includePhotos = true } ): Page
     page: 5,
     per_page: 20,
     photos: genPhotos(RESPONSE_BASE, includePhotos ? RESPONSE_PHOTO_COUNT : 0),
-    total_results: 100,
+    total_results: 101,
     next_page: endOfInput ? '' : 'any next page',
     prev_page: ''
   };

@@ -24,6 +24,7 @@ export interface ApiResponse {
 export interface PhotoStateModel {
   searchString: string;
   photos: Photo[];
+  total: number;
   fetchStatus: ExecutionState;
   testStatus: ExecutionState;
   endOfInputReached: boolean;
@@ -37,6 +38,7 @@ export interface PhotoStateModel {
   defaults: {
     searchString: '',
     photos: [],
+    total: 0,
     fetchStatus: ExecutionState.Uninitialized,
     testStatus: ExecutionState.Uninitialized,
     endOfInputReached: false,
@@ -73,6 +75,11 @@ export class PhotoState {
   }
 
   @Selector()
+  public static total(state: PhotoStateModel): number {
+    return state.total;
+  }
+
+  @Selector()
   public static endOfInputReached(state: PhotoStateModel): boolean {
     return state.endOfInputReached;
   }
@@ -91,6 +98,7 @@ export class PhotoState {
         searchString,
         currentPage: 0,
         photos: [],
+        total: 0,
         fetchStatus: ExecutionState.Uninitialized,
         endOfInputReached: false,
         apiResponse: {
@@ -125,6 +133,7 @@ export class PhotoState {
           }
           patchState({
             photos: response.photos,
+            total: response.total_results,
             fetchStatus: ExecutionState.Success,
             endOfInputReached: !response.next_page,
             apiResponse: {
@@ -137,6 +146,7 @@ export class PhotoState {
           console.log(`${errResponse.status}: ${errResponse.error.error || errResponse.error}`);
           patchState({
             photos: [],
+            total: 0,
             fetchStatus: ExecutionState.Failure,
             endOfInputReached: false,
             apiResponse: {

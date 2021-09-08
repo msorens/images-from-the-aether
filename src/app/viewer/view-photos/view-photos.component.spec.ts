@@ -8,11 +8,11 @@ import { Observable, of, throwError } from 'rxjs';
 import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 
 import { find, findAllAs, findAs, findParentAs, setFixture } from 'src/app/utility/queryHelper';
-import { ExecutionState, PhotoState } from 'src/app/state/photo.store';
+import { ExecutionState, PhotoState, PhotoStateModel, STATE_NAME } from 'src/app/state/photo.store';
 import { generateErrorResponse, IImageService, ImageService } from 'src/app/services/image.service';
 import { Photo } from 'src/app/models/Photo';
 import { FetchPhotos, SetSearchString } from 'src/app/state/photo.actions';
-import { genPhotos, genResponse, MockImageService, RESPONSE_PHOTO_COUNT } from 'src/app/state/photo.store.spec';
+import { genPhotos, genResponse, MockImageService, RESPONSE_PHOTO_COUNT, stateModel } from 'src/app/state/photo.store.spec';
 import { ViewerModule } from 'src/app/viewer/viewer.module';
 import { ViewPhotosComponent } from './view-photos.component';
 
@@ -269,6 +269,29 @@ describe('ViewPhotosComponent', () => {
 
         expect(findAllAs<HTMLImageElement>('.notice img')).toEqual([]);
       });
+
+      it('todo: resets total', () => {
+        imageServiceSpy.loadPage.and
+          .returnValue(throwError(
+            generateErrorResponse(StatusCodes.FORBIDDEN, 'unauthorized')
+          ));
+
+        const testStore: any = {};
+        const storeEntry = store.snapshot()[STATE_NAME] as PhotoStateModel;
+        testStore[STATE_NAME] = storeEntry;
+        storeEntry.total = 1234;
+        // testStore[STATE_NAME] = store.snapshot()[STATE_NAME] as PhotoStateModel;
+        // testStore[STATE_NAME].total = 1234;
+        store.reset(testStore);
+        fixture.detectChanges();
+
+        store.dispatch(new FetchPhotos());
+        fixture.detectChanges();
+
+        expect(store.selectSnapshot(s => stateModel(s).total)).toEqual(0);
+      });
+
+
     });
   });
 
