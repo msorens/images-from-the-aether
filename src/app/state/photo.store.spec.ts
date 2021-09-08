@@ -5,6 +5,7 @@ import { NgxsModule, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 import { StatusCodes } from 'http-status-codes';
 
+import { setStoreSnapshot, StoreSnapshot } from 'src/app/utility/storeHelper';
 import { PhotoState, PhotoStateModel, STATE_NAME, ExecutionState } from 'src/app/state/photo.store';
 import { PageResponse, Photo } from 'src/app/models/Photo';
 import { ImageService } from 'src/app/services/image.service';
@@ -35,10 +36,8 @@ describe('Store actions', () => {
     });
 
     it('resets page counter to zero', () => {
-      const snapshot = store.snapshot();
       const ANY_NON_ZERO = 29;
-      stateModel(snapshot).currentPage = ANY_NON_ZERO;
-      store.reset(snapshot);
+      setStoreSnapshot(store, model => model.currentPage = ANY_NON_ZERO);
       expect(store.selectSnapshot(s => stateModel(s).currentPage)).toBe(ANY_NON_ZERO);
 
       store.dispatch(new SetSearchString('cat'));
@@ -47,10 +46,8 @@ describe('Store actions', () => {
     });
 
     it('resets photos to empty list', () => {
-      const snapshot = store.snapshot();
       const ANY_NON_EMPTY_LIST: Photo[] = [{} as Photo, {} as Photo];
-      stateModel(snapshot).photos = ANY_NON_EMPTY_LIST;
-      store.reset(snapshot);
+      setStoreSnapshot(store, model => model.photos = ANY_NON_EMPTY_LIST);
       expect(store.selectSnapshot(s => stateModel(s).photos)).toEqual(ANY_NON_EMPTY_LIST);
 
       store.dispatch(new SetSearchString('cat'));
@@ -59,9 +56,7 @@ describe('Store actions', () => {
     });
 
     it('resets total to zero', () => {
-      const snapshot = store.snapshot();
-      stateModel(snapshot).total = STATE_TOTAL;
-      store.reset(snapshot);
+      setStoreSnapshot(store, model => model.total = STATE_TOTAL);
       expect(store.selectSnapshot(s => stateModel(s).total)).toEqual(STATE_TOTAL);
 
       store.dispatch(new SetSearchString('cat'));
@@ -155,8 +150,8 @@ export class MockImageService extends ImageService {
   }
 }
 
-export function stateModel(snapshot: any): PhotoStateModel {
-  return snapshot[STATE_NAME] as PhotoStateModel;
+export function stateModel(snapshot: StoreSnapshot): PhotoStateModel {
+  return snapshot[STATE_NAME];
 }
 
 export function genPhotos(prefix: number, count: number): Photo[] {

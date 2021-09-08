@@ -8,9 +8,10 @@ import { Observable, of, throwError } from 'rxjs';
 import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 
 import { find, findAllAs, findAs, findParentAs, setFixture } from 'src/app/utility/queryHelper';
-import { ExecutionState, PhotoState, PhotoStateModel, STATE_NAME } from 'src/app/state/photo.store';
+import { setStoreSnapshot } from 'src/app/utility/storeHelper';
 import { generateErrorResponse, IImageService, ImageService } from 'src/app/services/image.service';
 import { Photo } from 'src/app/models/Photo';
+import { ExecutionState, PhotoState } from 'src/app/state/photo.store';
 import { FetchPhotos, SetSearchString } from 'src/app/state/photo.actions';
 import { genPhotos, genResponse, MockImageService, RESPONSE_PHOTO_COUNT, stateModel } from 'src/app/state/photo.store.spec';
 import { ViewerModule } from 'src/app/viewer/viewer.module';
@@ -276,14 +277,9 @@ describe('ViewPhotosComponent', () => {
             generateErrorResponse(StatusCodes.FORBIDDEN, 'unauthorized')
           ));
 
-        const testStore: any = {};
-        const storeEntry = store.snapshot()[STATE_NAME] as PhotoStateModel;
-        testStore[STATE_NAME] = storeEntry;
-        storeEntry.total = 1234;
-        // testStore[STATE_NAME] = store.snapshot()[STATE_NAME] as PhotoStateModel;
-        // testStore[STATE_NAME].total = 1234;
-        store.reset(testStore);
+        setStoreSnapshot(store, model => model.total = 1234);
         fixture.detectChanges();
+        expect(store.selectSnapshot(s => stateModel(s).total)).toEqual(1234);
 
         store.dispatch(new FetchPhotos());
         fixture.detectChanges();

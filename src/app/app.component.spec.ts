@@ -6,12 +6,13 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { NgxsModule, Store } from '@ngxs/store';
 import { MockComponent } from 'ng2-mock-component';
 
+import { cssSelector, find, findAllAs, findAs, findOneAs, setFixture } from './utility/queryHelper';
+import { setStoreSnapshot } from './utility/storeHelper';
 import { BaseModalComponent } from './viewer/base-modal/base-modal.component';
 import { SetSearchString } from './state/photo.actions';
 import { PhotoState, STATE_NAME, ExecutionState } from './state/photo.store';
 import { IKeyService, KeyService } from './services/key.service';
 import { AppComponent } from './app.component';
-import { cssSelector, find, findAllAs, findAs, findOneAs, setFixture } from './utility/queryHelper';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -312,11 +313,7 @@ describe('AppComponent', () => {
   }
 
   function setTestStatus(store: Store, status: ExecutionState): void {
-    // see https://www.ngxs.io/recipes/unit-testing#prepping-state
-    const testStore: any = {};
-    testStore[STATE_NAME] = store.snapshot()[STATE_NAME];
-    testStore[STATE_NAME].testStatus = status;
-    store.reset(testStore);
+    setStoreSnapshot(store, model => model.testStatus = status);
     fixture.detectChanges();
   }
 
