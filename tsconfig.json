@@ -10,6 +10,8 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "removeComments": true,
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,

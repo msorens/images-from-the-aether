@@ -19,7 +19,7 @@ export class BaseModalComponent implements OnInit, OnDestroy {
   private isDestroyed = new Subject<boolean>();
   private nativeElement: any;
 
-  constructor(private element: ElementRef) {
+  constructor(element: ElementRef) {
     this.nativeElement = element.nativeElement;
   }
 

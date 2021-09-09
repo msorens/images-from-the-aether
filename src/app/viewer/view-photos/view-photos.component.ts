@@ -1,5 +1,5 @@
 
-import { Component, EventEmitter, NgZone, OnInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
@@ -30,7 +30,7 @@ export class ViewPhotosComponent implements OnInit, OnDestroy {
   ExecutionState = ExecutionState;
   StatusCodes = StatusCodes;
 
-  constructor(private store: Store, private ngZone: NgZone) {}
+  constructor(private store: Store) {}
 
   @Select(PhotoState.fetchStatus) fetchStatus$!: Observable<ExecutionState>;
   @Select(PhotoState.apiResponse) apiResponse$!: Observable<ApiResponse>;

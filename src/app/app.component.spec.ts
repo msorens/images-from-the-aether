@@ -10,7 +10,7 @@ import { cssSelector, find, findAllAs, findAs, findOneAs, setFixture } from './u
 import { setStoreSnapshot } from './utility/storeHelper';
 import { BaseModalComponent } from './viewer/base-modal/base-modal.component';
 import { SetSearchString } from './state/photo.actions';
-import { PhotoState, STATE_NAME, ExecutionState } from './state/photo.store';
+import { PhotoState, ExecutionState } from './state/photo.store';
 import { IKeyService, KeyService } from './services/key.service';
 import { AppComponent } from './app.component';
 

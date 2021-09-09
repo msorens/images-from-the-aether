@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { StatusCodes } from 'http-status-codes';
@@ -52,7 +52,7 @@ export interface PhotoStateModel {
 })
 @Injectable()
 export class PhotoState {
-  constructor(private http: HttpClient, private readonly api: ImageService) {}
+  constructor(private readonly api: ImageService) {}
 
   @Selector()
   public static searchString(state: PhotoStateModel): string {
@@ -163,8 +163,6 @@ export class PhotoState {
     { getState, patchState }: StateContext<PhotoStateModel>,
     { apiKey }: TestApi
   ): void {
-    const state = getState();
-    const [itemsPerPage, currentPage] = [state.itemsPerPage, state.currentPage + 1];
     patchState({
       testStatus: ExecutionState.Loading,
     });

@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { NgxsModule, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 import { StatusCodes } from 'http-status-codes';
