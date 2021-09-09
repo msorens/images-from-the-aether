@@ -443,12 +443,24 @@ But test depth can also come from a series of related tests covering the same to
 If you look above at the set of tests under the heading "fetching more photos during scrolling" you will find one test that checks for when more photos are fetched, plus several related tests where more photos are *not* fetched.
 You can peruse all the depth coverage tests in this test suite by searching for "(DEPTH COVERAGE)".
 
-### Strict Mode
+### Strict Mode and Other Checks
 
-I am an ardent believer in using safety nets whenever possible.
-In this case: if the compiler can help you avoid errors, take advantage of it!
-There are a lot of compiler options you can set, but first and foremost should be enabling **strict** mode (in tsconfig.json).
-That tells the compiler to check for a handful of different scenarios that could cause problems down the road; it is always better to find errors sooner rather than later.
+I am an ardent believer in using safety nets whenever possible--let the machine do the work of checking rote things!
+First and foremost, the TypeScript compiler offers a **strict** mode (in tsconfig.json) which is a composite of several important checks.
+I am firmly of the opinion that one should never build a project without it.
+The cost of finding errors grows exponentially as a project develops so if one can flip a switch to catch errors earlier, that is a definite win!
+
+I further rely on whatever linters I can find: one for TypeScript, of course, but there is even a linter for markdown files (such as the one you are reading) called [Markdown Lint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint), which helped me construct this file properly.
+
+I use a spell-checker for my code, too ([Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)).
+That not only helps prevent embarrassing typos being shown to all your users, but it also occasionally resolves code bugs--there are almost always bits of an application that rely on data names that the compiler just cannot validate a priori, and if you mistype one you have a problem.
+
+### TypeScript Type Traps
+
+To say that TypeScript boosts JavaScript development to great heights cannot be overstated.
+But strong-typing is not a panacea; it is a tool that must be used with care.
+Sometimes it can even fool you: my canonical example is that if you use type assertions incorrectly you actually get weaker code!
+See my slide deck [TypeScript Type Traps](https://docs.google.com/presentation/d/1ir7P7V0tzO4cd4vCtyUb-a5fHFnBsRYTUoCWLq6xksU/edit#slide=id.g5e2880a3d6_0_78) where I explain that and a few other vagaries of the language.
 
 ### Unit Tests Test Behavior Rather than Implementation
 
