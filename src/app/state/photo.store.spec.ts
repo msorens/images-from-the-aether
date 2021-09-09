@@ -2,13 +2,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { NgxsModule, Store } from '@ngxs/store';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { StatusCodes } from 'http-status-codes';
 
 import { setStoreSnapshot, StoreSnapshot } from 'src/app/utility/storeHelper';
 import { PhotoState, PhotoStateModel, STATE_NAME, ExecutionState } from 'src/app/state/photo.store';
 import { PageResponse, Photo } from 'src/app/models/Photo';
-import { ImageService } from 'src/app/services/image.service';
+import { generateErrorResponse, IImageService, ImageService } from 'src/app/services/image.service';
 import { FetchPhotos, SetSearchString } from './photo.actions';
 
 describe('Store actions', () => {
@@ -135,6 +135,55 @@ describe('Store actions', () => {
         });
       });
     });
+  });
+
+  describe('FetchPhotos action (error return)', () => {
+    let store: Store;
+    let initialState: PhotoStateModel;
+    let imageServiceSpy: jasmine.SpyObj<IImageService>;
+
+    beforeEach(() => {
+      imageServiceSpy = jasmine.createSpyObj('ImageService', ['loadPage']);
+      TestBed.configureTestingModule({
+        imports: [HttpClientModule, [NgxsModule.forRoot([PhotoState])]],
+        providers: [
+          Store,
+          { provide: ImageService, useValue: imageServiceSpy }
+        ],
+      }).compileComponents();
+      store = TestBed.inject(Store);
+
+      initialState = genState();
+      const snapshot = store.snapshot();
+      snapshot[STATE_NAME] = { ...initialState };
+      store.reset(snapshot);
+
+      imageServiceSpy.loadPage.and
+        .returnValue(throwError(
+          generateErrorResponse(StatusCodes.FORBIDDEN, 'unauthorized')
+        ));
+    });
+
+    it('resets photos to empty list upon error', () => {
+      const ANY_NON_EMPTY_LIST: Photo[] = [{} as Photo, {} as Photo];
+      setStoreSnapshot(store, model => model.photos = ANY_NON_EMPTY_LIST);
+      expect(store.selectSnapshot(s => stateModel(s).photos)).toEqual(ANY_NON_EMPTY_LIST);
+
+      store.dispatch(new FetchPhotos());
+
+      expect(store.selectSnapshot(s => stateModel(s).photos)).toEqual([]);
+    });
+
+    it('resets total to zero upon error', () => {
+      setStoreSnapshot(store, model => model.total = STATE_TOTAL);
+      expect(store.selectSnapshot(s => stateModel(s).total)).toEqual(STATE_TOTAL);
+
+      store.dispatch(new FetchPhotos());
+
+      expect(store.selectSnapshot(s => stateModel(s).total)).toEqual(0);
+    });
+
+
 
   });
 
