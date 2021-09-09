@@ -4,10 +4,13 @@
   title="Set or test API key">
   <mat-icon>vpn_key</mat-icon>
 </div>
-<form [formGroup]="searchForm">
-  <label for="searchString">Search string</label>
-  <input type="text" (keyup)="handleKeyup($event)" required formControlName="searchString" id="searchString">
-</form>
+<div class="app-control-bar">
+  <form [formGroup]="searchForm">
+    <label for="searchString">Search string</label>
+    <input type="text" (keyup)="handleKeyup($event)" required formControlName="searchString" id="searchString">
+  </form>
+  <span>Total: <span id="total">{{total$ | async}}</span></span>
+</div>
 <app-view-photos></app-view-photos>
 <app-base-modal [visibility]="keyModalVisibility">
   <div>
@@ -20,8 +23,9 @@
     This is a safe use of an ElementRef (#myKey) -- strictly local use here in the template.
     See https://ultimatecourses.com/blog/element-refs-in-angular-templates for details.
   -->
-  <div class="control-bar">
-    <input ngModel #myKey>
+  <div class="modal-control-bar">
+    <label for="key" class="visually-hidden">Key</label>
+    <input id="key" ngModel #myKey>
     <button
       [disabled]="!myKey.value.trim() || (testStatus$ | async) === ExecutionState.Loading"
       (click)="testKey(myKey.value.trim())">

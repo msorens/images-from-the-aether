@@ -1,26 +1,50 @@
 @import "src/styles/_variables";
 
+ // From https://dzone.com/articles/how-to-build-html-forms-right-accessibility
+.visually-hidden {
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+}
+
 h1 {
   font-family: Luminari, "Bradley Hand", Palatino, sans-serif;
   margin: 0.5em $standard-margin;
 }
 
-form {
+
+.app-control-bar {
+  display: flex;
+  justify-content: space-between;
   margin: 0.5em $standard-margin;
-}
 
-.ng-valid[required], .ng-valid.required  {
-  border-left: 8px solid #42A948;
-}
+  .ng-valid[required], .ng-valid.required  {
+    border-left: 8px solid #42A948;
+  }
 
-.ng-invalid:not(form).ng-dirty  {
-  border-left: 8px solid #a94442;
-}
+  .ng-invalid:not(form).ng-dirty  {
+    border-left: 8px solid #a94442;
+  }
 
-input {
-  margin-left: 0.5em;
-  width: 400px;
-  max-width: 90%;
+  form {
+    flex-grow: 4;
+
+    input {
+      margin-left: 2vw;
+      margin-right: 2vw;
+      width: 70%;
+      max-width: 90%;
+    }
+  }
+
+  #total {
+    font-weight: bold;
+  }
 }
 
 .apikey {
@@ -31,10 +55,15 @@ input {
   cursor: pointer;
 }
 
-.control-bar {
-  display: inline-flex;
+.modal-control-bar {
+  display: flex;
   align-items: center;
   margin-top: 1rem;
+
+  input {
+    flex-grow: 4;
+    width: 60vw;
+  }
 
   button {
     font-family: Optima;

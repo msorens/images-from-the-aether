@@ -41,12 +41,15 @@ describe('AppComponent', () => {
     ],
   };
 
-  describe('general', () => {
+  describe('display', () => {
+    let store: Store;
+
     beforeEach(() => {
       TestBed.configureTestingModule(config).compileComponents();
       fixture = TestBed.createComponent(AppComponent);
       setFixture(fixture);
       component = fixture.componentInstance;
+      store = TestBed.inject(Store);
     });
 
     it('should create the app', () => {
@@ -54,9 +57,23 @@ describe('AppComponent', () => {
       expect(app).toBeTruthy();
     });
 
-    it('should render heading', () => {
+    it('shows the application name', () => {
       fixture.detectChanges();
-      expect(find('h1')?.textContent).toContain('Images');
+      expect(find('h1')?.textContent).toContain('Images from the Aether');
+    });
+
+    it('shows a search box', () => {
+      expect(find('#searchString')).toBeTruthy();
+    });
+
+    it('shows total available matches', () => {
+      expect(find('#total')?.parentElement?.textContent).toContain('Total:');
+    });
+
+    it('shows total value from current state', () => {
+      setStoreSnapshot(store, model => model.total = 8000);
+      fixture.detectChanges();
+      expect(find('#total')?.textContent).toBe('8000');
     });
   });
 
@@ -127,8 +144,8 @@ describe('AppComponent', () => {
     });
 
     it('stores the user-entered key in browser local storage', () => {
-      findAs<HTMLInputElement>('.control-bar input').value = 'some key';
-      const saveButton = findOneAs<HTMLButtonElement>('.control-bar button', 'Save');
+      findAs<HTMLInputElement>('.modal-control-bar input').value = 'some key';
+      const saveButton = findOneAs<HTMLButtonElement>('.modal-control-bar button', 'Save');
       expect(saveButton).toBeTruthy();
 
       saveButton?.click();
@@ -154,11 +171,11 @@ describe('AppComponent', () => {
     });
 
     it('has an input field to enter the key', () => {
-      expect(find('.control-bar input')).toBeTruthy();
+      expect(find('.modal-control-bar input')).toBeTruthy();
     });
 
     it('has buttons to save and to test the key', () => {
-      const buttons = findAllAs<HTMLButtonElement>('.control-bar button');
+      const buttons = findAllAs<HTMLButtonElement>('.modal-control-bar button');
       expect(buttons.length).toBe(2);
 
       ['Save', 'Test'].forEach(label => {
@@ -169,19 +186,19 @@ describe('AppComponent', () => {
 
     it('buttons are initially disabled', () => {
       fixture.detectChanges();
-      expect(findAs<HTMLInputElement>('.control-bar input').value).toBe('');
+      expect(findAs<HTMLInputElement>('.modal-control-bar input').value).toBe('');
 
-      findAllAs<HTMLButtonElement>('.control-bar button')
+      findAllAs<HTMLButtonElement>('.modal-control-bar button')
         .forEach(button => {
           expect(button.disabled).toBeTrue();
         });
     });
 
     it('buttons reacts to presence of input', () => {
-      const inputElem = findAs<HTMLInputElement>('.control-bar input');
+      const inputElem = findAs<HTMLInputElement>('.modal-control-bar input');
       fixture.detectChanges();
 
-      findAllAs<HTMLButtonElement>('.control-bar button')
+      findAllAs<HTMLButtonElement>('.modal-control-bar button')
         .forEach(button => {
           inputElem.value = '';
           fixture.detectChanges();
@@ -221,16 +238,16 @@ describe('AppComponent', () => {
     });
 
     it('test button is disabled while test operation is in progress', () => {
-      findAs<HTMLInputElement>('.control-bar input').value = 'some string';
+      findAs<HTMLInputElement>('.modal-control-bar input').value = 'some string';
       setTestStatus(store, ExecutionState.Loading);
-      expect(findOneAs<HTMLButtonElement>('.control-bar button', 'Test')?.disabled).toBeTrue();
+      expect(findOneAs<HTMLButtonElement>('.modal-control-bar button', 'Test')?.disabled).toBeTrue();
     });
 
     it('test button is NOT disabled when test operation completes', () => {
       setTestStatus(store, ExecutionState.Success);
-      setInputValue('.control-bar input', 'some string');
+      setInputValue('.modal-control-bar input', 'some string');
       fixture.detectChanges();
-      expect(findOneAs<HTMLButtonElement>('.control-bar button', 'Test')?.disabled).toBeFalse();
+      expect(findOneAs<HTMLButtonElement>('.modal-control-bar button', 'Test')?.disabled).toBeFalse();
     });
 
   });

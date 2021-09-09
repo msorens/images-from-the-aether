@@ -21,9 +21,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ExecutionState = ExecutionState; // This peculiar statement exposes the enum in the template.
 
-  // Definite assignment assertion used here;
+  // Definite assignment assertion used here (the exclamation mark);
   // see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html#definite-assignment-assertions
   @Select(PhotoState.testStatus) testStatus$!: Observable<ExecutionState>;
+  @Select(PhotoState.total) total$!: Observable<number>;
 
   constructor(
     private store: Store,
