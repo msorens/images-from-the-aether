@@ -3,9 +3,9 @@
     [enableUnequalChildrenSizes]="true">
     <div #container class="responsive-grid">
       <div class="item" (click)="showDetail(item)" *ngFor="let item of scroll.viewPortItems">
-        <div class="myimage">
+        <div class="myimage" tabindex="0" >
           <div class="id" title="Item ID {{item.id}}">{{item.refIndex}}</div>
-          <img [src]="item.src.medium">
+          <img [src]="item.src.medium" alt="pexels id={{item.id}}">
         </div>
       </div>
     </div>
@@ -16,25 +16,30 @@
   </div>
   <div class="spinner-item" id="endFlag"
     *ngIf="endOfInputReached && photos.length !== 0">
-    <img src="https://cdn.pixabay.com/photo/2013/06/17/10/28/end-139848__480.jpg" height="50px" width="100px">
+    <img height="50px" width="100px"
+      alt="end-of-matches reached"
+      src="https://cdn.pixabay.com/photo/2013/06/17/10/28/end-139848__480.jpg" >
   </div>
 </div>
 
 <div class="notice"
   *ngIf="fetchStatus === ExecutionState.Uninitialized && photos.length === 0 && searchString.length === 0">
   <img id="noSearchPerformed" height="80%"
+    alt="no search has yet been performed; type something in the search box to begin!"
     src="assets/graphics/treasure-clipart-empty.jpeg" >
 </div>
 
 <div class="notice"
   *ngIf="fetchStatus === ExecutionState.Success && photos.length === 0 && searchString.length > 0">
   <img id="noResultsFound" height="80%" width="80%"
+    alt="no results found; try a different search string"
     src="assets/graphics/set-empty-picture-frames-with-free-space-inside-isolated-white_76080-5386.jpeg" >
 </div>
 
 <div class="notice"
   *ngIf="fetchStatus === ExecutionState.Failure && (apiResponse$ | async)?.statusCode === StatusCodes.FORBIDDEN">
   <img id="unauthorized" height="80%" width="80%"
+    alt="unauthorized (probably due to an invalid API key)"
     src="assets/graphics/unauthorized.png" >
     <div class="notice-note">
       (Select the key at upper right to re-enter your API key)
@@ -44,6 +49,7 @@
 <div class="notice"
   *ngIf="fetchStatus === ExecutionState.Failure && (apiResponse$ | async)?.statusCode !== StatusCodes.FORBIDDEN">
   <img id="generalError" height="80%" width="80%"
+    alt="general error"
     src="assets/graphics/general-error.png" >
     <div class="notice-note">
       (If you really want to know, the HTTP response was
@@ -63,5 +69,6 @@
       <mat-icon>download</mat-icon>
     </button>
   </div>
-  <img [src]="currentPhoto?.src?.large">
+  <img alt="pexels id={{currentPhoto?.id}}"
+    [src]="currentPhoto?.src?.large">
 </app-base-modal>

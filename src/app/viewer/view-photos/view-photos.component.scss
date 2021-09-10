@@ -11,6 +11,7 @@
     overflow: auto;
 
     .responsive-grid {
+      // Reference: https://zoaibkhan.com/blog/fastest-way-to-make-a-responsive-card-grid-with-css/
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: $standard-margin;
@@ -33,7 +34,12 @@
         .id {
           position: absolute;
           color: white;
+          // background chosen using accessible contrast analyzer at
+          // https://dequeuniversity.com/rules/axe/4.3/color-contrast?application=AxeChrome
+          background-color: #545454;
           margin: $standard-margin;
+          padding-left: 2px;
+          padding-right: 2px;
           font-size: 1.5rem;
         }
       }

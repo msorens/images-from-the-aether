@@ -17,19 +17,19 @@ h1 {
   margin: 0.5em $standard-margin;
 }
 
+// Adapted from https://angular.io/guide/form-validation#control-status-css-classes
+.ng-valid[required], .ng-valid.required  {
+  border-left: 8px solid #42A948;
+}
+
+.ng-invalid:not(form).ng-dirty  {
+  border-left: 8px solid #a94442;
+}
 
 .app-control-bar {
   display: flex;
   justify-content: space-between;
   margin: 0.5em $standard-margin;
-
-  .ng-valid[required], .ng-valid.required  {
-    border-left: 8px solid #42A948;
-  }
-
-  .ng-invalid:not(form).ng-dirty  {
-    border-left: 8px solid #a94442;
-  }
 
   form {
     flex-grow: 4;
