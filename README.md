@@ -15,11 +15,11 @@ These are the high-level requirements I began with:
 
 - Display a photo collection keyed off a user-specified string.
 - Have a search bar that responds as the user types.
-- Retrieve photos from the Pexels API.
 - Display results in a responsive grid.
 - Use infinite scroll.
 - Open an enlargement of a photo (and include the author's name) by clicking on one in the results.
 - Image should be downloadable from that detail modal.
+- Application should be accessible, responsive, and have strong UX-fu.
 
 That leaves a large number of details unspecified, of course.
 What I wanted to do was a clean TDD design so that, at the end, the unit tests itemize low-level requirements, providing a contract of the application's behavior -- guaranteed to be an accurate list of requirements as long as the tests pass!
@@ -315,6 +315,72 @@ During my search for a good solution I had some useful conversations with some o
 A special kudos in particular to Zoaib Khan, who critiqued and tweaked code to help me get things going.
 Zoaib provided yet further assistance from his article, [Fastest way to make a responsive card grid with CSS](https://zoaibkhan.com/blog/fastest-way-to-make-a-responsive-card-grid-with-css/), revealing an elegant CSS technique to add responsiveness to existing layout!
 
+## Accessibility
+
+Even in a small application such as this, there are a number of required items to conform to [WCAG](https://www.w3.org/WAI/standards-guidelines/wcag/) accessibility requirements.
+
+- Associate a `<label>` element with each input field.
+Note that _every_ input field should have a corresponding `<label>` -- even if the label is not visible on-screen, so screen readers can properly make sense of things.
+That is done by a handy bit of CSS I found for the task.
+
+- Add an `alt` attribute to each image.
+
+- Add context landmarks (header, main).
+
+- Define tab-navigable elements with `tabindex` attributes.
+So, while it may be more convenient to use a mouse to scroll through the "infinite" scroll region, it is also possible to do so with the keyboard using successive presses of the `tab` key to accommodate those users unable to use a mouse.
+
+- Set appropriate color contrast.
+In this case, when I initially added sequence numbers to each image, they were just white characters on whatever background the image proffered.
+But that made some of them harder to discern, so I added a small background shading around the character with sufficient contrast to make them always readable.
+
+By the way, I use ANDI (recommended by the GSA's own [Section508.gov](https://www.section508.gov/test/web-software)) as well as the very useful [axe dev tools](https://www.deque.com/axe/devtools/) to identify such accessibility issues.
+
+## User Experience
+
+First, one UX touch point in detail, to illustrate that some seemingly trivial things are... not so trivial to implement.
+That is followed by a list of other UX highlights.
+
+### Input Validation in Detail
+
+Input fields both _have_ validation _and_ provide validation feedback to the user.
+There are only two simple input fields in this application, one for the search string and one for the API key.
+It is sufficient that, if they are non-empty, they should be considered valid.
+And they should only be acted upon if they are valid.
+As an example, the buttons acting upon the API key are disabled until the input is valid, which is to say, non-empty.
+But even more than that, the input fields themselves provide visual feedback on the valid/invalid state of the input.
+In this kineograph, notice that the marker appears and turns green when input is valid, but turns red when not.
+Note that you can use a `required` attribute to do all the work of checking empty or non-empty.
+But that is not the best UX!
+In the last frame you see that if the user has typed _only_ whitespace, that is invalid, too.
+Just takes a bit more handling to cover that case.
+
+![input validation feedback](./src/assets/readme-graphics/composite-input-validation.png)
+
+To make those red/green bars I adapted a clever bit of CSS from Angular's own [development guide](https://angular.io/guide/form-validation#control-status-css-classes),
+which you can see in app.component.css.
+One useful change I made is that the field is not marked red until the user actually touches the field; good UX dictates that one should _not_ signal "hey, this is wrong!" when the user just arrives on the page and has not done anything yet.
+
+### Other UX Touch Points
+
+Here are some of the UX considerations applied to this application to provide the best possible UX. (Some of these have already been mentioned throughout this narrative.)
+
+- Clear visual imagery for the non-happy path, which is to say any result other than a batch of images returned (see "Variations on a Result").
+
+- Buttons are labeled with well-known icons rather than words for both brevity and universality.
+
+- A spinner pops up during various operations to indicate the application is doing something.
+
+- A clear end marker pops up when all images for a given search have been retrieved.
+
+- Images have sequence numbers visible so the user can maintain a sense of where they are when scrolling back and forth.
+
+- A total number of matches for the given search string is reported immediately, giving the user a sense of how much there is to scroll through.
+
+- Tooltips are used whenever there is additional helpful information to share with the user.
+
+- The API key modal test button shows both a spinner while testing and then positive or negative feedback right on the button when a result is determined.
+
 ## Further Points on Maintainable Design
 
 ### Clean Unit Tests
@@ -338,15 +404,6 @@ I then do a `findAllAs` to find a set of buttons and confirm they are all disabl
           expect(button.disabled).toBeTrue();
         });
     })
-```
-
-### Accessibility
-
-The UI is rather simple so there is not much explicit accessibility support needed, besides well-structured HTML.
-About the only thing I needed to add was the appropriate `<label>` element on inputs, e.g.,
-
-```html
-<label for="searchString">Search string</label>
 ```
 
 ### Entities are treated as entities, not strings

@@ -13,6 +13,7 @@
         "scroller"
     ],
     "ignoreWords": [
+        "ANDI",
         "Angular's",
         "apikey",
         "Doğangönül",
@@ -23,6 +24,7 @@
         "Pexels",
         "Rinto",
         "virtualscroll",
+        "WCAG",
         "Zoaib"
     ],
     // flagWords - list of words to be always considered incorrect
