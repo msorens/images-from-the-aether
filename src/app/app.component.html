@@ -31,7 +31,7 @@
     <div class="modal-control-bar">
       <label for="key" class="visually-hidden">Key</label>
       <form [formGroup]="keyForm">
-        <input id="key" formControlName="key" ngModel required #myKey>
+        <input id="key" formControlName="key" required #myKey>
       </form>
       <button
         [disabled]="!myKey.value.trim() || (testStatus$ | async) === ExecutionState.Loading"
