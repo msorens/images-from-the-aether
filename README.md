@@ -577,6 +577,39 @@ Testing behavior in unit tests is much more robust and much more interesting tha
 It is more robust because testing behavior allows you to change the implementation if desired and still have all the tests pass without having to rewrite any.
 And it is much more interesting because behavior-oriented tests describe to any interested code readers something tangible, some actual behavior that the code performs, as opposed to, say, showing that some internal function with inputs `x` and `y` returns `z`.
 
+## Acknowledgements
+
+As the expression goes, none of us is an island.
+I would not have the acumen and skills of my craft honed as sharply today without having worked beside a number of keen and passionate individuals including (in alphabetical order):
+Erin Carver,
+Jamie Degnan,
+Jay Mundrawala,
+Joe Dumoulin,
+John Knuth,
+Kaleb Pederson,
+Kathie Drake,
+Kimberly Garmoe,
+Lance Finfrock,
+Larry Kippenham,
+Maggie Walker,
+Mary Jinglewski,
+Matt Peck,
+May Pinyo,
+Nezar Hussein,
+Ofira Varga,
+Rick Kurtz,
+Salim Afiune,
+Scott McCabe,
+Sergei Knezdov,
+Shadae Holmes,
+Stephan Renatus,
+Steven Danna,
+Susan Evans,
+Tara Black,
+Tina Saunders
+
+(Apologies to others I am undoubtedly forgetting.)
+
 ## Default Generated Docs for this Project
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.6.
