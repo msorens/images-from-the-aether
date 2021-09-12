@@ -54,10 +54,23 @@ There are just three components...
 
 Next let us walk through the tests.
 
+### Starting Out
+
+To begin, I of course want the application to launch,
+and it should display the name of the application and a search field for the user to interact with.
+
+```text
+Section: AppComponent >> display
+• should create the app
+• shows a search box
+• shows the application name
+```
+
 ### User Input
 
-Starting with the user input, I want to let the user type anything, except that leading and/or trailing whitespace should be ignored.
-But that means I need to also make sure that whitespace elsewhere is still preserved, and other special characters (e.g. punctuation) are also preserved. This set of tests covers all those:
+I want to let the user type anything in the search box--except that leading and/or trailing whitespace should be ignored.
+But that means I need to also make sure that whitespace elsewhere is still preserved, and other special characters (e.g. punctuation) are also preserved.
+This set of tests covers all those:
 
 ```text
 Section: AppComponent >> user input >> normalizing input
@@ -148,6 +161,22 @@ Section: ViewPhotosComponent >> with modal component >> detail view
 A typical representation:
 
 ![detail view](./src/assets/readme-graphics/detail-view.png)
+
+Back to the main screen, for a moment.
+When the user enters some search string only the first batch of matches is fetched, as described earlier.
+But the back end already knows how many total matches are available, so that information is passed along, too, and it is helpful to provide it to the user.
+The total available count then is posted in the upper right of the screen.
+While we could display it all the time, it provides no value at certain times (at initial program load, while new data is being fetched, etc.).
+These tests cover the various scenarios:
+
+```text
+Section: AppComponent >> display >> reporting of total available images
+• shows no total matches while loading
+• shows total available NON-ZERO Matches AFTER a search
+• shows total with zero matches on HTTP error
+• shows total available ZERO Matches AFTER a search
+• shows no total matches BEFORE a search
+```
 
 ### Variations on a Result
 
@@ -264,22 +293,30 @@ It clears out the prior results, if any, and then stores the new string in the s
 The ViewPhotosComponent watches for changes to that particular piece of the state.
 When it sees a new value, it invokes the next action, `FetchPhotos`.
 
-`FetchPhotos` is invoked by either the presence of a new search string initiated by `SetSearchString` or by the user scrolling to the last photo of the prior results.
-Either way, it liaises with the `ImageService` to fetch more data from the Pexels API.
-Once that new data is received, it determines whether it is the final batch or not (to set the end flag), and it adds a relative index number to each received photo so that can be displayed along with the photo in the UI.
-
 ```text
 Store actions >> SetSearchString action
 • resets page counter to zero
 • puts search string into state
 • resets photos to empty list
+• resets total to zero
+```
+
+`FetchPhotos` is invoked by either the presence of a new search string initiated by `SetSearchString` or by the user scrolling to the last photo of the prior results.
+Either way, it liaises with the `ImageService` to fetch more data from the Pexels API.
+Once that new data is received, it determines whether it is the final batch or not (to set the end flag), and it adds a relative index number to each received photo so that can be displayed along with the photo in the UI.
+
+```text
 Store actions >> FetchPhotos action
 • end-of-input
   • end of input reflects in state with value 'true'
   • end of input reflects in state with value 'false'
 • annotates photos with sequence number
 • stores new photos in state
+• stores total in state
 • increments page number with each subsequent fetch
+Store actions >> FetchPhotos action (error return)
+• resets photos to empty list upon error
+• resets total to zero upon error
 ```
 
 ## More On Managing Search Results
@@ -313,7 +350,10 @@ Main problem: difficulty getting it running on my machine
 
 During my search for a good solution I had some useful conversations with some of the folks who have worked on this problem.
 A special kudos in particular to Zoaib Khan, who critiqued and tweaked code to help me get things going.
-Zoaib provided yet further assistance from his article, [Fastest way to make a responsive card grid with CSS](https://zoaibkhan.com/blog/fastest-way-to-make-a-responsive-card-grid-with-css/), revealing an elegant CSS technique to add responsiveness to existing layout!
+Khan provided yet further assistance from his article, [Fastest way to make a responsive card grid with CSS](https://zoaibkhan.com/blog/fastest-way-to-make-a-responsive-card-grid-with-css/), revealing an elegant CSS technique to add responsiveness to existing layout!
+
+I finally settled on using the `<virtual-scroller>` component (incorporating with Khan's tweaks for responsiveness).
+This particular component had the added benefit of being able to handle non-uniform sizing of images--not every image in the grid has to be the same dimensions!
 
 ## Accessibility
 
@@ -380,6 +420,18 @@ Here are some of the UX considerations applied to this application to provide th
 - Tooltips are used whenever there is additional helpful information to share with the user.
 
 - The API key modal test button shows both a spinner while testing and then positive or negative feedback right on the button when a result is determined.
+
+## Performance
+
+There are a couple points of note regarding performance.
+First, as already discussed, displaying a large, growing collection of objects can quickly bog down the UI if implemented naively.
+The virtual scrolling component largely takes care of this, keeping what is actually being rendered to a very small, essentially constant number of items--just what is in the current viewport.
+
+Second, the fact that this large collection of objects is a set of images is a concern.
+Image files are much larger than text files, of course, so having to download a lot of them to fill the screen could introduce lag times to the user.
+Caching of said images is vital.
+But the way I am using images in the app makes this issue moot. TODO
+
 
 ## Further Points on Maintainable Design
 
