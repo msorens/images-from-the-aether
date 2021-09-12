@@ -243,7 +243,7 @@ export function genResponse({ endOfInput = false, includePhotos = true } ): Page
     page: 5,
     per_page: 20,
     photos: genPhotos(RESPONSE_BASE, includePhotos ? RESPONSE_PHOTO_COUNT : 0),
-    total_results: 101,
+    total_results: includePhotos ? 101 : 0,
     next_page: endOfInput ? '' : 'any next page',
     prev_page: ''
   };

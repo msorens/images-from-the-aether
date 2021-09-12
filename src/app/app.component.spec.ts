@@ -4,14 +4,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { NgxsModule, Store } from '@ngxs/store';
+import { of, throwError } from 'rxjs';
+import { StatusCodes } from 'http-status-codes';
 import { MockComponent } from 'ng2-mock-component';
 
 import { cssSelector, find, findAllAs, findAs, findOneAs, setFixture } from './utility/queryHelper';
 import { setStoreSnapshot } from './utility/storeHelper';
+import { genResponse } from './state/photo.store.spec';
 import { BaseModalComponent } from './viewer/base-modal/base-modal.component';
-import { SetSearchString } from './state/photo.actions';
+import { FetchPhotos, SetSearchString } from './state/photo.actions';
 import { PhotoState, ExecutionState } from './state/photo.store';
 import { IKeyService, KeyService } from './services/key.service';
+import { generateErrorResponse, IImageService, ImageService } from './services/image.service';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
@@ -21,7 +25,7 @@ describe('AppComponent', () => {
   const keyServiceSpy: jasmine.SpyObj<IKeyService>
     = jasmine.createSpyObj('KeyService', ['get', 'set']);
 
-  const config = {
+  const baseConfig = {
     imports: [
       FormsModule,
       HttpClientModule,
@@ -43,8 +47,14 @@ describe('AppComponent', () => {
 
   describe('display', () => {
     let store: Store;
+    let imageServiceSpy: jasmine.SpyObj<IImageService>;
 
     beforeEach(() => {
+      imageServiceSpy = jasmine.createSpyObj('ImageService', ['loadPage']);
+      const config = {
+        ...baseConfig,
+        providers: [...baseConfig.providers, { provide: ImageService, useValue: imageServiceSpy }]
+      };
       TestBed.configureTestingModule(config).compileComponents();
       fixture = TestBed.createComponent(AppComponent);
       setFixture(fixture);
@@ -66,20 +76,53 @@ describe('AppComponent', () => {
       expect(find('#searchString')).toBeTruthy();
     });
 
-    it('shows total available matches', () => {
-      expect(find('#total')?.parentElement?.textContent).toContain('Total:');
-    });
+    describe('reporting of total available images (DEPTH COVERAGE)', () => {
 
-    it('shows total value from current state', () => {
-      setStoreSnapshot(store, model => model.total = 8000);
-      fixture.detectChanges();
-      expect(find('#total')?.textContent).toBe('8000');
-    });
+      it('shows no total matches BEFORE a search', () => {
+        expect(find('#total')).toBeFalsy();
+      });
+
+      it('shows no total matches while loading', () => {
+        setStoreSnapshot(store, model => model.fetchStatus = ExecutionState.Loading);
+        fixture.detectChanges();
+
+        expect(find('#total')).toBeFalsy();
+      });
+
+      it('shows total available NON-ZERO Matches AFTER a search', () => {
+        imageServiceSpy.loadPage.and
+          .returnValue(of(genResponse({ includePhotos: true })));
+        store.dispatch(new FetchPhotos());
+        fixture.detectChanges();
+        expect(find('#total')?.parentElement?.textContent).toContain('Total:');
+        expect(find('#total')?.textContent).toBe('101');
+      });
+
+      it('shows total available ZERO Matches AFTER a search', () => {
+        imageServiceSpy.loadPage.and
+          .returnValue(of(genResponse({ includePhotos: false })));
+        store.dispatch(new FetchPhotos());
+        fixture.detectChanges();
+        expect(find('#total')?.parentElement?.textContent).toContain('Total:');
+        expect(find('#total')?.textContent).toBe('0');
+      });
+
+      it('shows total with zero matches on HTTP error', () => {
+        imageServiceSpy.loadPage.and
+          .returnValue(throwError(
+            generateErrorResponse(StatusCodes.FORBIDDEN, 'unauthorized')
+          ));
+        store.dispatch(new FetchPhotos());
+        fixture.detectChanges();
+        expect(find('#total')?.parentElement?.textContent).toContain('Total:');
+        expect(find('#total')?.textContent).toBe('0');
+      });
+   });
   });
 
   describe('API key', () => {
     beforeEach(() => {
-      TestBed.configureTestingModule(config).compileComponents();
+      TestBed.configureTestingModule(baseConfig).compileComponents();
       fixture = TestBed.createComponent(AppComponent);
       setFixture(fixture);
       component = fixture.componentInstance;
@@ -163,7 +206,7 @@ describe('AppComponent', () => {
     let store: Store;
 
     beforeEach(() => {
-      TestBed.configureTestingModule(config).compileComponents();
+      TestBed.configureTestingModule(baseConfig).compileComponents();
       fixture = TestBed.createComponent(AppComponent);
       setFixture(fixture);
       component = fixture.componentInstance;
@@ -256,7 +299,7 @@ describe('AppComponent', () => {
     let store: Store;
 
     beforeEach(async () => {
-      await TestBed.configureTestingModule(config).compileComponents();
+      await TestBed.configureTestingModule(baseConfig).compileComponents();
       fixture = TestBed.createComponent(AppComponent);
       setFixture(fixture);
       component = fixture.componentInstance;

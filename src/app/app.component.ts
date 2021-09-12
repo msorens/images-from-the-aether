@@ -26,6 +26,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   // see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html#definite-assignment-assertions
   @Select(PhotoState.testStatus) testStatus$!: Observable<ExecutionState>;
   @Select(PhotoState.total) total$!: Observable<number>;
+  @Select(PhotoState.fetchStatus) fetchStatus$!: Observable<ExecutionState>;
 
   constructor(
     private store: Store,

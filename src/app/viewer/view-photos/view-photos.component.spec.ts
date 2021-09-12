@@ -158,8 +158,6 @@ describe('ViewPhotosComponent', () => {
 
     beforeEach(() => {
       imageServiceSpy = jasmine.createSpyObj('ImageService', ['loadPage']);
-      imageServiceSpy.loadPage.and
-        .returnValue(of(genResponse({ includePhotos: false })));
       const config = {
         ...baseConfig,
         providers: [...baseConfig.providers, { provide: ImageService, useValue: imageServiceSpy }]
@@ -180,6 +178,8 @@ describe('ViewPhotosComponent', () => {
       });
 
       it('displays no-results graphic with some input but no results', () => {
+        imageServiceSpy.loadPage.and
+          .returnValue(of(genResponse({ includePhotos: false })));
         store.dispatch(new SetSearchString('any'));
         fixture.detectChanges();
         expectOnlyVisibleImage('noResultsFound');

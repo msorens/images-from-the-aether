@@ -12,7 +12,9 @@
       <label for="searchString">Search string</label>
       <input tabindex="1" type="text" (keyup)="handleKeyup($event)" required formControlName="searchString" id="searchString">
     </form>
-    <span>Total: <span id="total">{{total$ | async}}</span></span>
+    <span *ngIf="[ExecutionState.Success, ExecutionState.Failure].includes((fetchStatus$ | async) || ExecutionState.Uninitialized)"
+      >Total: <span id="total">{{total$ | async}}</span>
+    </span>
   </div>
   <app-view-photos tabindex="2"></app-view-photos>
   <app-base-modal [visibility]="keyModalVisibility">
