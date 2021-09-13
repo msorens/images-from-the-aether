@@ -27,12 +27,12 @@ What I wanted to do was a clean TDD design so that, at the end, the unit tests i
 My end result was a thorough but not quite complete list.
 There are some things not really amenable to unit tests: accessibility, performance, responsiveness of the display, visual positioning (where a button or field is positioned on the page, alignment of elements, etc.), and probably a few others.
 
-## Using the Application
+## Using The Application
 
 You can certainly clone the repository and play with this application on your own machine, or you can just launch it immediately in your browser at https://msorens.github.io/images-from-the-aether/, courtesy of [GitHub Pages](https://pages.github.com/).
 Be advised, however, that you will need a Pexels API key to do anything (see _API Access_ below for further details).
 
-## The Design and the Result
+## The Design And The Result
 
 What is the quickest way for you, the reader, to understand what this application does, down to every nitty gritty detail?
 Sure you could read the code but it is quite a leap from that to really knowing what the app does.
@@ -82,7 +82,7 @@ Section: AppComponent >> user input >> normalizing input
 • special characters used verbatim
 ```
 
-### Acting on User Input
+### Acting On User Input
 
 As the user types I want to respond briskly, to fetch matching photos. So I want to react to every keystroke, yes, but only when the user pauses, say after a "debounce period" of 400 milliseconds.
 
@@ -178,7 +178,7 @@ Section: AppComponent >> display >> reporting of total available images
 • shows no total matches BEFORE a search
 ```
 
-### Variations on a Result
+### Variations On A Result
 
 Seeing a collection of photos is ultimately what a user is after when using this application.
 But there are several other things the user might see depending on circumstances.
@@ -381,7 +381,7 @@ By the way, I use ANDI (recommended by the GSA's own [Section508.gov](https://ww
 First, one UX touch point in detail, to illustrate that some seemingly trivial things are... not so trivial to implement.
 That is followed by a list of other UX highlights.
 
-### Input Validation in Detail
+### Input Validation In Detail
 
 Input fields both _have_ validation _and_ provide validation feedback to the user.
 There are only two simple input fields in this application, one for the search string and one for the API key.
@@ -433,7 +433,7 @@ Caching of said images is vital.
 But the way I am using images in the app makes this issue moot. TODO
 
 
-## Further Points on Maintainable Design
+## Further Points On Maintainable Design
 
 ### Clean Unit Tests
 
@@ -458,7 +458,7 @@ I then do a `findAllAs` to find a set of buttons and confirm they are all disabl
     })
 ```
 
-### Entities are treated as entities, not strings
+### Entities Are Treated As Entities, Not Strings
 
 Often when writing a program we need to deal with a thing that has a well-defined structure: a bit of HTML or XML, a URL, an entry in a log file, etc.
 Since each of those is typically supplied as a string it is only natural that the developer treats them as strings.
@@ -530,7 +530,7 @@ Looking further it turns out that a new native file system API was very recently
 
 As all the workarounds seemed somewhat kludgy I opted to just use the [file-saver](https://www.npmjs.com/package/file-saver) library, which could do the whole operation in a single line of code ( see `view-photos.component.ts::download()` ).
 
-### More on File Downloads
+### More On File Downloads
 
 Yes, there is still more to say on this topic.
 My initial thought was, like a desktop application, when the user selects to download something, they are then presented with a file picker dialog, allowing specifying the directory path and the file name through OS-specific design standards.
@@ -539,7 +539,7 @@ Today, it is so much simpler to just let the browser "do its thing": when you se
 If a file of the same name already exists, the browser intelligently starts adding sequence numbers.
 On a Mac, for instance, Chrome saves "image.jpg", "image (1).jpg", "image (2).jpg", etc., whereas Firefox does the same thing sans the space character: "image.jpg", "image(1).jpg", "image(2).jpg", etc.
 
-### Beyond Breadth: Unit Tests have Depth
+### Beyond Breadth: Unit Tests Have Depth
 
 Code coverage is a great metric for unit tests.
 One should always strive for a high percentage; just what that percentage should be (80, 90, 100??) is open for debate, but picking any reasonably high number is better than not.
@@ -552,7 +552,7 @@ But test depth can also come from a series of related tests covering the same to
 If you look above at the set of tests under the heading "fetching more photos during scrolling" you will find one test that checks for when more photos are fetched, plus several related tests where more photos are *not* fetched.
 You can peruse all the depth coverage tests in this test suite by searching for "(DEPTH COVERAGE)".
 
-### Strict Mode and Other Checks
+### Strict Mode And Other Checks
 
 I am an ardent believer in using safety nets whenever possible--let the machine do the work of checking rote things!
 First and foremost, the TypeScript compiler offers a **strict** mode (in tsconfig.json) which is a composite of several important checks.
@@ -571,7 +571,7 @@ But strong-typing is not a panacea; it is a tool that must be used with care.
 Sometimes it can even fool you: my canonical example is that if you use type assertions incorrectly you actually get weaker code!
 See my slide deck [TypeScript Type Traps](https://docs.google.com/presentation/d/1ir7P7V0tzO4cd4vCtyUb-a5fHFnBsRYTUoCWLq6xksU/edit#slide=id.g5e2880a3d6_0_78) where I explain that and a few other vagaries of the language.
 
-### Unit Tests Test Behavior Rather than Implementation
+### Unit Tests Test Behavior Rather Than Implementation
 
 Testing behavior in unit tests is much more robust and much more interesting than testing implementation.
 It is more robust because testing behavior allows you to change the implementation if desired and still have all the tests pass without having to rewrite any.
@@ -610,15 +610,15 @@ Tina Saunders
 
 (Apologies to others I am undoubtedly forgetting.)
 
-## Default Generated Docs for this Project
+## Default Generated Docs For This Project
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.6.
 
-### Development server
+### Development Server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-### Code scaffolding
+### Code Scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
@@ -626,14 +626,14 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
-### Running unit tests
+### Running Unit Tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-### Running end-to-end tests
+### Running End-to-end Tests
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
-### Further help
+### Further Help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
