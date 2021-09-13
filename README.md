@@ -13,13 +13,13 @@ So, yes, this is a real, working web app; not a toy or demo.
 
 These are the high-level requirements I began with:
 
-- Display a photo collection keyed off a user-specified string.
-- Have a search bar that responds as the user types.
-- Display results in a responsive grid.
-- Use infinite scroll.
-- Open an enlargement of a photo (and include the author's name) by clicking on one in the results.
-- Image should be downloadable from that detail modal.
-- Application should be accessible, responsive, and have strong UX-fu.
+* Display a photo collection keyed off a user-specified string.
+* Have a search bar that responds as the user types.
+* Display results in a responsive grid.
+* Use infinite scroll.
+* Open an enlargement of a photo (and include the author's name) by clicking on one in the results.
+* Image should be downloadable from that detail modal.
+* Application should be accessible, responsive, and have strong UX-fu.
 
 That leaves a large number of details unspecified, of course.
 What I wanted to do was a clean TDD design so that, at the end, the unit tests itemize low-level requirements, providing a contract of the application's behavior -- guaranteed to be an accurate list of requirements as long as the tests pass!
@@ -43,14 +43,14 @@ Better than either of those: come with me as I describe the behavior to you -- t
 
 There are just three components...
 
-- The `AppComponent` (the main component) manages a key for the API Calls, as well as the user input.
-- The `ViewPhotosComponent` houses the collection of photos in an infinite scroll region. It provides several visual cues (no search started, no results found, end of results reached, fetch in progress), along with providing a modal to show details of a selected image.
-- The `BaseModalComponent` is a generic modal component that can be customized by providing content. It is used both to display image details (larger image, author, download link) and for prompting the user for an initial API key.
+* The `AppComponent` (the main component) manages a key for the API Calls, as well as the user input.
+* The `ViewPhotosComponent` houses the collection of photos in an infinite scroll region. It provides several visual cues (no search started, no results found, end of results reached, fetch in progress), along with providing a modal to show details of a selected image.
+* The `BaseModalComponent` is a generic modal component that can be customized by providing content. It is used both to display image details (larger image, author, download link) and for prompting the user for an initial API key.
 
 ...and two services:
 
-- `ImageService` manages the API calls to test the API key and to load batches of photos.
-- `KeyService` manages storing and retrieving the API key in your browser's local storage.
+* `ImageService` manages the API calls to test the API key and to load batches of photos.
+* `KeyService` manages storing and retrieving the API key in your browser's local storage.
 
 Next let us walk through the tests.
 
@@ -339,13 +339,13 @@ And that is not just at page load time--if the user changes the window size, the
 
 With those aspirations in mind, I went looking for an off-the-shelf component:
 
-- Angular's own `<cdk-virtual-scroll-viewport>`, detailed in this great article from [Zoaib Khan](https://zoaibkhan.com/blog/create-a-fast-infinite-scrolling-list-in-angular/). Main problem with this approach: supports list only, not a grid.
+* Angular's own `<cdk-virtual-scroll-viewport>`, detailed in this great article from [Zoaib Khan](https://zoaibkhan.com/blog/create-a-fast-infinite-scrolling-list-in-angular/). Main problem with this approach: supports list only, not a grid.
 
-- `ngx-infinite-scroll` directive, detailed here by [Christian Nwamba](https://blog.ag-grid.com/implementing-infinite-loading-in-an-angular-store-application/). Main problem: infinite but not virtual scroll, so it keeps adding to the DOM.
+* `ngx-infinite-scroll` directive, detailed here by [Christian Nwamba](https://blog.ag-grid.com/implementing-infinite-loading-in-an-angular-store-application/). Main problem: infinite but not virtual scroll, so it keeps adding to the DOM.
 
-- `<virtual-scroller>` (ngx-virtual-scroller) from [Rinto Jose](https://github.com/rintoj/ngx-virtual-scroller).  Main problem: not responsive to window size changes.
+* `<virtual-scroller>` (ngx-virtual-scroller) from [Rinto Jose](https://github.com/rintoj/ngx-virtual-scroller).  Main problem: not responsive to window size changes.
 
-- `<od-virtualscroll>` from [Onur Doğangönül](https://github.com/dinony/od-virtualscroll).
+* `<od-virtualscroll>` from [Onur Doğangönül](https://github.com/dinony/od-virtualscroll).
 Main problem: difficulty getting it running on my machine
 
 During my search for a good solution I had some useful conversations with some of the folks who have worked on this problem.
@@ -359,18 +359,18 @@ This particular component had the added benefit of being able to handle non-unif
 
 Even in a small application such as this, there are a number of required items to conform to [WCAG](https://www.w3.org/WAI/standards-guidelines/wcag/) accessibility requirements.
 
-- Associate a `<label>` element with each input field.
+* Associate a `<label>` element with each input field.
 Note that _every_ input field should have a corresponding `<label>` -- even if the label is not visible on-screen, so screen readers can properly make sense of things.
 That is done by a handy bit of CSS I found for the task.
 
-- Add an `alt` attribute to each image.
+* Add an `alt` attribute to each image.
 
-- Add context landmarks (header, main).
+* Add context landmarks (header, main).
 
-- Define tab-navigable elements with `tabindex` attributes.
+* Define tab-navigable elements with `tabindex` attributes.
 So, while it may be more convenient to use a mouse to scroll through the "infinite" scroll region, it is also possible to do so with the keyboard using successive presses of the `tab` key to accommodate those users unable to use a mouse.
 
-- Set appropriate color contrast.
+* Set appropriate color contrast.
 In this case, when I initially added sequence numbers to each image, they were just white characters on whatever background the image proffered.
 But that made some of them harder to discern, so I added a small background shading around the character with sufficient contrast to make them always readable.
 
@@ -405,21 +405,21 @@ One useful change I made is that the field is not marked red until the user actu
 
 Here are some of the UX considerations applied to this application to provide the best possible UX. (Some of these have already been mentioned throughout this narrative.)
 
-- Clear visual imagery for the non-happy path, which is to say any result other than a batch of images returned (see "Variations on a Result").
+* Clear visual imagery for the non-happy path, which is to say any result other than a batch of images returned (see "Variations on a Result").
 
-- Buttons are labeled with well-known icons rather than words for both brevity and universality.
+* Buttons are labeled with well-known icons rather than words for both brevity and universality.
 
-- A spinner pops up during various operations to indicate the application is doing something.
+* A spinner pops up during various operations to indicate the application is doing something.
 
-- A clear end marker pops up when all images for a given search have been retrieved.
+* A clear end marker pops up when all images for a given search have been retrieved.
 
-- Images have sequence numbers visible so the user can maintain a sense of where they are when scrolling back and forth.
+* Images have sequence numbers visible so the user can maintain a sense of where they are when scrolling back and forth.
 
-- A total number of matches for the given search string is reported immediately, giving the user a sense of how much there is to scroll through.
+* A total number of matches for the given search string is reported immediately, giving the user a sense of how much there is to scroll through.
 
-- Tooltips are used whenever there is additional helpful information to share with the user.
+* Tooltips are used whenever there is additional helpful information to share with the user.
 
-- The API key modal test button shows both a spinner while testing and then positive or negative feedback right on the button when a result is determined.
+* The API key modal test button shows both a spinner while testing and then positive or negative feedback right on the button when a result is determined.
 
 ## Performance
 
@@ -431,7 +431,6 @@ Second, the fact that this large collection of objects is a set of images is a c
 Image files are much larger than text files, of course, so having to download a lot of them to fill the screen could introduce lag times to the user.
 Caching of said images is vital.
 But the way I am using images in the app makes this issue moot. TODO
-
 
 ## Further Points On Maintainable Design
 
