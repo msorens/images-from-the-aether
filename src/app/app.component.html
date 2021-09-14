@@ -8,7 +8,7 @@
 </header>
 <main role="main">
   <div class="app-control-bar">
-    <form [formGroup]="searchForm">
+    <form [formGroup]="searchForm" autocomplete="off">
       <label for="searchString">Search string</label>
       <input tabindex="1" type="text" (keyup)="handleKeyup($event)" required formControlName="searchString" id="searchString">
     </form>
@@ -30,7 +30,7 @@
     -->
     <div class="modal-control-bar">
       <label for="key" class="visually-hidden">Key</label>
-      <form [formGroup]="keyForm">
+      <form [formGroup]="keyForm" autocomplete="off">
         <input id="key" formControlName="key" required #myKey>
       </form>
       <button
