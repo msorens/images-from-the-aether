@@ -24,6 +24,7 @@ With the plugin installed, this TOC should regenerate as needed automatically wh
 * 6. [User Experience](#UserExperience)
 	* 6.1. [Input Validation In Detail](#InputValidationInDetail)
 	* 6.2. [Other UX Touch Points](#OtherUXTouchPoints)
+	* 6.3. [Developer Experience, Too](#DeveloperExperienceToo)
 * 7. [Performance](#Performance)
 * 8. [Further Points On Maintainable Design](#FurtherPointsOnMaintainableDesign)
 	* 8.1. [Clean Unit Tests](#CleanUnitTests)
@@ -472,16 +473,40 @@ Here are some of the UX considerations applied to this application to provide th
 
 * The API key modal test button shows both a spinner while testing and then positive or negative feedback right on the button when a result is determined.
 
+###  6.3. <a name='DeveloperExperienceToo'></a>Developer Experience, Too
+
+UX is not just for users--it applies to developers, too!
+I strive to make code welcoming in a sense, so people who want to either read the code or just understand how the application works, can easily dig in.
+Some examples:
+
+* A thorough read-me file is supplied ( this one :-).
+
+* A table of contents is included (easy to maintain with the "markdown TOC" extension for VS Code).
+
+* The documentation includes appropriate illustrations rather than trying to describe with lots and lots of words.
+
+* Where do things come from? Borrowed or adapted code snippets include source references (search for "from http" or "see http" in the code base to see examples).
+
+* Comments explain where other types of things come from.
+For instance, I derived the bits in Photo.ts from some data conversions.
+But rather than just provide the bits, I included comments in that file explaining where they came from.
+
+* More on comments: some comments are vital, as in the previous bullet.
+But care must be taken to use comments appropriately and only when necessary, because too many comments can often be worse than not enough.
+I wrote at length about this in [Fighting Evil in Your Code: Comments on Comments](https://www.simple-talk.com/opinion/opinion-pieces/fighting-evil-code-comments-comments/)
+
 ##  7. <a name='Performance'></a>Performance
 
-There are a couple points of note regarding performance.
-First, as already discussed, displaying a large, growing collection of objects can quickly bog down the UI if implemented naively.
+Firstly (as already discussed) displaying a large, growing collection of objects can quickly bog down the UI if implemented naively.
 The virtual scrolling component largely takes care of this, keeping what is actually being rendered to a very small, essentially constant number of items--just what is in the current viewport.
+That keeps the UI feeling very brisk and peppy to the user.
 
-Second, the fact that this large collection of objects is a set of images is a concern.
-Image files are much larger than text files, of course, so having to download a lot of them to fill the screen could introduce lag times to the user.
-Caching of said images is vital.
-But the way I am using images in the app makes this issue moot. TODO
+Secondly, the fact that this large collection of objects is a set of images is a concern.
+Image files are much larger than text files, of course, so having to download a lot of them as the user scrolls back and forth might introduce noticeable lag times.
+Caching of these images is thus vital.
+But the way I am using images in the app makes this issue moot:
+the browser is in control of fetching the images as needed (through what is rendered in the HTML template) and, by default, browsers cache those image fetches.
+The data I am manually fetching with each new search or each new batch is just image metadata (author, URL, etc.), which is relatively quite small so not a performance concern.
 
 ##  8. <a name='FurtherPointsOnMaintainableDesign'></a>Further Points On Maintainable Design
 
