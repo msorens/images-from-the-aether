@@ -11,6 +11,15 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
+      # caching example from https://coryrylan.com/blog/building-angular-cli-projects-with-github-actions
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Set up node
         uses: actions/setup-node@v1
 
