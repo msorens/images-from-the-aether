@@ -5,7 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "test": "ng test",
+    "test": "npx ng test",
+    "test-headless": "npx ng test --browsers=ChromeHeadless --watch=false",
     "lint": "npx ng lint",
     "e2e": "ng e2e"
   },
