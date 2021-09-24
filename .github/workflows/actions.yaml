@@ -6,15 +6,20 @@ on:
 
 jobs:
   unit-test:
+    strategy:
+      matrix:
+        browser: ['chrome', 'firefox']
     runs-on: ubuntu-latest
+    name: unit-test-${{ matrix.browser }}
     steps:
       - uses: actions/checkout@v2
+      # `cache` option uses https://github.com/actions/cache under the hood with less config.
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
           cache: 'npm'
       - run: npm install
-      - run: npm run test-headless
+      - run: npm run test:${{matrix.browser}}
 
   lint:
     runs-on: ubuntu-latest
