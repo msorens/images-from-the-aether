@@ -5,8 +5,10 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "test": "npx ng test",
-    "test-headless": "npx ng test --browsers=ChromeHeadless --watch=false",
+    "test": "npm run test:chrome && npm run test:firefox",
+    "test:watch": "npx ng test",
+    "test:chrome": "npx ng test --browsers=ChromeHeadless --watch=false",
+    "test:firefox": "npx ng test --browsers=FirefoxHeadless --watch=false",
     "lint": "npx ng lint",
     "e2e": "ng e2e"
   },
