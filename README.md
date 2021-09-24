@@ -652,7 +652,7 @@ Testing behavior in unit tests is much more robust and much more interesting tha
 It is more robust because testing behavior allows you to change the implementation if desired and still have all the tests pass without having to rewrite any.
 And it is much more interesting because behavior-oriented tests describe to any interested code readers something tangible, some actual behavior that the code performs, as opposed to, say, showing that some internal function with inputs `x` and `y` returns `z`.
 Exclusively focusing on behavior-oriented tests allows me to do much more with unit tests than is traditionally the norm;
-it can even tsupplant a portion of end-to-end testing.
+it can even supplant a portion of end-to-end testing.
 in fact, for this application, I decided not to invest in end-to-end tests because my unit tests are sufficiently rich and robust.
 (On the other hand, end-to-end tests alone would not be sufficient, because they do not have the resolution to exercise all the nuances that unit tests do.)
 
