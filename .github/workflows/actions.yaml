@@ -8,7 +8,7 @@ jobs:
   unit-test:
     strategy:
       matrix:
-        browser: ['chrome', 'firefox','edge']
+        browser: ['chrome', 'firefox']
     runs-on: ubuntu-latest
     name: unit-test-${{ matrix.browser }}
     steps:
@@ -20,6 +20,18 @@ jobs:
           cache: 'npm'
       - run: npm install
       - run: npm run test:${{matrix.browser}}
+
+  unit-test-edge:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'npm'
+      - run: npm install
+      - run: npm run test:edge
+
 
   lint:
     runs-on: ubuntu-latest

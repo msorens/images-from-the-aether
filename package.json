@@ -9,7 +9,7 @@
     "test:watch": "npx ng test",
     "test:chrome": "npx ng test --browsers=ChromeHeadless --watch=false",
     "test:firefox": "npx ng test --browsers=FirefoxHeadless --watch=false",
-    "test:edge": "npx ng test --browsers=EdgeDevHeadless --watch=false",
+    "test:edge": "npx ng test --browsers=EdgeHeadless --watch=false",
     "lint": "npx ng lint",
     "e2e": "ng e2e"
   },
