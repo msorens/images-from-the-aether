@@ -8,7 +8,7 @@ jobs:
   unit-test:
     strategy:
       matrix:
-        browser: ['chrome', 'firefox']
+        browser: ['chrome', 'firefox','edge']
     runs-on: ubuntu-latest
     name: unit-test-${{ matrix.browser }}
     steps:
