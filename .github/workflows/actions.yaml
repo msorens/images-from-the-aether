@@ -8,46 +8,21 @@ jobs:
   unit-test:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-
-      # caching example from https://coryrylan.com/blog/building-angular-cli-projects-with-github-actions
-      - name: Cache node modules
-        uses: actions/cache@v1
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Set up node
-        uses: actions/setup-node@v1
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm run test-headless
+          node-version: '14'
+          cache: 'npm'
+      - run: npm install
+      - run: npm run test-headless
 
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-
-      - name: Cache node modules
-        uses: actions/cache@v1
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Set up node
-        uses: actions/setup-node@v1
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run lint
-        run: npm run lint
+          node-version: '14'
+          cache: 'npm'
+      - run: npm install
+      - run: npm run lint
