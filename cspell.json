@@ -10,7 +10,8 @@
         "kludgy",
         "ngrx",
         "ngxs",
-        "scroller"
+        "scroller",
+        "subdir"
     ],
     "ignoreWords": [
         "Afiune",
@@ -18,12 +19,15 @@
         "Angular's",
         "apikey",
         "Cabe",
+        "chiragrupani",
         "Danna",
         "Degnan",
+        "devkit",
         "Dumoulin",
         "Doğangönül",
         "Finfrock",
         "Garmoe",
+        "ghpages",
         "Jinglewski",
         "Kaleb",
         "Kippenham",
