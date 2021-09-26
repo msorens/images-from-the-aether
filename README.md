@@ -37,6 +37,7 @@ With the plugin installed, this TOC should regenerate as needed automatically wh
 	* 8.8. [Strict Mode And Other Checks](#StrictModeAndOtherChecks)
 	* 8.9. [TypeScript Type Traps](#TypeScriptTypeTraps)
 	* 8.10. [Unit Tests Test Behavior Rather Than Implementation](#UnitTestsTestBehaviorRatherThanImplementation)
+	* 8.11. [Test Environments And Continuous Integration](#TestEnvironmentsAndContinuousIntegration)
 * 9. [Acknowledgements](#Acknowledgements)
 * 10. [Default Generated Docs For This Project](#DefaultGeneratedDocsForThisProject)
 	* 10.1. [Development Server](#DevelopmentServer)
@@ -655,6 +656,24 @@ Exclusively focusing on behavior-oriented tests allows me to do much more with u
 it can even supplant a portion of end-to-end testing.
 in fact, for this application, I decided not to invest in end-to-end tests because my unit tests are sufficiently rich and robust.
 (On the other hand, end-to-end tests alone would not be sufficient, because they do not have the resolution to exercise all the nuances that unit tests do.)
+
+###  8.11. <a name='TestEnvironmentsAndContinuousIntegration'></a>Test Environments And Continuous Integration
+
+A generated Angular skeleton project by default sets up the Karma test runner to run tests on Chrome.
+Theoretically it should not matter which browser is targeted when running unit tests: every browser should conform to the specs for JavaScript, the DOM, etc.
+But in the real world differences crop up either when (a) you least expect them or (b) they can be the most insidious.
+So it is extremely useful to flag such differences as early as possible.
+As such, I have provided support for the triumvirate of browsers at the top of the food chain: Chrome, Firefox and Edge.
+Running tests on each browser is as simple as `npm run test:chrome`, `npm run test:firefox`, or `npm run test:edge`.
+Note that you have to already have the target browser installed on your system.
+You can see the recipes for these commands in the `scripts` section of `package.json`.
+
+I am fairly fastidious when it comes to running unit tests continuously while I am writing code.
+But I will admit I find it burdensome to remember to run the suite on different browsers.
+Invoking that best practice of being a lazy programmer (see for example [lazyprogrammer](https://www.lazyprogrammer.it/)), I set up a continuous integration (CI) environment using GitHub Actions to automatically run tests against all three browsers for every pull request.
+Thus, even if I forget to do it, the machine will do it for me.
+A powerful feature of GitHub Actions is that you can easily specify whatever target operating system you need, so while I want my default environment to be Linux, it was simpler to run the tests for Edge on a Windows server.
+The recipes for these CI checks are in `actions.yaml`.
 
 ##  9. <a name='Acknowledgements'></a>Acknowledgements
 
