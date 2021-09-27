@@ -62,7 +62,7 @@ What I wanted to do was create a modern web app from scratch using best design p
 as a showcase piece for my portfolio.
 And this seemed like a project that was small enough to make it the amount of code easy to digest for a reader, yet still require quite a bit of different patterns, interfaces, and libraries to make it interesting.
 
-So, yes, this is a real, working web app; not a toy or demo. 
+So, yes, this is a real, working web app; not a toy or demo.
 
 These are the high-level requirements I began with:
 
