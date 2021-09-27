@@ -476,8 +476,9 @@ Here are some of the UX considerations applied to this application to provide th
 
 ###  6.3. <a name='DeveloperExperienceToo'></a>Developer Experience, Too
 
-UX is not just for users--it applies to developers, too!
+UX is not just for users--developer experience (DX) is important, too!
 I strive to make code welcoming in a sense, so people who want to either read the code or just understand how the application works, can easily dig in.
+
 Some examples:
 
 * A thorough read-me file is supplied ( this one :-).
@@ -495,6 +496,8 @@ But rather than just provide the bits, I included comments in that file explaini
 * More on comments: some comments are vital, as in the previous bullet.
 But care must be taken to use comments appropriately and only when necessary, because too many comments can often be worse than not enough.
 I wrote at length about this in [Fighting Evil in Your Code: Comments on Comments](https://www.simple-talk.com/opinion/opinion-pieces/fighting-evil-code-comments-comments/)
+
+* CI checks help minimize the developer burden, automatically running checks on different browsers, and even a markdownlint check, too.
 
 ##  7. <a name='Performance'></a>Performance
 

@@ -11,6 +11,7 @@
     "test:firefox": "npx ng test --browsers=FirefoxHeadless --watch=false",
     "test:edge": "npx ng test --browsers=EdgeHeadless --watch=false",
     "lint": "npx ng lint",
+    "markdownlint": "markdownlint '**/*.md' --ignore node_modules",
     "e2e": "ng e2e"
   },
   "private": true,
