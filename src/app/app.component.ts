@@ -17,6 +17,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   public DEBOUNCE_TIME = 400;
   public searchForm: FormGroup;
   public keyForm: FormGroup;
+  TEST_REGEX = /^_(__|.)+_$/;
   private keyUp = new Subject<KeyboardEvent>();
   keyModalVisibility = new EventEmitter<boolean>();
 
@@ -40,10 +41,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       ],
     });
     this.keyForm = fb.group({
-      key: [
-        '',
-        [Validators.required, Validators.pattern(this.NON_BLANK)],
-      ],
+      key: ['', [Validators.required, Validators.pattern(this.NON_BLANK)]],
     });
   }
 
