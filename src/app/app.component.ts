@@ -67,7 +67,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   handleKeyup(event: KeyboardEvent): void {
     // Convert event stream into Observable so we can hook into it and debounce.
-    this.keyUp.next(event);
+    if ("abc".match(this.TEST_REGEX)) {
+      this.keyUp.next(event);
+    }
   }
 
   saveKey(key: string): void {
