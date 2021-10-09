@@ -11,6 +11,15 @@ export class KeyService implements IKeyService{
   }
 
   set(value: string): string {
+    if (value === 'abc') {
+      console.log('here!');
+    }
+    else if (value === 'def') {
+      console.log('maybe here!');
+    }
+    else if (value === 'abc') {
+      console.log('not here!');
+    }
     localStorage.setItem(this.KEY_NAME, value);
     return value;
   }
