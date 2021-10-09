@@ -17,7 +17,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   public DEBOUNCE_TIME = 400;
   public searchForm: FormGroup;
   public keyForm: FormGroup;
-  TEST_REGEX = /^_(__|.)+_$/;
   private keyUp = new Subject<KeyboardEvent>();
   keyModalVisibility = new EventEmitter<boolean>();
 
@@ -67,9 +66,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   handleKeyup(event: KeyboardEvent): void {
     // Convert event stream into Observable so we can hook into it and debounce.
-    if ("abc".match(this.TEST_REGEX)) {
-      this.keyUp.next(event);
-    }
+    this.keyUp.next(event);
   }
 
   saveKey(key: string): void {
