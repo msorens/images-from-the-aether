@@ -336,7 +336,7 @@ I am using [@ngxs/store](https://github.com/ngxs/store#readme) for the first tim
 Both of these provide a powerful state management system based on Redux for use in Angular applications.
 
 I came across ngxs recently in my search for a way to do reduce the boilerplate needed by ngrx.
-You can compare and contrast the two systems on [npmcompare.com](https://npmcompare.com/compare/@ngrx/store,@ngxs/store) and [npmtrends.com](https://www.npmtrends.com/@ngrx/store-vs-@ngxs/store).
+You can compare and contrast the two systems on [npm-compare.com](https://npm-compare.com/@ngrx/store,@ngxs/store) and [npmtrends.com](https://www.npmtrends.com/@ngrx/store-vs-@ngxs/store).
 They both work on the same principles: you dispatch an action, that action causes side effects, the store gets updated from those side effects, and ultimately subscribers watching specific portions of the store render responses to those state changes in the UI.
 
 There are two actions used by this simple application:
