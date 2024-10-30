@@ -40,10 +40,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       ],
     });
     this.keyForm = fb.group({
-      key: [
-        '',
-        [Validators.required, Validators.pattern(this.NON_BLANK)],
-      ],
+      key: ['', [Validators.required, Validators.pattern(this.NON_BLANK)]],
     });
   }
 
